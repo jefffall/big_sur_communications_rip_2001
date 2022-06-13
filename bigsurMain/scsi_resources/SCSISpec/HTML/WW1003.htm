@@ -1,0 +1,56 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base><title>SCSI-2 Spec - Table 198</title></head><body><h1>Table 198</h1><pre>+==========-======================================================================-====+ 
+|Code value|                           Description                                |Note| 
+|----------+----------------------------------------------------------------------+----| 
+|   00h    | Default density (MODE SELECT command only)                           |    | 
+|   0Eh    | Reserved for ECMA                                                    |    | 
+|15h - 7Eh | Reserved                                                             |    | 
+|   7Fh    | No change from previous density (NO-OP)                              |  7 | 
+|80h - FFh | Vendor-specific                                                      |    | 
+|          |----------------------------------------------------------------------+----| 
+|          |               Descriptions for magnetic tapes                        |    | 
+|          |----------------------------------------------------------------------|    | 
+|          |Width      mm(in) |Tracks|Density     bpmm(bpi)|Code|Type|Reference   |    | 
+|          |------------------+------+---------------------+----+----+------------|    | 
+|   01h    |12,7      (0,5)   |   9  |     32        (800) |NRZI| R  |X3.22-1983  |  2 | 
+|   02h    |12,7      (0,5)   |   9  |     63      (1 600) |PE  | R  |X3.39-1986  |  2 | 
+|   03h    |12,7      (0,5)   |   9  |    246      (6 250) |GCR | R  |X3.54-1986  |  2 | 
+|   05h    | 6,3      (0,25)  |  4/9 |    315      (8 000) |GCR | C  |X3.136-1986 |  1 | 
+|   06h    |12,7      (0,5)   |   9  |    126      (3 200) |PE  | R  |X3.157-1987 | 2,4| 
+|   07h    | 6,3      (0,25)  |   4  |    252      (6 400) |IMFM| C  |X3.116-1986 |  1 | 
+|   08h    | 3,81     (0,15)  |   4  |    315      (8 000) |GCR | CS |X3.158-1987 | 1,4| 
+|   09h    |12,7      (0,5)   |  18  |  1 491     (37 871) |GCR | C  |X3B5/87-099 | 2,4| 
+|   0Ah    |12,7      (0,5)   |  22  |    262      (6 667) |MFM | C  |X3B5/86-199 | 1,4| 
+|   0Bh    | 6,3      (0,25)  |   4  |     63      (1 600) |PE  | C  |X3.56-1986  |  1 | 
+|   0Ch    |12,7      (0,5)   |  24  |    500     (12 690) |GCR | C  |HI-TC1      | 1,6| 
+|   0Dh    |12,7      (0,5)   |  24  |    999     (25 380) |GCR | C  |HI-TC2      | 1,6| 
+|   0Fh    | 6,3      (0,25)  |  15  |    394     (10 000) |GCR | C  |QIC-120     | 1,6| 
+|   10h    | 6,3      (0,25)  |  18  |    394     (10 000) |GCR | C  |QIC-150     | 1,6| 
+|   11h    | 6,3      (0,25)  |  26  |    630     (16 000) |GCR | C  |QIC-320     | 1,6| 
+|   12h    | 6,3      (0,25)  |  30  |  2 034     (51 667) |RLL | C  |QIC-1350    | 1,6| 
+|   13h    | 3,81     (0,15)  |   1  |  2 400     (61 000) |DDS | CS |X3B5/88-185A|  5 | 
+|   14h    | 8,00     (0,315) |   1  |  1 703     (43 245) |RLL | CS |X3.202-1991 |  5 | 
+|   15h    | 8,00     (0,315) |   1  |  1 789     (45 434) |RLL | CS |ECMA TC17   |  5 | 
+|   16h    |12,7      (0,5)   |  48  |    394     (10 000) |MFM | C  |X3.193-1990 | 1,4| 
+|   17h    |12,7      (0,5)   |  48  |  1 673     (42 500) |MFM | C  |X3B5/91-174 | 1,4| 
+|--------------------------------------------------------------------------------------| 
+|   Code  Description                                              Type  Description   | 
+|   ----  ---------------------------------------                  ----  ------------  | 
+|   NRZI  Non return to zero, change on ones                         R   Reel-to-reel  | 
+|   GCR   Group code recording                                       C   Cartridge     | 
+|   PE    Phase encoded                                              CS  Cassette      | 
+|   IMFM  Inverted modified frequency modulation                                       | 
+|   MFM   Modified frequency modulation                                                | 
+|   DDS   DAT data storage                                                             | 
+|   RLL   Run length limited                                                           | 
+|--------------------------------------------------------------------------------------| 
+| NOTES                                                                                | 
+|  1   Serial recorded.                                                                | 
+|  2   Parallel recorded.                                                              | 
+|  3   Old format known as QIC-11.                                                     | 
+|  4   See annex D for additional standards information.                               | 
+|  5   Helical scan                                                                    | 
+|  6   This is not an American National Standard.  The reference is based              | 
+|      on an industry standard definition of the media format.                         | 
+|  7   This density code value is defined for the MODE SELECT command and              | 
+|      shall not be returned by the MODE SENSE command.                                | 
++======================================================================================+</pre></body></html>

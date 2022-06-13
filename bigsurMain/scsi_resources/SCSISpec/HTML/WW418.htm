@@ -1,0 +1,738 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><title>SCSI-2 Spec - Optical memory devices</title></head><body><a name=16><h1>16 Optical memory devices</h1><a name=16.1><h2>16.1 Model for optical memory devices</h2>
+An optical memory device is a device that can potentially support a variety of optical media, (e.g. read-only, write-once, erasable, or reversible). In several respects, an optical memory device is similar to a direct-access device. However, optical memory devices typically offer features that are not available with other devices, including very large capacity removable media. <p>These devices often require the functions that are not found in direct- access devices such as logical block update, pre-erasure before writing, or scanning for blank medium and twelve-byte command descriptor blocks. This standard has specific device types for write-once and CD-ROM devices that also use optical media, but are not capable of supporting several types of optical media. A device that uses write-once media can be an optical memory device. Devices that use read-only media can be optical memory devices; however, devices using CD-ROM media have certain unique characteristics and should not be implemented as optical memory devices. <p>A model of optical memory devices is complicated by the nature of one of its potential advantages, that it can support media which has different characteristics. There are three types of optical media in general use, read-only, write-once and reversible. Read-only media are typically used for publishing applications requiring dissemination of large amounts of data, since the data can be replicated on a disk at low cost. Write-once media are used in applications that have large backup or archiving requirements. It is also used in applications that need large amounts of on-line reference information. Reversible media is typically used in applications that need large amounts of temporary storage (e.g. a graphics workstation), and can take advantage of removable media. In some applications, reversible media drives are used in place of direct-access devices. <p>Reversible media usually need to be reversed (erased, blanked) before new data can be written. In such cases an erase operation is required before data can be written. Some optical memory devices perform this erase operation implicit with each write operation that typically impacts the data throughput. Some devices can perform the erase separately. The ERASE command may be used to erase areas of the medium with a corresponding increase in data throughput on subsequent write operations. Products using optical media should not be implemented as direct-access devices, due to the overhead penalty on performance from the emulation and the lack of support in direct-access devices to take advantage of the sophisticated features available with optical memory devices. <p>The type of medium supported by the device and the type of medium currently loaded can be determined by examining the MODE SENSE data. One unique feature of optical memory devices is support of media with mixed types (e.g. media with read-only and write-once areas). The INQUIRY command informs the initiator that the target is an optical memory device; the initiator should then determine the medium type from the MODE SENSE data. The initiator needs to be cognizant of medium type since the device's characteristics can change when the media are changed. <p>Write-once media can have valid data written to a logical block once. This is an important feature where audit trails and permanent archives are needed. Many optical memory devices supporting write-once media have the ability to update a logical block, preserving the previous generation of data. These devices usually provide a means to recover the previous data through use of commands that allow read access to the different generations of data that are stored at the same logical block address. <p>An important requirement in dealing with optical media is determining which logical blocks contain written data and which are blank. A blank logical block is one that is properly initialized so that data written to it can be recovered. The logical blocks usually have a flag associated with each that indicates whether they have been written or not. <p>Many of the strategies used to manage write once and erasable media depend on being able to determine the boundary between written and blank areas of the medium. The MEDIUM SCAN command is useful in finding blank areas for subsequent write operations. <a name=16.1.1><h3>16.1.1 Defect management</h3>
+Defect management can be performed on logical blocks by updating in a manner similar to that used by direct-access devices with the REASSIGN BLOCKS command. The advantage of using the updating (which is not supported by direct-access devices) is access to the previous data. <p>The update operation assigns an alternate physical block to the logical block while simultaneously writing the data to the block. commands are provided to allow the recovery of previous generations of updated blocks. <p>Defect management on optical-memory devices is usually vendor-specific. However there are standards for some types of optical-memory media that specify defect management techniques. These standards, where they exist, may supersede the implementation requirements pertaining to error and defect reporting in this International Standard. <a name=16.1.2><h3>16.1.2 Error reporting</h3>
+If any of the following conditions occur during the execution of a command the target shall return CHECK CONDITION status. The appropriate sense key and additional sense code should be set. The following list illustrates some error conditions and the applicable sense keys. The list does not provide an exhaustive enumeration of all conditions that may cause the CHECK CONDITION status. <pre><b> Condition                              Sense Key</b>
+ Invalid logical block address          ILLEGAL REQUEST  
+
+ Unsupported option requested           ILLEGAL REQUEST  
+
+ Target reset or medium change 
+ since last command from 
+ this initiator                         UNIT ATTENTION  
+
+ Self diagnostic failed                 HARDWARE ERROR  
+
+ Unrecovered read error                 MEDIUM ERROR or 
+                                        HARDWARE ERROR  
+
+ Recovered read error                   RECOVERED ERROR  
+
+ Overrun or other error that 
+ might be resolved by 
+ repeating the command                  ABORTED COMMAND  
+
+ Attempt to write on write 
+ protected medium                       DATA PROTECT  
+
+ Attempt to read a blank or 
+ previously unwritten block             BLANK CHECK  
+
+ Attempt to write a previously 
+ written block and blank 
+ checking is enabled                    BLANK CHECK  
+
+ Attempt to write on 
+ read-only medium                        DATA PROTECT </pre><br>
+In the case of an invalid logical block address, the sense data information field shall be set to the logical block address of the first invalid address. <p>In the case of an attempt to read a blank or previously unwritten block, the sense data information field shall be set to the logical block address of the first blank block encountered. The data read up to that block shall be transferred. <p>In the case of an attempt to write a previously written block when blank checking is enabled, the sense information field shall be set to the logical block address of the first non-blank block encountered. <a name=16.2><h2>16.2 Commands for optical memory devices</h2>
+The commands for optical memory devices shall be as shown in <a href="WW419.htm" target="figures">able 299</a>. <p><a name=tab299><h4>Table 299 - Commands for optical memory devices</h4><pre>
++=====================================-============-======-============+ 
+|  Command name                       | Operation  | Type |  Subclause | 
+|                                     |   code     |      |            | 
+|-------------------------------------+------------+------+------------| 
+| CHANGE DEFINITION                   |    40h     |   O  |   <a href="WW377.htm">8.2.1</a>    | 
+| COMPARE                             |    39h     |   O  |   <a href="WW377.htm">8.2.2</a>    | 
+| COPY                                |    18h     |   O  |   <a href="WW377.htm">8.2.3</a>    | 
+| COPY AND VERIFY                     |    3Ah     |   O  |   <a href="WW377.htm">8.2.4</a>    | 
+| ERASE(10)                           |    2Ch     |   O  |  <a href="WW418.htm">16.2.1</a>    | 
+| ERASE(12)                           |    ACh     |   O  |  <a href="WW418.htm">16.2.2</a>    | 
+| FORMAT UNIT                         |    04h     |   O  |   <a href="WW416.htm">9.2.1</a>    | 
+| INQUIRY                             |    12h     |   M  |   <a href="WW377.htm">8.2.5</a>    | 
+| LOCK UNLOCK CACHE                   |    36h     |   O  |   <a href="WW416.htm">9.2.2</a>    | 
+| LOG SELECT                          |    4Ch     |   O  |   <a href="WW377.htm">8.2.6</a>    | 
+| LOG SENSE                           |    4Dh     |   O  |   <a href="WW377.htm">8.2.7</a>    | 
+| MEDIUM SCAN                         |    38h     |   O  |  <a href="WW418.htm">16.2.3</a>    | 
+| MODE SELECT(6)                      |    15h     |   O  |   <a href="WW377.htm">8.2.8</a>    | 
+| MODE SELECT(10)                     |    55h     |   O  |   <a href="WW377.htm">8.2.9</a>    | 
+| MODE SENSE(6)                       |    1Ah     |   O  |   <a href="WW377.htm">8.2.10</a>   | 
+| MODE SENSE(10)                      |    5Ah     |   O  |   <a href="WW377.htm">8.2.11</a>   | 
+| PRE-FETCH                           |    34h     |   O  |   <a href="WW416.htm">9.2.3</a>    | 
+| PREVENT ALLOW MEDIUM REMOVAL        |    1Eh     |   O  |   <a href="WW416.htm">9.2.4</a>    | 
+| READ(6)                             |    08h     |   O  |   <a href="WW416.htm">9.2.5</a>    | 
+| READ(10)                            |    28h     |   M  |   <a href="WW416.htm">9.2.6</a>    | 
+| READ(12)                            |    A8h     |   O  |  <a href="WW418.htm">16.2.4</a>    | 
+| READ BUFFER                         |    3Ch     |   O  |   <a href="WW377.htm">8.2.12</a>   | 
+| READ CAPACITY                       |    25h     |   M  |   <a href="WW416.htm">9.2.7</a>    | 
+| READ DEFECT DATA(10)                |    37h     |   O  |   <a href="WW416.htm">9.2.8</a>    | 
+| READ DEFECT DATA(12)                |    B7h     |   O  |  <a href="WW418.htm">16.2.5</a>    | 
+| READ GENERATION                     |    29h     |   O  |  <a href="WW418.htm">16.2.6</a>    | 
+| READ LONG                           |    3Eh     |   O  |   <a href="WW416.htm">9.2.9</a>    | 
+| READ UPDATED BLOCK                  |    2Dh     |   O  |  <a href="WW418.htm">16.2.7</a>    | 
+| REASSIGN BLOCKS                     |    07h     |   O  |   <a href="WW416.htm">9.2.10</a>   | 
+| RECEIVE DIAGNOSTIC RESULTS          |    1Ch     |   O  |   <a href="WW377.htm">8.2.13</a>   | 
+| RELEASE                             |    17h     |   M  |   <a href="WW416.htm">9.2.11</a>   | 
+| REQUEST SENSE                       |    03h     |   M  |   <a href="WW377.htm">8.2.14</a>   | 
+| RESERVE                             |    16h     |   M  |   <a href="WW416.htm">9.2.12</a>   | 
+| REZERO UNIT                         |    01h     |   O  |   <a href="WW416.htm">9.2.13</a>   | 
+| SEARCH DATA EQUAL(10)               |    31h     |   O  |   <a href="WW416.htm">9.2.14.1</a> | 
+| SEARCH DATA EQUAL(12)               |    B1h     |   O  |  <a href="WW418.htm">16.2.8</a>    | 
+| SEARCH DATA HIGH(10)                |    30h     |   O  |   <a href="WW416.htm">9.2.14.2</a> | 
+| SEARCH DATA HIGH(12)                |    B0h     |   O  |  <a href="WW418.htm">16.2.8</a>    | 
+| SEARCH DATA LOW(12)                 |    B2h     |   O  |  <a href="WW418.htm">16.2.8</a>    | 
+| SEEK(6)                             |    0Bh     |   O  |   <a href="WW416.htm">9.2.15</a>   | 
+| SEEK(10)                            |    2Bh     |   O  |   <a href="WW416.htm">9.2.15</a>   | 
+| SEND DIAGNOSTIC                     |    1Dh     |   M  |   <a href="WW377.htm">8.2.15</a>   | 
+| SET LIMITS(10)                      |    33h     |   O  |   <a href="WW416.htm">9.2.16</a>   | 
+| SET LIMITS(12)                      |    B3h     |   O  |  <a href="WW418.htm">16.2.9</a>    | 
+| START STOP UNIT                     |    1Bh     |   O  |   <a href="WW416.htm">9.2.17</a>   | 
+| SYNCHRONIZE CACHE                   |    35h     |   O  |   <a href="WW416.htm">9.2.18</a>   | 
+| TEST UNIT READY                     |    00h     |   M  |   <a href="WW377.htm">8.2.16</a>   | 
+| UPDATE BLOCK                        |    3Dh     |   O  |  <a href="WW418.htm">16.2.10</a>   | 
+| VERIFY(10)                          |    2Fh     |   O  |  <a href="WW418.htm">16.2.11</a>   | 
+| VERIFY(12)                          |    AFh     |   O  |  <a href="WW418.htm">16.2.12</a>   | 
+| WRITE(6)                            |    0Ah     |   O  |   <a href="WW416.htm">9.2.20</a>   | 
+| WRITE(10)                           |    2Ah     |   M  |  <a href="WW418.htm">16.2.13</a>   | 
+| WRITE(12)                           |    AAh     |   O  |  <a href="WW418.htm">16.2.14</a>   | 
+| WRITE AND VERIFY(10)                |    2Eh     |   O  |  <a href="WW418.htm">16.2.15</a>   | 
+| WRITE AND VERIFY(12)                |    AEh     |   O  |  <a href="WW418.htm">16.2.16</a>   | 
+| WRITE BUFFER                        |    3Bh     |   O  |   <a href="WW377.htm">8.2.17</a>   | 
+| WRITE LONG                          |    3Fh     |   O  |   <a href="WW416.htm">9.2.23</a>   | 
+|----------------------------------------------------------------------| 
+|Key:  M = command implementation is mandatory.                        | 
+|      O = command implementation is optional.                         | 
++======================================================================+</pre>
+
+The following codes are vendor-specific: 20h, 21h, 22h, 23h, and C0h through FFh. All remaining codes for optical memory devices are reserved for future standardization. <a name=16.2.1><h3>16.2.1 ERASE(10) command</h3>
+The ERASE(10) command (see <a href="WW420.htm" target="figures">table 300</a>) requests that the target erase the specified number of blocks starting at the specified logical block address on the medium. As used here, erased means either the medium shall be erased, or a pattern shall be written on the medium that appears to the target as no data present. The blocks erased shall be considered blank for purposes of blank checking (see <a href="WW418.htm">16.1</a>). The previous data recorded on the medium, if any, shall not be recoverable. <p><a name=tab300><h4>Table 300 - ERASE(10) command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (2Ch)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |   Logical unit number    |     Reserved    |  ERA   |Reserved| RelAdr | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                                                                       | 
+|-----+---                        Logical block address                    ---| 
+| 4   |                                                                       | 
+|-----+---                                                                 ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 7   | (MSB)                                                                 | 
+|-----+---                        Transfer length                          ---| 
+| 8   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Control                                     | 
++=============================================================================+</pre>
+
+The erase all (ERA) bit set to one indicates that all remaining blocks on the medium shall be erased. If the ERA bit is set to one and if the number of blocks is not zero, the target shall return CHECK CONDITION, and the sense key shall be set to ILLEGAL REQUEST, with an additional sense code of INVALID FIELD IN CDB. <p>See <a href="WW416.htm">9.2.2</a> for a description of the RelAdr bit and logical block address field. <p>The transfer length specifies the number of contiguous logical blocks that shall be erased when the ERA bit is zero. If the ERA bit is zero a transfer length of zero indicates that no blocks shall be erased. This condition shall not be considered an error and no data shall be erased. Any other value indicates the number of logical blocks that shall be erased. <p>This command shall be terminated with a status of RESERVATION CONFLICT if any reservation access conflict (see <a href="WW416.htm">9.2.12</a>) exists and no data shall be erased. <p><blockquote><b>NOTE 195</b> This command allows the user to separate the erase and write operations. This may increase system performance in certain applications. </blockquote><a name=16.2.2><h3>16.2.2 ERASE(12) command</h3>
+The ERASE(12) command (see <a href="WW421.htm" target="figures">table 301</a>) requests that the target erase the specified number of blocks starting at the specified logical block address on the medium. <p><a name=tab301><h4>Table 301 - ERASE(12) command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (ACh)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |   Logical unit number    |     Reserved    |  ERA   |Reserved| RelAdr | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                                                                       | 
+|-----+---                        Logical block address                    ---| 
+| 4   |                                                                       | 
+|-----+---                                                                 ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 7   |                                                                       | 
+|-----+---                        Transfer length                          ---| 
+| 8   |                                                                       | 
+|-----+---                                                                 ---| 
+| 9   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 10  |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 11  |                           Control                                     | 
++=============================================================================+</pre>
+
+See the ERASE(10) command (16.2.1) for a description of the fields in this command. <a name=16.2.3><h3>16.2.3 MEDIUM SCAN command</h3>
+The MEDIUM SCAN command (see <a href="WW422.htm" target="figures">table 302</a>) requests that the target to scan the medium for a contiguous set of written or blank logical blocks. <p><a name=tab302><h4>Table 302 - MEDIUM SCAN command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                            Operation code (38h)                       | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |  Logical unit number     |   WBS  |   ASA  |   RSD  |   PRA  | RelAdr | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |  (MSB)                                                                | 
+|-----+----                                                                ---| 
+| 3   |                                                                       | 
+|-----+----                      Logical block address                     ---| 
+| 4   |                                                                       | 
+|-----+----                                                                ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                            Reserved                                   | 
+|-----+-----------------------------------------------------------------------| 
+| 7   |                            Reserved                                   | 
+|-----+-----------------------------------------------------------------------| 
+| 8   |                            Parameter list length                      | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                            Control                                    | 
++=============================================================================+</pre>
+
+A written block search (WBS) bit of zero indicates that the scan is for blank blocks. A WBS bit of one indicates that the scan is for written blocks. <p>An advanced scan algorithm (ASA) bit of zero indicates that the scan area is scanned in sequential order (as selected by the RSD bit). An ASA bit of one indicates to the target that the written and blank areas within the scan area form contiguous extents (as opposed to scattered blocks). This indication is advisory to the target. <p><blockquote><b>NOTE 196</b> The purpose of this bit is to allow the target to use a more advanced algorithm (such as a binary search) to locate the requested blocks. </blockquote><p>A reverse scan direction (RSD) bit of zero indicates the scan shall begin with the first logical block of the scan area. A RSD bit of one indicates the scan shall begin with the last logical block of the scan area. <p>A partial results acceptable (PRA) bit of zero indicates that the scan shall not be considered satisfied until a contiguous set of blocks is found within the scan area that is at least equal in size to the number of blocks requested, and meets the other criteria specified in the command descriptor block. A PRA bit of one indicates that the scan may be satisfied by a contiguous set of blocks within the scan area that is less than the number of blocks requested, and meets the other criteria specified in the command descriptor block. <p>See <a href="WW416.htm">9.2.2</a> for a description of the RelAdr bit and logical block address field. <p>The parameter list length specifies the length in bytes of the parameter list that shall be transferred during the DATA OUT phase. A parameter list length of zero indicates that the number of blocks requested field has a value of one, and the number of blocks to scan field has a value of zero. This condition shall not be considered an error. The contents of the parameter list are specified in <a href="WW423.htm" target="figures">table 303</a>. <p><a name=tab303><h4>Table 303 - MEDIUM SCAN parameter list</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 1   |                                                                       | 
+|-----+---                        Number of blocks requested               ---| 
+| 2   |                                                                       | 
+|-----+---                                                                 ---| 
+| 3   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 4   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 5   |                                                                       | 
+|-----+---                        Number of blocks to scan                 ---| 
+| 6   |                                                                       | 
+|-----+---                                                                 ---| 
+| 7   |                                                                 (LSB) | 
++=============================================================================+</pre>
+
+A link bit of zero indicates a non-linked command; if the scan is satisfied, the command shall be terminated with a CONDITION MET status. A REQUEST SENSE command can then be issued to determine the starting logical block address of the area that meets the request. If the scan is not satisfied and no error occurs, the command shall be terminated with GOOD status. <p>A link bit of one indicates that a command is linked to the MEDIUM SCAN command; if the search is satisfied, CONDITION MET status is returned and the next command is executed. If the RelAdr bit in the next command is one, the logical block address of the next command is used as a displacement from the logical block address at which the search was satisfied. If a linked scan is not satisfied, the command is terminated with a CHECK CONDITION status. A REQUEST SENSE command may then be issued. <p>A REQUEST SENSE command following a satisfied MEDIUM SCAN command shall:<ul><li>a) return a sense key of EQUAL if the scan was satisfied by a contiguous set of blocks equal in size to the number of blocks requested. If the PRA bis is one and the scan was satisfied by a contiguous set of blocks less than the number of blocks requested, then a sense key of NO SENSE shall be returned;<li>b) return the valid bit set to one;<li>c) return the logical block address of the first logical block of the contiguous set of blocks that satisfied the scan criteria in the information bytes;<li>d) return the number of contiguous logical blocks meeting the scan criteria in the command specific information bytes. </ul><p>A REQUEST SENSE command following an unsatisfied MEDIUM SCAN command shall:<ul><li>a) return a sense key of NO SENSE if no errors occurred during the command execution;<li>b) return the valid bit set to zero. </ul><p>The number of blocks requested field specifies the number of blocks that meet the specified requirements. The number of blocks requested field, if set to zero, indicates that the scan shall not take place. This shall not be considered an error condition. <p>The number of blocks to scan field specifies the length in blocks of the area to be scanned on the medium. The number of blocks to scan field, if set to zero, indicates that the scan shall continue for all remaining blocks on the medium or until the scan is satisfied. See <a href="WW418.htm">16.1.2</a> for a description of error reporting. <a name=16.2.4><h3>16.2.4 READ(12) command</h3>
+The READ(12) command (see <a href="WW424.htm" target="figures">table 304</a>) requests that the target transfer data to the initiator from the medium. See the READ(10) command (<a href="WW416.htm">9.2.6</a>) for a complete description of the fields in this command. <p><a name=tab304><h4>Table 304 - READ(12) command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (A8h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |   Logical unit number    |   DPO  |   FUA  |     Reserved    | RelAdr | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                                                                       | 
+|-----+---                        Logical block address                    ---| 
+| 4   |                                                                       | 
+|-----+---                                                                 ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 7   |                                                                       | 
+|-----+---                        Transfer length                          ---| 
+| 8   |                                                                       | 
+|-----+---                                                                 ---| 
+| 9   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 10  |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 11  |                           Control                                     | 
++=============================================================================+</pre><a name=16.2.5><h3>16.2.5 READ DEFECT DATA(12) command</h3><p>The READ DEFECT DATA(12) command (see <a href="WW425.htm" target="figures">table 305</a>) requests that the target transfer the medium defect data to the initiator. See the READ DEFECT DATA(10) command (<a href="WW416.htm">9.2.8</a>) for a description of the fields in this command. <p><a name=tab305><h4>Table 305 - READ DEFECT DATA(12) command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (B7h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |   Logical unit number    | Plist  | GList  | Defect list format       | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 6   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 7   |                                                                       | 
+|-----+---                        Allocation length                        ---| 
+| 8   |                                                                       | 
+|-----+---                                                                 ---| 
+| 9   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 10  |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 11  |                           Control                                     | 
++=============================================================================+</pre>
+
+The READ DEFECT DATA(12) list header (see <a href="WW426.htm" target="figures">table 306</a>) contains an eight byte header, followed by zero or more defect descriptors. <p><a name=tab306><h4>Table 306 - READ DEFECT DATA(12) list header</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |          Reserved        | PList  | GList  | Defect list format       | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 4   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 5   |                                                                       | 
+|-----+---                        Defect list length                          | 
+| 6   |                                                                       | 
+|-----+---                                                                 ---| 
+| 7   |                                                                 (LSB) | 
+|=============================================================================| 
+|                              Defect descriptors                             | 
+|=====-=======================================================================| 
+| 0   |                                                                       | 
+|-----+---                                                                 ---| 
+| n   |                                                                       | 
++=============================================================================+</pre>
+
+See the description of the READ DEFECT DATA defect list (see <a href="WW416.htm">9.2.1.1</a>) for a description of the fields in this header. <a name=16.2.6><h3>16.2.6 READ GENERATION command</h3>
+The READ GENERATION command (see <a href="WW427.htm" target="figures">table 307</a>) requests that the target transfer to the initiator the maximum generation address for the logical block specified. <p><a name=tab307><h4>Table 307 - READ GENERATION command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (29h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |   Logical unit number    |             Reserved              | RelAdr | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                                                                       | 
+|-----+---                        Logical block address                    ---| 
+| 4   |                                                                       | 
+|-----+---                                                                 ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 7   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 8   |                           Allocation length                           | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Control                                     | 
++=============================================================================+</pre>
+
+See <a href="WW416.htm">9.2.2</a> for a description of the RelAdr bit and logical block address field. <p>The READ GENERATION data is defined in <a href="WW428.htm" target="figures">table 308</a>. <p><a name=tab308><h4>Table 308 - Maximum generation data block</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   | (MSB)                                                                 | 
+|-----+---                       Maximum generation address                ---| 
+| 1   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                          Reserved                                     | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                          Reserved                                     | 
++=============================================================================+</pre>
+
+The maximum generation address field defines the maximum generation address available for the logical block address specified. <a name=16.2.7><h3>16.2.7 READ UPDATED BLOCK(10) command</h3>
+The READ UPDATED BLOCK(10) command (see <a href="WW429.htm" target="figures">table 309</a>) requests that the target transfer data to the initiator from the specified generation and logical block. <p><a name=tab309><h4>Table 309 - READ UPDATED BLOCK(10) command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (2Dh)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |   Logical unit number    |   DPO  |   FUA  |     Reserved    | RelAdr | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                                                                       | 
+|-----+---                        Logical block address                    ---| 
+| 4   |                                                                       | 
+|-----+---                                                                 ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   | Latest | (MSB)                                                        | 
+|-----+------------               Generation address                          | 
+| 7   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 8   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Control                                     | 
++=============================================================================+</pre>
+
+See <a href="WW416.htm">9.2.6</a> for a description of the cache control bits (DPO and FUA). See <a href="WW416.htm">9.2.2</a> for a description of the RelAdr bit and logical block address field. <p>One block of data is transferred during the DATA IN phase. <p>The latest bit determines the meaning of the generation address field. A latest bit of zero indicates that the generation address is specified relative to the first generation of the block; generation address zero specifies the first generation. Increasing generation addresses specify later generations. <p>A latest bit of one indicates that the generation address is specified relative to the latest generation of the block; generation address zero specifies the most recent generation. Increasing generation addresses specify earlier generations. <p>If the requested generation does not exist, the command shall be terminated with CHECK CONDITION status. The sense key shall be set to BLANK CHECK, and the additional sense code shall be set to GENERATION DOES NOT EXIST. <p>This command shall be terminated with a status of RESERVATION CONFLICT if any reservation access conflict (see <a href="WW416.htm">9.2.12</a>) exists and no data shall be transferred. <a name=16.2.8><h3>16.2.8 SEARCH DATA(12) commands</h3>
+The SEARCH DATA(12) commands (see <a href="WW430.htm" target="figures">table 310</a>) search one or more logical blocks for equality or inequality to a data pattern. See the SEARCH DATA(10) commands (<a href="WW416.htm">9.2.14</a>) for a description of the fields in this command. <p><a name=tab310><h4>Table 310 - SEARCH DATA(12) commands</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (B0h, B1h, B2h)              | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |   Logical unit number    | Invert |    Reserved     | SpnDat | RelAdr | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                                                                       | 
+|-----+---                        Logical block address                    ---| 
+| 4   |                                                                       | 
+|-----+---                                                                 ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 7   |                                                                       | 
+|-----+---                        Transfer length                          ---| 
+| 8   |                                                                       | 
+|-----+---                                                                 ---| 
+| 9   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 10  |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 11  |                           Control                                     | 
++=============================================================================+</pre><a name=16.2.9><h3>16.2.9 SET LIMITS(12) command</h3><p>The SET LIMITS(12) command (see <a href="WW431.htm" target="figures">table 311</a>) defines the range within which subsequent linked commands may operate. See the SET LIMITS(10) command (<a href="WW416.htm">9.2.16</a>) for a description of the fields in this command. <p><a name=tab311><h4>Table 311 - SET LIMITS(12) command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (B3h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |   Logical unit number    |         Reserved         | RdInh  | WrInh  | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                                                                       | 
+|-----+---                        Logical block address                    ---| 
+| 4   |                                                                       | 
+|-----+---                                                                 ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 7   |                                                                       | 
+|-----+---                        Number of blocks                         ---| 
+| 8   |                                                                       | 
+|-----+---                                                                 ---| 
+| 9   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 10  |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 11  |                           Control                                     | 
++=============================================================================+</pre><a name=16.2.10><h3>16.2.10 UPDATE BLOCK command</h3><p>The UPDATE BLOCK command (see <a href="WW432.htm" target="figures">table 312</a>) requests that the target logically replace data on the medium with the data sent during the DATA OUT phase. <p><a name=tab312><h4>Table 312 - UPDATE BLOCK command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (3Dh)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |   Logical unit number    |            Reserved               | RelAdr | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                                                                       | 
+|-----+---                        Logical block address                    ---| 
+| 4   |                                                                       | 
+|-----+---                                                                 ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 7   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 8   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Control                                     | 
++=============================================================================+</pre>
+
+See <a href="WW416.htm">9.2.2</a> for a description of the RelAdr bit and logical block address field. <p>One block of data is transferred during the DATA OUT phase. <p><blockquote><b>NOTE 197</b> See the MODE Parameters (16.3) for a description of the behaviour of the UPDATE BLOCK command relative to the enable blank check (EBC) bit. </blockquote><p>This standard does not define the result of a WRITE command issued to a block previously updated by an UPDATE BLOCK command when blank checking is disabled. <p><blockquote><b>NOTE 198</b> It is recommended that the target inhibit this behaviour. </blockquote><p>A logical block may be updated until the alternate block area is exhausted. The alternate blocks used for the update operation shall not be reported in the READ CAPACITY data. If the alternate block area is exhausted, the command shall be terminated with CHECK CONDITION and the sense key shall be set to MEDIUM ERROR, and the additional sense code set to NO DEFECT SPARE LOCATION AVAILABLE. <p>If the report updated block read parameter specifies posting of recovered errors for a read operation of a logical block that has had a successful update operation performed, occurs the command shall terminate with a CHECK CONDITION status. The sense key shall be set to RECOVERED ERROR and the additional sense code set to UPDATED BLOCK READ. <a name=16.2.11><h3>16.2.11 VERIFY(10) command</h3>
+The VERIFY command (see <a href="WW433.htm" target="figures">table 313</a>) requests that the target verify the data on the medium. <p><a name=tab313><h4>Table 313 - VERIFY command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (2Fh)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |   Logical unit number    |   DPO  |Reserved| BlkVfy | BytChk | RelAdr | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                                                                       | 
+|-----+---                        Logical block address                    ---| 
+| 4   |                                                                       | 
+|-----+---                                                                 ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 7   | (MSB)                                                                 | 
+|-----+---                        Verification length                         | 
+| 8   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Control                                     | 
++=============================================================================+</pre>
+
+If the MODE SELECT command is implemented, and the Verify Error Recovery Parameters page is also implemented, then the current settings in that page define the verification criteria. If the Verify Error Recovery Parameters page is not implemented, then the verification criteria is vendor unique. <p>A byte check (BytChk) bit of zero causes a medium verification to be performed with no data comparison. A BytChk bit of one causes a byte- by-byte compare of the data written on the medium and the data transferred from the initiator. The data shall be transferred as it would be for a WRITE command. If the compare is unsuccessful, for any reason, the target shall return CHECK CONDITION status and the sense key shall be set to MISCOMPARE. <p>A blank verify (BlkVfy) bit of one causes a verification that the blocks are blank. <p>If the BytChk is one when the BlkVfy bit is one, this shall be considered an error. The target shall return CHECK CONDITION status and the sense key shall be set to ILLEGAL REQUEST, and the additional sense code set to INVALID FIELD IN CDB. <p>See <a href="WW416.htm">9.2.6</a> for a description of the cache control bits (DPO). See <a href="WW416.htm">9.2.2</a> for a description of the RelAdr bit and logical block address field. <p>The verification length specifies the number of contiguous logical blocks of data or blanks that shall be verified. A verification length of zero indicates that no logical blocks shall be verified. This condition shall not be considered as an error. Any other value indicates the number of logical blocks that shall be verified. <a name=16.2.12><h3>16.2.12 VERIFY(12) command</h3>
+The VERIFY(12) command (see <a href="WW434.htm" target="figures">table 314</a>) requests that the target verify the data on the medium. See the VERIFY(10) command (16.2.11) for a description of the fields in this command. <p><a name=tab314><h4>Table 314 - VERIFY(12) command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (AFh)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |   Logical unit number    |   DPO  |Reserved| BlkVfy | BytChk | RelAdr | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                                                                       | 
+|-----+---                        Logical block address                    ---| 
+| 4   |                                                                       | 
+|-----+---                                                                 ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 7   |                                                                       | 
+|-----+---                        Verification length                      ---| 
+| 8   |                                                                       | 
+|-----+---                                                                 ---| 
+| 9   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 10  |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 11  |                           Control                                     | 
++=============================================================================+</pre><a name=16.2.13><h3>16.2.13 WRITE(10) command</h3><p>The WRITE(10) command (see <a href="WW435.htm" target="figures">table 315</a>) requests that the target write the data transferred from the initiator to the medium. <p><a name=tab315><h4>Table 315 - WRITE(10) command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (2Ah)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |   Logical unit number    |   DPO  |   FUA  |   EBP  |Reserved| RelAdr | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                                                                       | 
+|-----+---                        Logical block address                    ---| 
+| 4   |                                                                       | 
+|-----+---                                                                 ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 7   | (MSB)                                                                 | 
+|-----+---                        Transfer length                             | 
+| 8   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Control                                     | 
++=============================================================================+</pre>
+
+An erase by-pass (EBP) bit of zero indicates that the device will default to the normal write operation. An EBP bit of one indicates that the target is allowed to by-pass the erase operation prior to writing the data. When accessing write-once media, the EBP bit shall be considered reserved. <p>See <a href="WW416.htm">9.2.6</a> for a description of the cache control bits (DPO and FUA). See <a href="WW416.htm">9.2.2</a> for a description of the RelAdr bit and logical block address field. <p>The transfer length specifies the number of contiguous logical blocks of data that shall be transferred. A transfer length of zero indicates that no data shall be transferred. This condition shall not be considered an error and no data shall be written. Any other value indicates the number of logical blocks that shall be transferred. <p>This command shall be terminated with a status of RESERVATION CONFLICT if any reservation access conflict (see <a href="WW416.htm">9.2.12</a>) exists, and no data shall be written. <a name=16.2.14><h3>16.2.14 WRITE(12) command</h3>
+The WRITE(12) command (see <a href="WW436.htm" target="figures">table 316</a>) requests that the target write the data transferred from the initiator to the medium. See the WRITE(10) command (16.2.13) for a description of the fields in this command. <p><a name=tab316><h4>Table 316 - WRITE(12) command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (AAh)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |   Logical unit number    |   DPO  |   FUA  |   EBP  |Reserved| RelAdr | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                                                                       | 
+|-----+---                        Logical block address                    ---| 
+| 4   |                                                                       | 
+|-----+---                                                                 ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 7   |                                                                       | 
+|-----+---                        Transfer length                          ---| 
+| 8   |                                                                       | 
+|-----+---                                                                 ---| 
+| 9   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 10  |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 11  |                           Control                                     | 
++=============================================================================+</pre><a name=16.2.15><h3>16.2.15 WRITE AND VERIFY(10) command</h3><p>The WRITE AND VERIFY(10) command (see <a href="WW437.htm" target="figures">table 317</a>) requests that the target write the data transferred from the initiator to the medium and then verify that the data is correctly written. <p><a name=tab317><h4>Table 317 - WRITE AND VERIFY(10) command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (2Eh)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |   Logical unit number    |   DPO  |Reserved|   EBP  | BytChk | RelAdr | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                                                                       | 
+|-----+---                        Logical block address                    ---| 
+| 4   |                                                                       | 
+|-----+---                                                                 ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 7   | (MSB)                                                                 | 
+|-----+---                        Transfer length                             | 
+| 8   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Control                                     | 
++=============================================================================+</pre>
+
+If the MODE SELECT command is implemented, and the Verify Error Recovery Parameters page is also implemented, then the current settings in that page define the verification criteria. If the Verify Error Recovery Parameters page is not implemented, then the verification criteria is vendor unique. <p>A byte check (BytChk) bit of zero causes a medium verification to be performed with no data comparison. A BytChk bit of one causes a byte- by-byte compare of the data written on the medium and the data transferred from the initiator. The data shall be transferred as it would be for a WRITE command. If the compare is unsuccessful, for any reason, the target shall return CHECK CONDITION status and the sense key shall be set to MISCOMPARE. <p>An erase by-pass (EBP) bit of zero indicates that the device will default to the normal write operation. An EBP bit of one indicates that the target is allowed to by-pass the erase operation prior to writing the data. When accessing write-once media, the EBP bit shall be considered reserved. <p>See <a href="WW416.htm">9.2.6</a> for a description of the cache control bits (DPO). See <a href="WW416.htm">9.2.2</a> for a description of the RelAdr bit and logical block address field. <p>The transfer length specifies the number of contiguous logical blocks of data that shall be transferred. A transfer length of zero indicates that no logical blocks shall be transferred. This condition shall not be considered as an error and no data shall be written. Any other value indicates the number of logical blocks that shall be transferred. <a name=16.2.16><h3>16.2.16 WRITE AND VERIFY(12) command</h3>
+The WRITE AND VERIFY(12) command (see <a href="WW438.htm" target="figures">table 318</a>) requests that the target write the data transferred from the initiator to the medium and then verify that the data is correctly written. See the WRITE AND VERIFY(10) command (16.2.15) for a description of the bits in this command. <p><a name=tab318><h4>Table 318 - WRITE AND VERIFY(12) command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (AEh)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |   Logical unit number    |   DPO  |Reserved|   EBP  | BytChk | RelAdr | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                                                                       | 
+|-----+---                        Logical block address                    ---| 
+| 4   |                                                                       | 
+|-----+---                                                                 ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 7   |                                                                       | 
+|-----+---                        Transfer length                          ---| 
+| 8   |                                                                       | 
+|-----+---                                                                 ---| 
+| 9   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 10  |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 11  |                           Control                                     | 
++=============================================================================+</pre><a name=16.3><h2>16.3 Parameters for optical memory devices</h2><a name=16.3.1><h3>16.3.1 Diagnostic parameters</h3>
+This subclause defines the descriptors and pages for diagnostic parameters used with optical memory devices. <p>The diagnostic page codes for optical memory devices are defined in <a href="WW439.htm" target="figures">table 319</a>. <p><a name=tab319><h4>Table 319 - Diagnostic page codes</h4><pre>
++=============-==================================================-============+ 
+|  Page code  |  Description                                     | Subclause  | 
+|-------------+--------------------------------------------------+------------| 
+|     00h     |  List of supported parameters page               |  <a href="WW377.htm">8.3.1.1</a>   | 
+|  01h - 3Fh  |  Reserved (for all device type pages)            |            | 
+|     40h     |  Translate address page                          |  <a href="WW416.htm">9.3.1</a>     | 
+|  41h - 7Fh  |  Reserved                                        |            | 
+|  80h - FFh  |  Vendor-specific pages                           |            | 
++=============================================================================+</pre><a name=16.3.2><h3>16.3.2 Log parameters</h3><p>This subclause defines the descriptors and pages for log parameters used with optical memory devices. <p>The log page codes for optical memory devices are defined in <a href="WW440.htm" target="figures">table 320</a>. <p><a name=tab320><h4>Table 320 - Log page codes</h4><pre>
++=============-==================================================-============+ 
+|  Page code  |  Description                                     | Subclause  | 
+|-------------+--------------------------------------------------+------------| 
+|     01h     |  Buffer over-run/under-run page                  |  <a href="WW377.htm">8.3.2.1</a>   | 
+|     03h     |  Error counter page (read) page                  |  <a href="WW377.htm">8.3.2.2</a>   | 
+|     05h     |  Error counter page (verify) page                |  <a href="WW377.htm">8.3.2.2</a>   | 
+|     02h     |  Error counter page (write) page                 |  <a href="WW377.htm">8.3.2.2</a>   | 
+|     07h     |  Last n error events page                        |  <a href="WW377.htm">8.3.2.3</a>   | 
+|     00h     |  List of supported parameters page               |  <a href="WW377.htm">8.3.2.5</a>   | 
+|     06h     |  Non-media error page                            |  <a href="WW377.htm">8.3.2.4</a>   | 
+|     04h     |  Reserved                                        |            | 
+|  08h - 2Fh  |  Reserved                                        |            | 
+|  30h - 3Eh  |  Vendor-specific                                 |            | 
+|     3Fh     |  Reserved                                        |            | 
++=============================================================================+</pre><a name=16.3.3><h3>16.3.3 Mode parameters</h3><p>This subclause defines the descriptors and pages for mode parameters used with optical memory devices. <p>The mode parameter list, including the mode parameter header and mode block descriptor, are defined in <a href="WW377.htm">8.3.3</a>. <p>The medium-type code field is contained in the mode parameter header (see <a href="WW377.htm">8.3.3</a>). <a href="WW441.htm" target="figures">Table 321</a> defines the medium-type code values used for optical memory devices. <p><a name=tab321><h4>Table 321 - Optical memory medium-type codes</h4><pre>
++=============-===============================================================+ 
+|    Code     |  Description                                                  | 
+|-------------+---------------------------------------------------------------| 
+|     00h     |  Default (only one medium type supported)                     | 
+|     01h     |  Optical read-only medium                                     | 
+|     02h     |  Optical write-once medium                                    | 
+|     03h     |  Optical reversible or erasable medium                        | 
+|     04h     |  Combination of read-only and write-once medium               | 
+|     05h     |  Combination of read-only and reversible or erasable medium   | 
+|     06h     |  Combination of write-once and reversible or erasable medium  | 
+|  07h - 7Fh  |  RESERVED                                                     | 
+|  80h - FFh  |  Vendor-specific                                              | 
++=============================================================================+</pre>
+
+The device specific parameter field is contained in the mode parameter header (see <a href="WW377.htm">8.3.3</a>). <a href="WW442.htm" target="figures">Table 322</a> defines the device specific parameter values used for optical memory devices. <p><a name=tab322><h4>Table 322 - Optical memory device specific parameter</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|=====+========+=================+========+==========================+========| 
+|     |   WP   |    Reserved     | DPOFUA |           Reserved       |  EBC   | 
++=============================================================================+</pre>
+
+When used with the MODE SELECT command the WP bit is not defined. <p>When used with the MODE SENSE command, a write protected (WP) bit of zero indicates that the medium is write enabled. A WP bit of one indicates that the medium is write protected. For read-only media the WP bit is reserved. <p>When used with the MODE SELECT command the DPOFUA bit is reserved. <p>When used with the MODE SENSE command, a DPOFUA bit of one indicates that the target supports the DPO and FUA bits (see <a href="WW416.htm">9.2.6</a>). <p>For the MODE SELECT command, an enable blank check (EBC) bit of zero advises the target to disable the blank checking operation of the medium during write operations or during an UPDATE BLOCK command. An EBC bit of one enables blank checking. If a non-blank block is found during a write operation, the command shall be terminated with a CHECK CONDITION status and the sense key shall be set to BLANK CHECK. If a blank block is found during an UPDATE BLOCK command, the command shall be terminated with a CHECK CONDITION status, and the sense key shall be set to BLANK CHECK. For read-only media, the EBC bit is reserved. <p>For the MODE SENSE command, an enable blank check (EBC) bit of zero indicates that blank checking of the medium during write operations is disabled. An EBC bit of one indicates that blank checking during write and update operations is enabled. For read-only media, the EBC bit is reserved. <p>The density code field is contained in the mode parameter block descriptor (see <a href="WW377.htm">8.3.3</a>). <a href="WW443.htm" target="figures">Table 323</a> defines the density code values used for optical memory devices. <p><a name=tab323><h4>Table 323 - Optical memory density codes</h4><pre>
++========-======================================================================+ 
+|Density |                      Optical media                                   | 
+| code   |                                                                      | 
+|--------+----------------------------------------------------------------------| 
+|  00h   |Default density (currently mounted density)                           | 
+|        |----------------------------------------------------------------------| 
+|        | Diameter | Type|  Sector   | Tracks | Sides | Servo| Reference |Notes| 
+|        | mm (in)  |     |   size    |        |       |      | standard  |     | 
+|        |----------+-----+-----------+--------+-------+------+-----------+-----| 
+|  01h   | 86 (3,5) | R/W | 512/1 024 | 12 500 |   1   |      |  660-D    | 1   | 
+|  02h   | 89 (3,5) | R/W | 512/1 024 | 12 500 |   2   |      |  581-D    | 1   | 
+|  03h   |130 (5,25)| R/W | 512/1 024 | 18 750 |   2   |  CS  |  607-I    | 1   | 
+|  04h   |130 (5,25)| W-O | 512/1 024 | 30 000 |   2   |  SS  |  655-D    | 1,2 | 
+|  05h   |130 (5,25)| W-O | 512/1 024 | 20 000 |   2   |  SS  |  659-D    | 1,3 | 
+|  06h   |130 (5,25)| W-O | 512/1 024 | 18 750 |   2   |  CS  |  457-D    | 1   | 
+|  07h   |200 (8,0) |     |           |        |       |      |  407-D    | 1,4 | 
+|  08h   |300 (12,0)|     |   1 024   |        |   2   |      |  408-D    | 1,4 | 
+|  09h   |356 (14,0)|     |   1 024   | 56 350 |   2   |      |  456-D    | 1   | 
+|        |          |     |           |        |       |      |           |     | 
+|-------------------------------------------------------------------------------| 
+| Codes 80h - FFh are vendor-specific, all other codes are reserved             | 
+|-------------------------------------------------------------------------------| 
+|Key:    Type    Description                 Servo  Description                 | 
+|        ----    -----------                 -----  ----------------            | 
+|        R/W     Erasable                     CS    Continuous servo            | 
+|        W-O     Write once                   SS    Sampled servo               | 
+|        R/O     Read only                                                      | 
+|-------------------------------------------------------------------------------| 
+| NOTES                                                                         | 
+|  1 The reference standard refers to an ANSI X3B11 project under               | 
+| development.  The project may have several documents describing different     | 
+| aspects of the media. Please contact the Secretariat for current information  | 
+| on status and availability.                                                   | 
+|  2 RZ modulation.                                                             | 
+|  3 4/15 modulation.                                                           | 
+|  4 This project is not presently active.                                      | 
++===============================================================================+</pre>
+
+The mode page codes for optical memory devices are shown in <a href="WW444.htm" target="figures">table 324</a>. <p><a name=tab324><h4>Table 324 - Mode page codes</h4><pre>
++=============-==================================================-============+ 
+|  Page code  |  Description                                     | Subclause  | 
+|-------------+--------------------------------------------------+------------| 
+|     08h     |  Caching page                                    |  <a href="WW416.htm">9.3.3.1</a>   | 
+|     0Ah     |  Control mode page                               |  <a href="WW377.htm">8.5.3.1</a>   | 
+|     02h     |  Disconnect-reconnect page                       |  <a href="WW377.htm">8.3.3.2</a>   | 
+|     0Bh     |  Medium types supported page                     |  <a href="WW416.htm">9.3.3.4</a>   | 
+|     06h     |  Optical memory page                             | <a href="WW418.htm">16.3.3.1</a>   | 
+|     09h     |  Peripheral device page                          |  <a href="WW377.htm">8.3.3.3</a>   | 
+|     01h     |  Read-write error recovery page                  |  <a href="WW416.htm">9.3.3.6</a>   | 
+|     07h     |  Verify error recovery page                      |  <a href="WW416.htm">9.3.3.8</a>   | 
+|  03h - 05h  |  Reserved                                        |            | 
+|  0Ch - 1Fh  |  Reserved                                        |            | 
+|     00h     |  Vendor-specific (does not require page format)  |            | 
+|  20h - 3Eh  |  Vendor-specific (page format required)          |            | 
+|     3Fh     |  Return all pages                                |            | 
+|             |     (valid only for the MODE SENSE command)      |            | 
++=============================================================================+</pre><a name=16.3.3.1><h4>16.3.3.1 Optical memory page</h4><p>The optical memory page (see <a href="WW445.htm" target="figures">table 325</a>) defines parameters for control of optical memory devices. <p><a name=tab325><h4>Table 325 - Optical memory page</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+========+========+=====================================================| 
+| 0   |   PS   |Reserved|         Page code (06h)                             | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                           Parameter length (02h)                      | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Reserved                           |  RUBR  | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
++=============================================================================+</pre>
+
+The parameters savable (PS) bit is only used with the MODE SENSE command. This bit is reserved with the MODE SELECT command. A PS bit of one indicates that the target is capable of saving the page in a non-volatile, vendor-specific location. <p>A report updated block read (RUBR) bit of zero indicates the target shall not report an error when a command performs a successful read of a block that has been updated. A RUBR bit of one indicates the target shall terminate a command that performs a read of a block that has been updated with CHECK CONDITION status, the sense key set to RECOVERED ERROR, the additional sense code set to UPDATED BLOCK READ, and the data shall be transferred to the initiator. The default state of the RUBR bit for write-once devices (as reported in the INQUIRY command) shall be one. <a name=16.4><h2>16.4 Definitions specific to write-once and optical memory devices</h2><a name=16.4.1><h3>16.4.1 blank:</h3>
+ The logical block contains no information detectable by the target, or is written with a pattern that appears to the target as no data present. The logical block is considered ready for a write operation.<a name=16.4.2><h3>16.4.2 generation:</h3>
+ Indicates a relative revision level of a logical block that has been updated via the UPDATE BLOCK command. A logical block that has never been updated has only one generation associated with it.<a name=16.4.3><h3>16.4.3 read-only medium:</h3>
+ This is medium that may not be written by the initiator. The media contains data prepared in a manner not defined by this International Standard.<a name=16.4.4><h3>16.4.4 update:</h3>
+ To write new data to a logical block without destroying the previous data. After a block has been updated, a normal read returns the most recent generation of the data. Earlier generations are still available after the update.<a name=16.4.5><h3>16.4.5 write-once medium:</h3>
+ This is medium that may be written only once by the initiator. Logical blocks on write-once media that have not been written are considered blank. Logical blocks on write-once media that have been written may not be written again.</body></html>

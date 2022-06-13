@@ -1,0 +1,57 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base target="main"><title>SCSI-2 Spec - Table 275</title></head><body><h1>Table 275</h1><pre>
++==============================================================================+ 
+|Error recovery description                                                    | 
+|------------------------------------------------------------------------------| 
+| 00h The maximum error recovery procedures available are used.  If an error   | 
+|     occurs which is uncorrectable with the error correction codes (ECC) on   | 
+|     the media, data transfer is terminated with CHECK CONDITION status. The  | 
+|     block with the error is not transferred. The sense key is set to MEDIUM  | 
+|     ERROR. The information bytes give the address of the block where the     | 
+|     unrecovered error was detected. Recovered errors are not reported.       | 
+|                                                                              | 
+| 01h Only retries of the read operation and CIRC are used (layered error      | 
+|     correction is not used). Only CIRC unrecovered data errors are reported. | 
+|     If an CIRC unrecovered data error occurs, data transfer is terminated    | 
+|     with CHECK CONDITION status.  The block with the error is not            | 
+|     transferred. The sense key is set to MEDIUM ERROR. The information bytes | 
+|     give the address of the block where the unrecovered error was detected.  | 
+|     Recovered errors are not reported.                                       | 
+|                                                                              | 
+| 04h The maximum error recovery procedures available are used. Recovered data | 
+|     errors are reported.  If a recovered data error occurs, data transfer is | 
+|     not terminated.   However, when the data transfer has completed CHECK    | 
+|     CONDITION status is reported.  The sense key is set to RECOVERED ERROR.  | 
+|     The information bytes give the address of the last block where a         | 
+|     recovered data error was detected.                                       | 
+|                                                                              | 
+|     If a data error occurs that is uncorrectable with the ECC information    | 
+|     available on the media, data transfer is terminated and CHECK CONDITION  | 
+|     status is reported. The block with the error is not transferred. The     | 
+|     sense key is set to MEDIUM ERROR. The information bytes give the address | 
+|     of the block where the uncorrectable error was detected.                 | 
+|                                                                              | 
+| 05h Only retries of the read operation and CIRC are used (layered error      | 
+|     correction is not used).  Recovered data errors are reported.  If a      | 
+|     recovered data error occurs, data transfer is not terminated.  However,  | 
+|     when the data transfer has completed CHECK CONDITION status is reported. | 
+|     The sense key is set to RECOVERED ERROR. The information bytes give the  | 
+|     address of the last block where a CIRC recovered data error was          | 
+|     detected.                                                                | 
+|                                                                              | 
+|     If an unrecovered data error occurs, data transfer is terminated and     | 
+|     CHECK CONDITION status is reported. The block with the error is not      | 
+|     transferred. The sense key is set to MEDIUM ERROR. The information bytes | 
+|     give the address of the block where the unrecovered error was detected.  | 
+|                                                                              | 
+| 06h The maximum error recovery procedures are used. Recovered data errors    | 
+|     are reported.  If a recovered data error occurs data transfer is         | 
+|     terminated and CHECK CONDITION status is reported.  The block with the   | 
+|     recovered error is not transferred. The sense key is set to RECOVERED    | 
+|     ERROR.  The information bytes give the address of the block where the    | 
+|     recovered data error was detected.                                       | 
+|                                                                              | 
+|     If a data error occurs that is uncorrectable with the ECC information    | 
+|     on the medium, data transfer is terminated with CHECK CONDITION status.  | 
+|     The block with the error is not transferred.  The sense key is set to    | 
+|     MEDIUM ERROR. The information bytes give the address of the block where  | 
+|     the uncorrectable error was detected.                                    |</pre></body></html>

@@ -1,0 +1,38 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base target="main"><title>SCSI-2 Spec - Table 153</title></head><body><h1>Table 153</h1><pre>
++=======-=====================================================================+ 
+|  Code |                                                                     | 
+| value |                        Medium type                                  | 
+|-------+---------------------------------------------------------------------| 
+|  00h  |  Default medium type (currently mounted medium type)                | 
+|  01h  |  Flexible disk, single-sided; unspecified medium                    | 
+|  02h  |  Flexible disk, double-sided; unspecified medium                    | 
+|       |                                                                     | 
+|       |                     Flexible disks                                  | 
+|       |  Diameter    Bit density  Track density  Number     ANSI reference  | 
+|       |  mm (in)     Bits/radian   /mm (/in)     of sides      standard     | 
+|       | ----------  -----------  -------------  --------  ----------------  | 
+|  05h  | 200 (8,0)      6 631        1,9 (48)        1      ANSI X3.73-1980  | 
+|  06h  | 200 (8,0)      6 631        1,9 (48)        2          (Note 1)     | 
+|  09h  | 200 (8,0)     13 262        1,9 (48)        1            None       | 
+|  0Ah  | 200 (8,0)     13 262        1,9 (48)        2      ANSI X3.121-1984 | 
+|  0Dh  | 130 (5,25)     3 979        1,9 (48)        1      ANSI X3.82-1980  | 
+|  12h  | 130 (5,25)     7 958        1,9 (48)        2      ANSI X3.125-1985 | 
+|  16h  | 130 (5,25)     7 958        3,8 (96)        2      ANSI X3.126-1986 | 
+|  1Ah  | 130 (5,25)    13 262        3,8 (96)        2      ISO DIS8630-1985 | 
+|  1Eh  |  90 (3,5)      7 958        5,3 (135)       2        ANSI X3.137    | 
+|       |                                                        (Note 2)     | 
+|       |             Direct-access magnetic yapes                            | 
+|       |  Width               Density      ANSI reference                    | 
+|       |  mm (in)     Tracks  ftpmm (ftpi)    standard                       | 
+|       | ----------  ------  ------------  --------------                    | 
+|  40h  | 6,3 (0,25)    12    394 (10 000)      Note 1                        | 
+|  44h  | 6,3 (0,25)    24    394 (10 000)      Note 1                        | 
+|-----------------------------------------------------------------------------| 
+|  Code values 80h - FFh are vendor-specific.  All remaining code values      | 
+|  are reserved.                                                              | 
+|-----------------------------------------------------------------------------| 
+|  NOTES                                                                      | 
+|   1  See annex c for additional standards information.                      | 
+|   2  This standard is under development.  Please contact the secretariat    | 
+|      for current information on status and availability.                    | 
++=============================================================================+</pre></body></html>

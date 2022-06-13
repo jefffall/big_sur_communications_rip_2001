@@ -1,0 +1,51 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base target="main"><title>SCSI-2 Spec - Table 69</title></head><body><h1>Table 69</h1><pre>
++========-====================================================================+  
+| Sense  |  Description                                                       | 
+|  key   |                                                                    | 
+|--------+--------------------------------------------------------------------| 
+|   0h   |  NO SENSE.  Indicates that there is no specific sense key          | 
+|        |  information to be reported for the designated logical unit.  This | 
+|        |  would be the case for a successful command or a command that      | 
+|        |  received CHECK CONDITION or COMMAND TERMINATED status because one | 
+|        |  of the filemark, EOM, or ILI bits is set to one.                  | 
+|--------+--------------------------------------------------------------------| 
+|   1h   |  RECOVERED ERROR.  Indicates that the last command completed       | 
+|        |  successfully with some recovery action performed by the target.   | 
+|        |  Details may be determinable by examining the additional sense     | 
+|        |  bytes and the information field.  When multiple recovered errors  | 
+|        |  occur during one command, the choice of which error to report     | 
+|        |  (first, last, most severe, etc.) is device specific.              | 
+|--------+--------------------------------------------------------------------| 
+|   2h   |  NOT READY.  Indicates that the logical unit addressed cannot be   | 
+|        |  accessed.  Operator intervention may be required to correct this  | 
+|        |  condition.                                                        | 
+|--------+--------------------------------------------------------------------| 
+|   3h   |  MEDIUM ERROR.  Indicates that the command terminated with a non-  | 
+|        |  recovered error condition that was probably caused by a flaw in   | 
+|        |  the medium or an error in the recorded data.  This sense key may  | 
+|        |  also be returned if the target is unable to distinguish between a | 
+|        |  flaw in the medium and a specific hardware failure (sense key 4h).| 
+|--------+--------------------------------------------------------------------| 
+|   4h   |  HARDWARE ERROR.  Indicates that the target detected a non-        | 
+|        |  recoverable hardware failure (for example, controller failure,    | 
+|        |  device failure, parity error, etc.) while performing the command  | 
+|        |  or during a self test.                                            | 
+|--------+--------------------------------------------------------------------| 
+|   5h   |  ILLEGAL REQUEST.  Indicates that there was an illegal parameter in| 
+|        |  the command descriptor block or in the additional parameters      | 
+|        |  supplied as data for some commands (FORMAT UNIT, SEARCH DATA,     | 
+|        |  etc.).  If the target detects an invalid parameter in the command | 
+|        |  descriptor block, then it shall terminate the command without     | 
+|        |  altering the medium.  If the target detects an invalid parameter  | 
+|        |  in the additional parameters supplied as data, then the target may| 
+|        |  have already altered the medium.  This sense key may also indicate| 
+|        |  that an invalid IDENTIFY message was received (<a href="WW378.htm">6.6.7</a>).            | 
+|--------+--------------------------------------------------------------------| 
+|   6h   |  UNIT ATTENTION.  Indicates that the removable medium may have been| 
+|        |  changed or the target has been reset.  See <a href="WW376.htm">7.9</a> for more detailed  | 
+|        |  information about the unit attention condition.                   | 
+|--------+--------------------------------------------------------------------| 
+|   7h   |  DATA PROTECT.  Indicates that a command that reads or writes the  | 
+|        |  medium was attempted on a block that is protected from this       | 
+|        |  operation.  The read or write operation is not performed.         | 
++=============================================================================+ </pre></body></html>

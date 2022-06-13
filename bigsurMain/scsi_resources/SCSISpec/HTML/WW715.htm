@@ -1,0 +1,506 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><title>SCSI-2 Spec - Scanner devices</title></head><body><a name=15><h1>15 Scanner devices</h1><a name=15.1><h2>15.1 Model for scanner devices</h2>
+Scanner devices generate a digital representation of two- or three- dimensional objects (e.g. a page of text, a photograph, or a piece of art). This is accomplished by sensing the amount of light reflected from the object and generating the digital data. The digital data can then be sent across the SCSI bus to an initiator for further processing. <p>There are two types of scanners in use; in one type, the operations and functions of the scanner are fixed; in the other type, the operations and functions are programmable and need to be set up prior to being used for scanning objects. <p>The scanner device generates the data and transfers it in accordance with the commands received from the initiator. The contents of the data is vendor-specific; therefore, the initiator and the scanner must know how to use the contents of the data. <p>Scanners generate a digital image of an object in a two dimensional plane. The x-axis dimension is along the cross-scan direction that is perpendicular to the direction in which a scan occurs. The y-axis dimension is along the scan direction, and is parallel to the direction in which a scan occurs. The coordinates are measured from the upper left hand corner of the two dimensional plane. The x-axis measurement increases in a positive manner going from left to right. 
+The left side of the two dimensional plane (i.e. where x equals zero) is called the base element line. The y-axis measurement increases in a positive manner going from top to bottom. The top side of the two dimensional plane (i.e. where y equals zero) is called the base line. 
+The scanning range encompasses the area in which the scanner can operate, from the scan line and base line to the maximum x and y position. These conventions are adopted to aid in understanding the fields within the command descriptor blocks and parameters used for scanner devices. As such this is a conceptual model and may not accurately reflect the physical device. <p>The displacements used for positioning windows is independent of the resolution with which a window is scanned. The measurement of displacements is controlled by the scan measurement mode parameters. <p>In the event of a scanner automatic creation of sub-windows within a defined window (i.e. the auto bit in the DEFINE WINDOW parameters is one), one of the following responses is appropriate: <ul><li>a) the initiator may issue a GET WINDOW PARAMETERS command prior to any READ commands; <li>b) if the initiator issues a READ command before issuing a GET WINDOW PARAMETERS command, the target shall return CHECK CONDITION status. The ILI and valid bits in the sense data shall be set to one. The initiator should then issue a GET WINDOW PARAMETERS command. This feature is useful when the scanner has the ability to distinguish between image and text data and to define windows accordingly. </ul><p>It may occur that a scanner device temporarily does not have resources available to manage a data transfer from the initiator or does not have data available to transfer to the initiator. One of the following responses is appropriate in such a case: <ul><li>a) A CHECK CONDITION status is returned and the sense key is set to NOT READY with the appropriate additional sense code. This response is applicable to a TEST UNIT READY command. <li>b) The target disconnects until the resource or data are available, and then reconnects to resume the operation. <li>c) A BUSY status is returned. </ul><p>If the scanner device determines that an error or exception condition has occurred while executing the SCSI command from the initiator, a CHECK CONDITION status is returned. A REQUEST SENSE command can then be used to determine additional information regarding the error or exception condition. <a name=15.2><h2>15.2 Commands for scanner devices</h2>
+The commands for scanner devices shall be as shown in <a href="WW716.htm" target="figures">table 277</a>. <p><a name=tab277><h4>Table 277 - Commands for scanner devices</h4><pre>
++=====================================-============-======-============+ 
+|  Command name                       | Operation  | Type |  Subclause | 
+|                                     |   code     |      |            | 
+|-------------------------------------+------------+------+------------| 
+| CHANGE DEFINITION                   |    40h     |   O  |   <a href="WW377.htm">8.2.1</a>    | 
+| COMPARE                             |    39h     |   O  |   <a href="WW377.htm">8.2.2</a>    | 
+| COPY                                |    18h     |   O  |   <a href="WW377.htm">8.2.3</a>    | 
+| COPY AND VERIFY                     |    3Ah     |   O  |   <a href="WW377.htm">8.2.4</a>    | 
+| GET DATA BUFFER STATUS              |    34h     |   O  |  <a href="WW715.htm">15.2.1</a>    | 
+| GET WINDOW                          |    25h     |   O  |  <a href="WW715.htm">15.2.2</a>    | 
+| INQUIRY                             |    12h     |   M  |   <a href="WW377.htm">8.2.5</a>    | 
+| LOG SELECT                          |    4Ch     |   O  |   <a href="WW377.htm">8.2.6</a>    | 
+| LOG SENSE                           |    4Dh     |   O  |   <a href="WW377.htm">8.2.7</a>    | 
+| MODE SELECT(6)                      |    15h     |   O  |   <a href="WW377.htm">8.2.8</a>    | 
+| MODE SELECT(10)                     |    55h     |   O  |   <a href="WW377.htm">8.2.9</a>    | 
+| MODE SENSE(6)                       |    1Ah     |   O  |   <a href="WW377.htm">8.2.10</a>   | 
+| MODE SENSE(10)                      |    5Ah     |   O  |   <a href="WW377.htm">8.2.11</a>   | 
+| OBJECT POSITION                     |    31h     |   O  |  <a href="WW715.htm">15.2.3</a>    | 
+| READ                                |    28h     |   M  |  <a href="WW715.htm">15.2.4</a>    | 
+| READ BUFFER                         |    3Ch     |   O  |   <a href="WW377.htm">8.2.12</a>   | 
+| RECEIVE DIAGNOSTIC RESULTS          |    1Ch     |   O  |   <a href="WW377.htm">8.2.13</a>   | 
+| RELEASE UNIT                        |    17h     |   M  |  <a href="WW405.htm">10.2.9</a>    | 
+| REQUEST SENSE                       |    03h     |   M  |   <a href="WW377.htm">8.2.14</a>   | 
+| RESERVE UNIT                        |    16h     |   M  |  <a href="WW405.htm">10.2.10</a>   | 
+| SCAN                                |    1Bh     |   O  |  <a href="WW715.htm">15.2.5</a>    | 
+| SET WINDOW                          |    24h     |   M  |  <a href="WW715.htm">15.2.7</a>    | 
+| SEND                                |    2Ah     |   O  |  <a href="WW715.htm">15.2.6</a>    | 
+| SEND DIAGNOSTIC                     |    1Dh     |   M  |   <a href="WW377.htm">8.2.15</a>   | 
+| TEST UNIT READY                     |    00h     |   M  |   <a href="WW377.htm">8.2.16</a>   | 
+| WRITE BUFFER                        |    3Bh     |   O  |   <a href="WW377.htm">8.2.17</a>   | 
+|----------------------------------------------------------------------| 
+|Key:  M = command implementation is mandatory.                        | 
+|      O = command implementation is optional.                         | 
++======================================================================+</pre>
+
+All other operation codes for scanner devices are reserved for future standardization. <a name=15.2.1><h3>15.2.1 GET DATA BUFFER STATUS command</h3>
+The GET DATA BUFFER STATUS command (see <a href="WW717.htm" target="figures">table 278</a>) provides a means for the initiator to get information about the data buffer. Information is returned only for window identifiers for which a SCAN command has been received (see <a href="WW715.htm">15.2.5</a>). <p><a name=tab278><h4>Table 278 - GET DATA BUFFER STATUS command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (34h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |            Reserved               |  Wait  | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 7   | (MSB)                                                                 | 
+|-----+---                        Allocation length                        ---| 
+| 8   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Control                                     | 
++=============================================================================+</pre>
+
+A wait bit of zero indicates that the target shall respond immediately. A wait bit of one indicates that the target shall wait for image data to be available before returning scan status data. <p>The data buffer status data format is defined in <a href="WW718.htm" target="figures">table 279</a>. <p><a name=tab279><h4>Table 279 - Data buffer status format</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 1   |                           Data buffer status length                   | 
+|-----+---                                                                 ---| 
+| 2   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                           |  Block | 
+|=====+=======================================================================| 
+|     |                           Data buffer status descriptor(s)            | 
+|=====+=======================================================================| 
+| 0   |                           Window identifier                           | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                           Available data buffer                       | 
+|-----+---                                                                 ---| 
+| 4   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 5   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 6   |                           Filled data buffer                          | 
+|-----+---                                                                 ---| 
+| 7   |                                                                 (LSB) | 
++=============================================================================+</pre>
+
+The data buffer status length indicates the length, in bytes, of the following scan status data that is available to be transferred during the DATA IN phase. The data buffer status length does not include itself. The data buffer status data transferred to the initiator includes zero or more data buffer status descriptors. Each descriptor returns information for the window specified by the window identifier. <p>The block bit specifies the buffering capabilities of the scanner. A block bit of one indicates that the data buffer is full and all image data must be transferred to the initiator before the scan operation resumes. A block bit of zero indicates that the data buffer is not full and scan operations can continue with the available data buffer space. <p>The available data buffer field indicates, in bytes, the amount of buffer available for transfers from the initiator. This field is valid only in scanners with the ability to accept data from an initiator for processing. <p>The filled data buffer field indicates the amount of image data in bytes available for transfer to the initiator. <a name=15.2.2><h3>15.2.2 GET WINDOW command</h3>
+The GET WINDOW command (see <a href="WW719.htm" target="figures">table 280</a>) provides a means for the initiator to get information about previously defined windows. <p><a name=tab280><h4>Table 280 - GET WINDOW command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (25h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |              Reserved             | Single | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Window identifier                           | 
+|-----+-----------------------------------------------------------------------| 
+| 6   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 7   |                           Transfer length                             | 
+|-----+---                                                                 ---| 
+| 8   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Control                                     | 
++=============================================================================+</pre>
+
+A single bit of one specifies that a single window descriptor shall be returned for the specified window identifier. A single bit of zero specifies that window descriptors be returned for all window identifiers that were defined by a SET WINDOWS command or by the target, if the automatic bit was set to one. <p>The GET WINDOW data shall consist of a header (see <a href="WW720.htm" target="figures">table 281</a>) followed by one or more window descriptors. Each window descriptor specifies the location, size, and scanning method used for a window. <p><a name=tab281><h4>Table 281 - Get window data header</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   | (MSB)                                                                 | 
+|-----+---                        Window data length                       ---| 
+| 1   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 6   | (MSB)                                                                 | 
+|-----+---                        Window descriptor length                 ---| 
+| 7   |                                                                 (LSB) | 
++=============================================================================+</pre>
+
+The window data length specifies the length in bytes of the following data that is available to be transferred. The window data length does not include itself. If the allocation length is not sufficient to return all the get window data, the window data length shall not be adjusted to reflect the truncation data. <p>The window descriptor length specifies the length in bytes of a single window descriptor. Each descriptor shall be of equal length. The first forty-eight bytes are defined in this International Standard and the remaining bytes in each descriptor are vendor-specific. <p>The window descriptors are defined in <a href="WW721.htm" target="figures">table 282</a>. <p><a name=tab282><h4>Table 282 - Window descriptor bytes</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Window identifier                           | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                           Reserved                           |  Auto  | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                        X-Axis resolution                        ---| 
+| 3   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 4   | (MSB)                                                                 | 
+|-----+---                        Y-Axis resolution                        ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   | (MSB)                                                                 | 
+|- - -+- - -                      X-Axis upper left                      - - -| 
+| 9   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 10  | (MSB)                                                                 | 
+|- - -+- - -                      Y-Axis upper left                      - - -| 
+| 13  |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 14  | (MSB)                                                                 | 
+|- - -+- - -                      Window width                           - - -| 
+| 17  |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 18  | (MSB)                                                                 | 
+|- - -+- - -                      Window length                          - - -| 
+| 21  |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 22  |                           Brightness                                  | 
+|-----+-----------------------------------------------------------------------| 
+| 23  |                           Threshold                                   | 
+|-----+-----------------------------------------------------------------------| 
+| 24  |                           Contrast                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 25  |                           Image composition                           | 
+|-----+-----------------------------------------------------------------------| 
+| 26  |                           Bits per pixel                              | 
+|-----+-----------------------------------------------------------------------| 
+| 27  | (MSB)                                                                 | 
+|-----+---                        Halftone pattern                         ---| 
+| 28  |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 29  |  RIF   |                  Reserved         |      Padding type        | 
+|-----+-----------------------------------------------------------------------| 
+| 30  | (MSB)                                                                 | 
+|-----+---                        Bit ordering                             ---| 
+| 31  |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 32  |                           Compression type                            | 
+|-----+-----------------------------------------------------------------------| 
+| 33  |                           Compression argument                        | 
+|-----+-----------------------------------------------------------------------| 
+| 34  |                                                                       | 
+|- - -+---                        Reserved                                 ---| 
+| 39  |                                                                       | 
+|-----+-----------------------------------------------------------------------| 
+| 40  |                                                                       | 
+|- - -+---                        Vendor-specific parameter byte(s)        ---| 
+| n   |                                                                       | 
++=============================================================================+</pre>
+
+The window identifier specifies the window defined by the window descriptor. A window is referenced by the window identifier during data transfers and parameter updates. <p>When used with the SET WINDOW command, an automatic (auto) bit of one indicates that the target is allowed to create sub-windows within the window specified. An auto bit of zero indicates that the target is not allowed to create sub-windows. <p>When used with the GET WINDOW command, an auto bit of zero indicates that the window was defined directly by the SET WINDOW command. A value of one indicates that the window was defined by the target. This is a sub-window within a window defined by a SET WINDOW command. <p>The window identifiers assigned by the target shall be unique and shall not be currently in use. The parameters for the sub-windows may be retrieved using the GET WINDOW command. <p>The x-axis resolution field specifies the resolution in the scan line direction. The unit of measure is picture elements (pixels) per inch. A value of zero specifies the default resolution. <p>The y-axis resolution field specifies the resolution in the base line direction. The unit of measure is scan lines per inch. A value of zero specifies the default resolution. <p>The x-axis upper left field specifies the x-axis coordinate of the upper left corner of the window. This coordinate is measured from the scan line using the target's current measurement unit divisor (see <a href="WW715.htm">15.3.3.1</a>). <p>The y-axis upper left field specifies the y-axis coordinate of the upper left corner of the window. This coordinate is measured from the base line using target's current measurement unit divisor (see <a href="WW715.htm">15.3.3.1</a>). <p>The window width field specifies the width of window in the scan line direction. The window width is measured using the target's current measurement unit divisor (see <a href="WW715.htm">15.3.3.1</a>). <p>The window length field specifies the length of the window in the base line direction. The window length is measured using the target's current measurement unit divisor (see <a href="WW715.htm">15.3.3.1</a>). <p>The brightness field specifies the level of brightness used to scan the object. A value of zero specifies the default brightness or automatic brightness control, if it is supported. Any other value indicates a relative brightness setting, with 255 being the highest setting, one being the lowest setting, and 128 being the nominal setting. <p>The threshold field specifies the threshold at which scan data is converted to binary data. A value of zero specifies the default threshold or automatic threshold control if it is supported. Any other value indicates relative threshold setting, with 255 being the highest setting, one being the lowest setting, and 128 being the nominal setting. <p>The contrast field specifies the level of contrast used to scan the object. A value of zero specifies the default contrast or automatic contrast control, if it is supported. Any other value indicates a relative contrast setting, with 255 being the highest setting, one being the lowest setting, and 128 being the nominal setting. <p>The halftone field specifies the level of halftone at which the scan data is converted to binary data. The values in this field are vendor- specific. The halftone field is used in conjunction with the image composition field. <p>The image composition field specifies the type of scan operation requested. The image composition is defined as shown in <a href="WW722.htm" target="figures">table 283</a>. <p><a name=tab283><h4>Table 283 - Image composition codes</h4><pre>
++=============-==========================================+ 
+|    Code     |  Description                             | 
+|-------------+------------------------------------------| 
+|     00h     |  Bi-level black &amp; white                  | 
+|     01h     |  Dithered/halftone black &amp; white         | 
+|     02h     |  Multi-level black &amp; white (gray scale)  | 
+|     03h     |  Bi-level RGB colour                     | 
+|     04h     |  Dithered/halftone RGB colour            | 
+|     05h     |  Multi-level RGB colour                  | 
+|  06h - FFh  |  Reserved                                | 
++========================================================+</pre>
+
+The bits per pixel field specifies the number of bits used to represent the intensity of a single colour. <p>A reverse image format (RIF) bit of zero indicates that white pixels are indicated by zeros and black pixels are indicated by ones. A RIF bit of one indicates that white pixels are to be indicated by ones and black pixels are to be indicated by zeros. The RIF bit is applicable only for images represented by one bit per pixel. <p>The padding type field specifies how the target shall pad the image data transmitted to the initiator if it is not an integral number of bytes. The padding type is defined in <a href="WW723.htm" target="figures">table 284</a>. <p><a name=tab284><h4>Table 284 - Padding types</h4><pre>
++=============-=================================+ 
+|    Code     |  Description                    | 
+|-------------+---------------------------------| 
+|     00h     |  No padding                     | 
+|     01h     |  Pad with 0's to byte boundary  | 
+|     02h     |  Pad with 1's to byte boundary  | 
+|     03h     |  Truncate to byte boundary      | 
+|  04h - FFh  |  Reserved                       | 
++===============================================+</pre>
+
+The bit ordering field specifies the order in which data is transferred to the host from the window. The bit ordering specifies the direction of pixels in a scan line, the direction of scan lines within a window and the image data packing within a byte. The values in this field are vendor-specific. <p>The compression type and compression argument fields specify the compression technique to be applied to the image data (see <a href="WW724.htm" target="figures">table 285</a>). <p><a name=tab285><h4>Table 285 - Compression types and arguments</h4><pre>
++=============-===============================================-===============+ 
+| Compression |  Description                                  |  Compression  | 
+|   code      |                                               |   argument    | 
+|-------------+-----------------------------------------------+---------------| 
+|     00h     |  No compression                               |   Reserved    | 
+|     01h     |  CCITT group III, 1 dimensional               |   Reserved    | 
+|     02h     |  CCITT group III, 2 dimensional               |   K factor    | 
+|     03h     |  CCITT group IV, 2 dimensional                |   Reserved    | 
+|  04h - 0Fh  |  Reserved                                     |   Reserved    | 
+|     10h     |  Optical character recognition (OCR)          |Vendor-specific| 
+|  11h - 7Fh  |  Reserved                                     |   Reserved    | 
+|  80h - FFh  |  Vendor-specific                              |Vendor-specific| 
++=============================================================================+</pre><a name=15.2.3><h3>15.2.3 OBJECT POSITION command</h3>
+The OBJECT POSITION command (see <a href="WW725.htm" target="figures">table 286</a>) provides positioning functions. Absolute as well as relative positioning is provided. A target shall return CHECK CONDITION status and set the sense key to ILLEGAL REQUEST if a positioning function is requested that is not supported. <p><a name=tab286><h4>Table 286 - OBJECT POSITION command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (31h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |    Reserved     |      Position function   | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                           Count                                       | 
+|-----+---                                                                 ---| 
+| 4   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 7   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 8   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Control                                     | 
++=============================================================================+</pre>
+
+The position function field specifies the requested function (see <a href="WW726.htm" target="figures">table 287</a>). <p><a name=tab287><h4>Table 287 - Position function</h4><pre>
++=============-========================+ 
+|  Position   |  Description           | 
+|  function   |                        | 
+|-------------+------------------------| 
+|    000b     |  Unload object         | 
+|    001b     |  Load object           | 
+|    010b     |  Absolute positioning  | 
+|    011b     |  Relative positioning  | 
+|    100b     |  Rotate object         | 
+|    101b     |  Reserved              | 
+|    110b     |  Reserved              | 
+|    111b     |  Reserved              | 
++======================================+</pre><ul><li>a) Unload Object. This position function specifies that the object shall be positioned for removal. If upon receipt of this command there is no object loaded, the target shall return a GOOD status. This condition shall not be considered as an error. If the target is unable to unload the object (i.e. paper jam or mis-feed condition), the target shall return CHECK CONDITION status and set the sense key sense to MEDIUM ERROR. <p><li>b) Load object. This position function specifies that the object is to be loaded and positioned to the base line. If upon receipt of this command there is a object already loaded, the target shall returns GOOD status. This condition shall not be considered as an error. If an object is not loaded and the target is unable to load an object, the target shall return CHECK CONDITION status and set the EOM bit to one and the sense key to MEDIUM ERROR. <p><li>c) Absolute positioning. This position function specifies that the object is to be positioned at a y-axis displacement from the base line. The y-axis displacement is determined using the count field and the target's current measurement unit divisor (see <a href="WW715.htm">15.3.3.1</a>). A count field of zero positions the object at the base line. </ul><p>Any other value in the count field shall cause the target to position the object that number of units in the scan line direction. If there is no object loaded or if the specified y-axis displacement is not achieved, the target shall return CHECK CONDITION status and set the EOM bit to one and the sense key to MEDIUM ERROR. <p><ul><li>d) Relative positioning. This position function specifies that the object is to be positioned at a y-axis displacement relative to the current position. The y-axis displacement is determined using the count field and the target's current measurement unit divisor (see <a href="WW715.htm">15.3.3.1</a>). A count field of zero causes no change in position of the object. </ul><p>A positive value in the count field shall cause the target to position the object that number of units in the scan line direction. If the scan range is exceeded, the target shall return CHECK CONDITION status. The EOM bit is set to one, the ILI bit is set to one, and the sense key is set to MEDIUM ERROR. The valid bit is set to one and the information bytes are set to the difference (residue) between the requested count and the actual number of units moved. <p>A negative value (e.g. twos complement notation) in the count field shall cause the target to position the object that number of units toward the base line. If there is no object loaded or if the specified y-axis displacement is not achieved, the target shall return CHECK CONDITION status and set the EOM bit to one and the sense key to MEDIUM ERROR. If the base line is encountered, the target shall position the object at the base line and return CHECK CONDITION status. The ILI bit is set to one and the sense key is set to MEDIUM ERROR. The valid bit is set to one and the information bytes are set to the difference (residue) between the requested count and the actual number of units moved. <p><ul><li>e) Rotate object. This position function specifies that the object is rotated in an anti-clockwise direction expressed in thousandths of a degree. The count field specifies the number of units that the object is to be moved. </ul><p>The count field is used with the position function to specify the displacement of the object. <a name=15.2.4><h3>15.2.4 READ command</h3>
+The READ command (see <a href="WW727.htm" target="figures">table 288</a>) requests that the target transfer data to the initiator. <p><a name=tab288><h4>Table 288 - READ command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (28h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |             Reserved                       | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Data type code                              | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 4   | (MSB)                                                                 | 
+|-----+---                        Data type qualifier                      ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 7   |                           Transfer length                             | 
+|-----+---                                                                 ---| 
+| 8   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Control                                     | 
++=============================================================================+</pre>
+
+The transfer data type distinguishes between the different types of data that may be transferred between the initiator and the target. The types of transfers are specified in <a href="WW728.htm" target="figures">table 289</a>. <p><a name=tab289><h4>Table 289 - Data type codes</h4><pre>
++=============-===================+ 
+|    Code     |  Description      | 
+|-------------+-------------------| 
+|     00h     |  Image            | 
+|     01h     |  Vendor-specific  | 
+|     02h     |  Halftone mask    | 
+|     03h     |  Gamma function   | 
+|  04h - 7Fh  |  Reserved         | 
+|  80h - FFh  |  Vendor-specific  | 
++=================================+</pre>
+
+The data type qualifier field provides a means to differentiate data transfers of the same data type code. The values used in this field are vendor-specific. <p>The transfer length specifies the number of blocks the target shall transfer to the initiator during the DATA IN phase. The block size is the current block size in the mode parameters block descriptor (see <a href="WW377.htm">8.3.3</a>). A transfer length of zero is not considered an error and no data shall be transferred. <p>If the target transfers less than transfer length blocks, a CHECK CONDITION status shall be returned. The ILI bit is set to one, the valid bit is set to one, and the information bytes are set to the difference (residue) between the requested transfer length and the actual number of blocks transferred. <p>This command shall be terminated with a status of RESERVATION CONFLICT if any reservation access conflict (see <a href="WW405.htm">10.2.10</a>) exists, and no data shall be transferred. <a name=15.2.5><h3>15.2.5 SCAN command</h3>
+The SCAN command (see <a href="WW729.htm" target="figures">table 290</a>) requests the target begin a scan operation. <p><a name=tab290><h4>Table 290 - SCAN command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (1Bh)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |                  Reserved                  | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                           Transfer length                             | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Control                                     | 
++=============================================================================+</pre>
+
+The transfer length specifies the length in bytes of the window identifier list that shall be sent during the DATA OUT phase. A transfer length of zero indicates that no data shall be transferred. This condition shall not be considered an error. <p>The window identifier list consists of zero or more window identifiers, each of which specifies a window to be scanned. <a name=15.2.6><h3>15.2.6 SEND command</h3>
+The SEND command (see <a href="WW730.htm" target="figures">table 291</a>) transfers data from the initiator to the target. <p><a name=tab291><h4>Table 291 - SEND command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (2Ah)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |             Reserved                       | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Data type code                              | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 4   | (MSB)                                                                 | 
+|-----+---                        Data type qualifier                      ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 7   |                           Transfer length                             | 
+|-----+---                                                                 ---| 
+| 8   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Control                                     | 
++=============================================================================+</pre>
+
+The data type code and data type qualifier are defined in the READ command (see <a href="WW715.htm">15.2.4</a>). <p>The transfer length specifies the number of blocks the target shall transfer from the initiator during the DATA OUT phase. The block size is the current block size in the mode parameters block descriptor (see <a href="WW377.htm">8.3.3</a>). A transfer length of zero is not considered an error and no data shall be transferred. <p>This command shall be terminated with a status of RESERVATION CONFLICT if any reservation access conflict (see <a href="WW405.htm">10.2.10</a>) exists, and no data shall be transferred. <a name=15.2.7><h3>15.2.7 SET WINDOW command</h3>
+The SET WINDOW command (see <a href="WW731.htm" target="figures">table 292</a>) provides a means for the initiator to specify one or more windows within the scanning range of the device. <p><a name=tab292><h4>Table 292 - SET WINDOW command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (24H)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |                  Reserved                  | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 6   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 7   |                           Transfer length                             | 
+|-----+---                                                                 ---| 
+| 8   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Control                                     | 
++=============================================================================+</pre>
+
+The transfer length specifies the length, in bytes, of the data that shall be sent during the DATA OUT phase. A transfer length of zero indicates that no window parameters data shall be transferred. This condition shall not be considered an error. <p>The window parameters data shall consist of a header followed by one or more window descriptors. Each window descriptor specifies the location, size, and scanning method used for a window. <p>The set window data header is defined in <a href="WW732.htm" target="figures">table 293</a>. <p><a name=tab293><h4>Table 293 - Set window data header</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 6   | (MSB)                                                                 | 
+|-----+---                        Window descriptor length                 ---| 
+| 7   |                                                                 (LSB) | 
++=============================================================================+</pre>
+
+The window descriptor length specifies the length, in bytes, of a single window descriptor. Each descriptor shall be of equal length. The first 48 bytes are defined in this International Standard and the remaining bytes in each descriptor are vendor-specific. <p>See <a href="WW721.htm" target="figures">table 282</a> for the definition of a window descriptor. <a name=15.3><h2>15.3 Parameters for scanner devices</h2><a name=15.3.1><h3>15.3.1 Diagnostic parameters</h3>
+This subclause defines the descriptors and pages for diagnostic parameters used with scanner devices. <p>The diagnostic page codes for scanner devices are defined in <a href="WW733.htm" target="figures">table 294</a>. <p><a name=tab294><h4>Table 294 - Diagnostic page codes</h4><pre>
++=============-==================================================-============+ 
+|  Page code  |  Description                                     | Subclause  | 
+|-------------+--------------------------------------------------+------------| 
+|     00h     |  Supported diagnostic pages                      |  <a href="WW377.htm">8.3.1.1</a>   | 
+|  01h - 7Fh  |  Reserved                                        |            | 
+|  80h - FFh  |  Vendor-specific pages                           |            | 
++=============================================================================+</pre><a name=15.3.2><h3>15.3.2 Log parameters</h3>
+This subclause defines the descriptors and pages for log parameters used with scanner devices. <p>The log page codes for scanner devices are defined in <a href="WW734.htm" target="figures">table 295</a>. <p><a name=tab295><h4>Table 295 - Log page codes</h4><pre>
++=============-==================================================-============+ 
+|  Page code  |  Description                                     | Subclause  | 
+|-------------+--------------------------------------------------+------------| 
+|     01h     |  Buffer over-run/under-run page                  |  <a href="WW377.htm">8.3.2.1</a>   | 
+|     03h     |  Error counter page (read) page                  |  <a href="WW377.htm">8.3.2.2</a>   | 
+|     07h     |  Last n error events page                        |  <a href="WW377.htm">8.3.2.3</a>   | 
+|     06h     |  Non-medium error page                           |  <a href="WW377.htm">8.3.2.4</a>   | 
+|     00h     |  Supported log pages                             |  <a href="WW377.htm">8.3.2.5</a>   | 
+|  08h - 2Fh  |  Reserved                                        |            | 
+|     3Fh     |  Reserved                                        |            | 
+|  30h - 3Eh  |  Vendor-specific pages                           |            | 
++=============================================================================+</pre><a name=15.3.3><h3>15.3.3 Mode parameters</h3>
+This subclause defines the descriptors and pages for mode parameters used with scanner devices. <p>The mode parameter list, including the mode parameter header and mode block descriptor, is defined in <a href="WW377.htm">8.3.3</a>. <p>The medium-type code field is contained in the mode parameter header (see <a href="WW377.htm">8.3.3</a>). This field is reserved for scanners devices. <p>The device specific parameter field is contained in the mode parameter header (see <a href="WW377.htm">8.3.3</a>). This field is reserved for scanner devices. <p>The density code field is contained in the mode parameter block descriptor (see <a href="WW377.htm">8.3.3</a>). This field is reserved for scanner devices. <p>The mode page codes for scanner devices are defined in <a href="WW735.htm" target="figures">table 296</a>. <p><a name=tab296><h4>Table 296 - Mode page codes</h4><pre>
++=============-==================================================-============+ 
+|  Page code  |  Description                                     | Subclause  | 
+|-------------+--------------------------------------------------+------------| 
+|     0Ah     |  Control mode page                               |  <a href="WW377.htm">8.3.3.1</a>   | 
+|     02h     |  Disconnect-reconnect page                       |  <a href="WW377.htm">8.3.3.2</a>   | 
+|     03h     |  Measurement units page                          | <a href="WW715.htm">15.3.3.1</a>   | 
+|     09h     |  Peripheral device page                          |  <a href="WW377.htm">8.3.3.3</a>   | 
+|     01h     |  Reserved                                        |            | 
+|  03h - 08h  |  Reserved                                        |            | 
+|  0Bh - 1Fh  |  Reserved                                        |            | 
+|     00h     |  Vendor-specific (does not require page format)  |            | 
+|  20h - 3Eh  |  Vendor-specific (page format required)          |            | 
+|     3Fh     |  Return all pages                                |            | 
+|             |     (valid only for the MODE SENSE command)      |            | 
++=============================================================================+</pre><a name=15.3.3.1><h4>15.3.3.1 Measurement units page</h4><p>The measurement units page (see <a href="WW736.htm" target="figures">table 297</a>) specifies the units of measurement used for calculating the displacement of window and for positioning an object. <p>The measurement units are independent of the horizontal and vertical scan resolutions. <p><a name=tab297><h4>Table 297 - Measurement units page</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+========+========+=====================================================| 
+| 0   |   PS   |Reserved|         Page code (03h)                             | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                           Parameter length (06h)                      | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Basic measurement unit                      | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 4   | (MSB)                                                                 | 
+|-----+---                        Measurement unit divisor                 ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 7   |                           Reserved                                    | 
++=============================================================================+</pre>
+
+The parameters savable (PS) bit is only used with the MODE SENSE command. This bit is reserved for the MODE SELECT command. A PS bit of one indicates that the target is capable of saving the page in a non-volatile vendor-specific location. <p>The basic measurement unit field is defined in <a href="WW737.htm" target="figures">table 298</a>. Targets shall use inches as the default basic measurement unit. <p><a name=tab298><h4>Table 298 - Basic measurement units</h4><pre>
++=============-===============+ 
+|    Code     |  Description  | 
+|-------------+---------------| 
+|     00h     |  Inch         | 
+|     01h     |  Millimetre   | 
+|     02h     |  Point        | 
+|  03h - FFh  |  Reserved     | 
++=============================+</pre>
+
+The measurement unit divisor specifies the number of units needed to equal one basic measurement unit. Targets shall use 1200 as the default measurement unit divisor. If a value of zero is specified the target shall return CHECK CONDITION status and set the sense key to ILLEGAL REQUEST. <p><blockquote><b>NOTE 194</b> A target that does not implement this page or only supports default values uses twelve hundredths (1/1200) of an inch as the unit of measure. </blockquote><a name=15.4><h2>15.4 Definitions specific to scanner devices</h2><a name=15.4.1><h3>15.4.1 base element line:</h3>
+An x-axis displacement equal to zero. <a name=15.4.2><h3>15.4.2 base line:</h3>
+An y-axis displacement equal to zero. <a name=15.4.3><h3>15.4.3 beginning-of-medium:</h3>
+A x-axis and y-axis of zero displacement. Alternatively this is being positioned at the intersection of the base and scan lines. <a name=15.4.4><h3>15.4.4 end-of-medium:</h3>
+The maximum x-axis and y-axis displacement. <a name=15.4.5><h3>15.4.5 image:</h3>
+The digital result of a scan. <a name=15.4.6><h3>15.4.6 object:</h3>
+The original or item being scanned. <a name=15.4.7><h3>15.4.7 pixel:</h3>
+Picture-element, which is the smallest photo sight in the array. <a name=15.4.8><h3>15.4.8 platen:</h3>
+The surface on which the target is positioned. <a name=15.4.9><h3>15.4.9 scan:</h3>
+An operation that generates a digital image from the reflected light of an object. <a name=15.4.10><h3>15.4.10 scan line:</h3>
+A y-axis displacement from the base line. <a name=15.4.11><h3>15.4.11 scanning range:</h3>
+The total area that a scanner can generate an image from. For two dimensional objects this may correspond to the largest object that can be scanned. </body></html>

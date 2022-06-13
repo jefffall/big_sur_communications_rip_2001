@@ -1,0 +1,19 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base><title>SCSI-2 Spec - Table 27</title></head><body><h1>Table 27</h1><pre>+==================================-==============================+ 
+|    Bits of status byte           |  Status                      | 
+|----------------------------------|                              | 
+|   7 | 6 | 5 | 4 | 3 | 2 | 1 | 0  |                              | 
+|-----+---+---+---+---+---+---+----+------------------------------| 
+|   R | R | 0 | 0 | 0 | 0 | 0 | R  |  GOOD                        | 
+|   R | R | 0 | 0 | 0 | 0 | 1 | R  |  CHECK CONDITION             | 
+|   R | R | 0 | 0 | 0 | 1 | 0 | R  |  CONDITION MET               | 
+|   R | R | 0 | 0 | 1 | 0 | 0 | R  |  BUSY                        | 
+|   R | R | 0 | 1 | 0 | 0 | 0 | R  |  INTERMEDIATE                | 
+|   R | R | 0 | 1 | 0 | 1 | 0 | R  |  INTERMEDIATE-CONDITION MET  | 
+|   R | R | 0 | 1 | 1 | 0 | 0 | R  |  RESERVATION CONFLICT        | 
+|   R | R | 1 | 0 | 0 | 0 | 1 | R  |  COMMAND TERMINATED          | 
+|   R | R | 1 | 0 | 1 | 0 | 0 | R  |  QUEUE FULL                  | 
+|----------------------------------|                              | 
+|           All other codes        |  Reserved                    | 
+|-----------------------------------------------------------------| 
+|  Key: R = Reserved bit                                          | 
++=================================================================+ </pre></body></html>

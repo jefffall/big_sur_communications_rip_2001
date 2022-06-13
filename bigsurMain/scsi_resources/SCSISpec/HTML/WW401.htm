@@ -1,0 +1,21 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base target="main"><title>SCSI-2 Spec - Table 38</title></head><body><h1>Table 38</h1><pre>
++=====-========-========-========-========-========-========-========-========+  
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+==========================+========+========+==========================| 
+| 0   | Source address           |Reserved|  Cat   |     Source LUN           | 
+|-----+--------------------------+-----------------+--------------------------| 
+| 1   | Destination address      |    Reserved     |     Destination LUN      | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                        Stream device block length               ---| 
+| 3   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 4   | (MSB)                                                                 | 
+|-----+---                        Block device number of blocks            ---| 
+| 7   |                                                                 (LSB) | 
+|--- -+-----------------------------------------------------------------------| 
+| 8   | (MSB)                                                                 | 
+|--- -+---                        Block device logical block address       ---| 
+| 11  |                                                                 (LSB) | 
++=============================================================================+ </pre></body></html>

@@ -1,0 +1,21 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base><title>SCSI-2 Spec - Table 222</title></head><body><h1>Table 222</h1><pre>+========-====================================================================+ 
+|  Code  |  Slew mode                                                         | 
+|--------+--------------------------------------------------------------------| 
+|   00b  |  SLEW AND PRINT commands with a channel bit of zero are supported  | 
+|        |  without any required setup.                                       | 
+|        |                                                                    | 
+|   01b  |  SLEW AND PRINT commands with a channel bit of zero are only       | 
+|        |  accepted after the initiator issues a FORMAT command with a format| 
+|        |  type of set form (to initialize the electronic vertical forms     | 
+|        |  unit).                                                            | 
+|        |                                                                    | 
+|   10b  |  SLEW AND PRINT commands with a channel bit of zero are always     | 
+|        |  accepted.  The target shall use the electronic vertical forms unit| 
+|        |  if it has previously been initialized or it shall initialize the  | 
+|        |  electronic vertical forms unit for line skipping by sending the   | 
+|        |  EVFU start format character immediately followed by the EVFU stop | 
+|        |  format character (both are defined below) prior to executing the  | 
+|        |  SLEW AND PRINT command.                                           | 
+|        |                                                                    | 
+|   11b  |  Reserved                                                          | 
++=============================================================================+</pre></body></html>

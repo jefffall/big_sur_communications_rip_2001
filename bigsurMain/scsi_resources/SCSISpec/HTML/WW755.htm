@@ -1,0 +1,21 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base target="main"><title>SCSI-2 Spec - Table 346</title></head><body><h1>Table 346</h1><pre>
++=============-===============================================================+ 
+|    Code     |  Description                                                  | 
+|-------------+---------------------------------------------------------------| 
+|      0h     |  Translate - search all defined volume tags                   | 
+|      1h     |  Translate - search only primary volume tags                  | 
+|      2h     |  Translate - search only alternate volume tags                | 
+|      3h     |  Reserved                                                     | 
+|      4h     |  Translate - search all defined tags - ignore sequence numbers| 
+|      5h     |  Translate - search primary tags - ignore sequence numbers    | 
+|      6h     |  Translate - search alternate tags - ignore sequence numbers  | 
+|      7h     |  Reserved                                                     | 
+|      8h     |  Assert - as the primary volume tag - if tag now undefined    | 
+|      9h     |  Assert - as the alternate volume tag - if tag now undefined  | 
+|      Ah     |  Replace - the primary volume tag - current tag ignored       | 
+|      Bh     |  Replace - the alternate volume tag - current tag ignored     | 
+|      Ch     |  Undefined - the primary volume tag - current tag ignored     | 
+|      Dh     |  Undefined - the alternate volume tag - current tag ignored   | 
+|   Eh - 1Bh  |  Reserved                                                     | 
+|  1Ch - 1Fh  |  Vendor-specific                                              | 
++=============================================================================+</pre></body></html>

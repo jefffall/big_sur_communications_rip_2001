@@ -1,0 +1,35 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base target="main"><title>SCSI-2 Spec - Table 70</title></head><body><h1>Table 70</h1><pre>
++========-====================================================================+  
+| Sense  |  Description                                                       | 
+|  key   |                                                                    | 
+|--------+--------------------------------------------------------------------| 
+|   8h   |  BLANK CHECK.  Indicates that a write-once device or a sequential- | 
+|        |  access device encountered blank medium or format-defined end-of-  | 
+|        |  data indication while reading or a write-once device encountered a| 
+|        |  non-blank medium while writing.                                   | 
+|--------+--------------------------------------------------------------------| 
+|   9h   |  VENDOR-SPECIFIC.  This sense key is available for reporting vendor| 
+|        |  specific conditions.                                              | 
+|--------+--------------------------------------------------------------------| 
+|   Ah   |  COPY ABORTED.  Indicates a COPY, COMPARE, or COPY AND VERIFY      | 
+|        |  command was aborted due to an error condition on the source       | 
+|        |  device, the destination device, or both.  (See <a href="WW377.htm">8.2.3.2</a> for        | 
+|        |  additional information about this sense key.)                     | 
+|--------+--------------------------------------------------------------------| 
+|   Bh   |  ABORTED COMMAND.  Indicates that the target aborted the command.  | 
+|        |  The initiator may be able to recover by trying the command again. | 
+|--------+--------------------------------------------------------------------| 
+|   Ch   |  EQUAL.  Indicates a SEARCH DATA command has satisfied an equal    | 
+|        |  comparison.                                                       | 
+|--------+--------------------------------------------------------------------| 
+|   Dh   |  VOLUME OVERFLOW.  Indicates that a buffered peripheral device has | 
+|        |  reached the end-of-partition and data may remain in the buffer    | 
+|        |  that has not been written to the medium.  A RECOVER BUFFERED DATA | 
+|        |  command(s) may be issued to read the unwritten data from the      | 
+|        |  buffer.                                                           | 
+|--------+--------------------------------------------------------------------| 
+|   Eh   |  MISCOMPARE.  Indicates that the source data did not match the data| 
+|        |  read from the medium.                                             | 
+|--------+--------------------------------------------------------------------| 
+|   Fh   |  RESERVED.                                                         | 
++=============================================================================+ </pre></body></html>

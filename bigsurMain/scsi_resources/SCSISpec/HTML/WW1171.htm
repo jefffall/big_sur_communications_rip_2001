@@ -1,0 +1,259 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base><title>SCSI-2 Spec - Table D.1</title></head><body><h1>Table D.1</h1><pre>+=============================================================================+ 
+|           D - DIRECT ACCESS DEVICE                                          | 
+|           .T - SEQUENTIAL ACCESS DEVICE                                     | 
+|           . L - PRINTER DEVICE                                              | 
+|           .  P - PROCESSOR DEVICE                                           | 
+|           .  .W - WRITE ONCE READ MULTIPLE DEVICE                           | 
+|           .  . R - READ ONLY (CD-ROM) DEVICE                                | 
+|           .  .  S - SCANNER DEVICE                                          | 
+|           .  .  .O - OPTICAL MEMORY DEVICE                                  | 
+|           .  .  . M - MEDIA CHANGER DEVICE                                  | 
+|           .  .  .  C - COMMUNICATION DEVICE                                 | 
+|           .  .  .  .                                                        | 
+| ASC ASCQ  DTLPWRSOMC  DESCRIPTION                                           | 
+| --- ----              ----------------------------------------------------- | 
+|  00  00   DTLPWRSOMC  NO ADDITIONAL SENSE INFORMATION                       | 
+|  00  01    T          FILEMARK DETECTED                                     | 
+|  00  02    T    S     END-OF-PARTITION/MEDIUM DETECTED                      | 
+|  00  03    T          SETMARK DETECTED                                      | 
+|  00  04    T    S     BEGINNING-OF-PARTITION/MEDIUM DETECTED                | 
+|  00  05    T    S     END-OF-DATA DETECTED                                  | 
+|  00  06   DTLPWRSOMC  I/O PROCESS TERMINATED                                | 
+|  00  11   R           AUDIO PLAY OPERATION IN PROGRESS                      | 
+|  00  12   R           AUDIO PLAY OPERATION PAUSED                           | 
+|  00  13   R           AUDIO PLAY OPERATION SUCCESSFULLY COMPLETED           | 
+|  00  14   R           AUDIO PLAY OPERATION STOPPED DUE TO ERROR             | 
+|  00  15   R           NO CURRENT AUDIO STATUS TO RETURN                     | 
+|  01  00   DW  O       NO INDEX/SECTOR SIGNAL                                | 
+|  02  00   DWR OM      NO SEEK COMPLETE                                      | 
+|  03  00   DTL W SO    PERIPHERAL DEVICE WRITE FAULT                         | 
+|  03  01    T          NO WRITE CURRENT                                      | 
+|  03  02    T          EXCESSIVE WRITE ERRORS                                | 
+|  04  00   DTLPWRSOMC  LOGICAL UNIT NOT READY, CAUSE NOT REPORTABLE          | 
+|  04  01   DTLPWRSOMC  LOGICAL UNIT IS IN PROCESS OF BECOMING READY          | 
+|  04  02   DTLPWRSOMC  LOGICAL UNIT NOT READY, INITIALIZING command REQUIRED | 
+|  04  03   DTLPWRSOMC  LOGICAL UNIT NOT READY, MANUAL INTERVENTION REQUIRED  | 
+|  04  04   DTL    O    LOGICAL UNIT NOT READY, FORMAT IN PROGRESS            | 
+|  05  00   DTL WRSOMC  LOGICAL UNIT DOES NOT RESPOND TO SELECTION            | 
+|  06  00   DWR OM  NO  REFERENCE POSITION FOUND                              | 
+|  07  00   DTL WRSOM   MULTIPLE PERIPHERAL DEVICES SELECTED                  | 
+|  08  00   DTL WRSOMC  LOGICAL UNIT COMMUNICATION FAILURE                    | 
+|  08  01   DTL WRSOMC  LOGICAL UNIT COMMUNICATION TIME-OUT                   | 
+|  08  02   DTL WRSOMC  LOGICAL UNIT COMMUNICATION PARITY ERROR               | 
+|  09  00   DT  WR O    TRACK FOLLOWING ERROR                                 | 
+|  09  01       WR O    TRACKING SERVO FAILURE                                | 
+|  09  02       WR O    FOCUS SERVO FAILURE                                   | 
+|  09  03       WR O    SPINDLE SERVO FAILURE                                 | 
+|  0A  00   DTLPWRSOMC  ERROR LOG OVERFLOW                                    | 
+|  0B  00                                                                     | 
+|  0C  00    T     S    WRITE ERROR                                           | 
+|  0C  01   D   W  O    WRITE ERROR RECOVERED WITH AUTO REALLOCATION          | 
+|  0C  02   D   W  O    WRITE ERROR - AUTO REALLOCATION FAILED                | 
+|  0D  00                                                                     | 
+|  0E  00                                                                     | 
+|  0F  00                                                                     | 
+|  10  00   D   W  O    ID CRC OR ECC ERROR                                   | 
+|  11  00   DT  WRSO    UNRECOVERED READ ERROR                                | 
+|  11  01   DT  W SO    READ RETRIES EXHAUSTED                                | 
+|  11  02   DT  W SO    ERROR TOO LONG TO CORRECT                             | 
+|  11  03   DT  W SO    MULTIPLE READ ERRORS                                  | 
+|  11  04   D   W  O    UNRECOVERED READ ERROR - AUTO REALLOCATE FAILED       | 
+|  11  05       WR O    L-EC UNCORRECTABLE ERROR                              | 
+|  11  06       WR O    CIRC UNRECOVERED ERROR                                | 
+|  11  07       W  O    DATA RESYNCHRONIZATION ERROR                          | 
+|  11  08    T          INCOMPLETE BLOCK READ                                 | 
+|  11  09    T          NO GAP FOUND                                          | 
+|  11  0A   DT     O    MISCORRECTED ERROR                                    | 
+|  11  0B   D   W  O    UNRECOVERED READ ERROR - RECOMMEND REASSIGNMENT       | 
+|  11  0C   D   W  O    UNRECOVERED READ ERROR - RECOMMEND REWRITE THE DATA   | 
+|  12  00   D   W  O    ADDRESS MARK NOT FOUND FOR ID FIELD                   | 
+|  13  00   D   W  O    ADDRESS MARK NOT FOUND FOR DATA FIELD                 | 
+|  14  00   DTL WRSO    RECORDED ENTITY NOT FOUND                             | 
+|  14  01   DT  WR O    RECORD NOT FOUND                                      | 
+|  14  02    T          FILEMARK OR SETMARK NOT FOUND                         | 
+|  14  03    T          END-OF-DATA NOT FOUND                                 | 
+|  14  04    T          BLOCK SEQUENCE ERROR                                  | 
+|  15  00   DTL WRSOM   RANDOM POSITIONING ERROR                              | 
+|  15  01   DTL WRSOM   MECHANICAL POSITIONING ERROR                          | 
+|  15  02   DT  WR O    POSITIONING ERROR DETECTED BY READ OF MEDIUM          | 
+|  16  00   DW     O    DATA SYNCHRONIZATION MARK ERROR                       | 
+|  17  00   DT  WRSO    RECOVERED DATA WITH NO ERROR CORRECTION APPLIED       | 
+|  17  01   DT  WRSO    RECOVERED DATA WITH RETRIES                           | 
+|  17  02   DT  WR O    RECOVERED DATA WITH POSITIVE HEAD OFFSET              | 
+|  17  03   DT  WR O    RECOVERED DATA WITH NEGATIVE HEAD OFFSET              | 
+|  17  04       WR O    RECOVERED DATA WITH RETRIES AND/OR CIRC APPLIED       | 
+|  17  05   D   WR O    RECOVERED DATA USING PREVIOUS SECTOR ID               | 
+|  17  06   D   W  O    RECOVERED DATA WITHOUT ECC - DATA AUTO-REALLOCATED    | 
+|  17  07   D   W  O    RECOVERED DATA WITHOUT ECC - RECOMMEND REASSIGNMENT   | 
+|  17  08   D   W  O    RECOVERED DATA WITHOUT ECC - RECOMMEND REWRITE        | 
+|  18  00   DT  WR O    RECOVERED DATA WITH ERROR CORRECTION APPLIED          | 
+|  18  01   D   WR O    RECOVERED DATA WITH ERROR CORRECTION &amp; RETRIES APPLIED| 
+|  18  02   D   WR O    RECOVERED DATA - DATA AUTO-REALLOCATED                | 
+|  18  03        R      RECOVERED DATA WITH CIRC                              | 
+|  18  04        R      RECOVERED DATA WITH LEC                               | 
+|  18  05   D   WR O    RECOVERED DATA - RECOMMEND REASSIGNMENT               | 
+|  18  06   D   WR O    RECOVERED DATA - RECOMMEND REWRITE                    | 
+|  19  00   D      O    DEFECT LIST ERROR                                     | 
+|  19  01   D      O    DEFECT LIST NOT AVAILABLE                             | 
+|  19  02   D      O    DEFECT LIST ERROR IN PRIMARY LIST                     | 
+|  19  03   D      O    DEFECT LIST ERROR IN GROWN LIST                       | 
+|  1A  00   DTLPWRSOMC  PARAMETER LIST LENGTH ERROR                           | 
+|  1B  00   DTLPWRSOMC  SYNCHRONOUS DATA TRANSFER ERROR                       | 
+|  1C  00   D      O    DEFECT LIST NOT FOUND                                 | 
+|  1C  01   D      O    PRIMARY DEFECT LIST NOT FOUND                         | 
+|  1C  02   D      O    GROWN DEFECT LIST NOT FOUND                           | 
+|  1D  00   D   W  O    MISCOMPARE DURING VERIFY OPERATION                    | 
+|  1E  00   D   W  O    RECOVERED ID WITH ECC                                 | 
+|  1F  00                                                                     | 
+|  20  00   DTLPWRSOMC  INVALID command OPERATION CODE                        | 
+|  21  00   DT  WR OM   LOGICAL BLOCK ADDRESS OUT OF RANGE                    | 
+|  21  01           M   INVALID ELEMENT ADDRESS                               | 
+|  22  00   D           ILLEGAL FUNCTION (SHOULD USE 20 00, 24 00, OR 26 00)  | 
+|  23  00                                                                     | 
+|  24  00   DTLPWRSOMC  INVALID FIELD IN CDB                                  | 
+|  25  00   DTLPWRSOMC  LOGICAL UNIT NOT SUPPORTED                            | 
+|  26  00   DTLPWRSOMC  INVALID FIELD IN PARAMETER LIST                       | 
+|  26  01   DTLPWRSOMC  PARAMETER NOT SUPPORTED                               | 
+|  26  02   DTLPWRSOMC  PARAMETER VALUE INVALID                               | 
+|  26  03   DTLPWRSOMC  THRESHOLD PARAMETERS NOT SUPPORTED                    | 
+|  27  00   DT  W  O    WRITE PROTECTED                                       | 
+|  28  00   DTLPWRSOMC  NOT READY TO READY TRANSITION(MEDIUM MAY HAVE CHANGED)| 
+|  28  01           M   IMPORT OR EXPORT ELEMENT ACCESSED                     | 
+|  29  00   DTLPWRSOMC  POWER ON, RESET, OR BUS DEVICE RESET OCCURRED         | 
+|  2A  00   DTL WRSOMC  PARAMETERS CHANGED                                    | 
+|  2A  01   DTL WRSOMC  MODE PARAMETERS CHANGED                               | 
+|  2A  02   DTL WRSOMC  LOG PARAMETERS CHANGED                                | 
+|  2B  00   DTLPWRSO C  COPY CANNOT EXECUTE SINCE HOST CANNOT DISCONNECT      | 
+|  2C  00   DTLPWRSOMC  command SEQUENCE ERROR                                | 
+|  2C  01         S     TOO MANY WINDOWS SPECIFIED                            | 
+|  2C  02         S     INVALID COMBINATION OF WINDOWS SPECIFIED              | 
+|  2D  00    T          OVERWRITE ERROR ON UPDATE IN PLACE                    | 
+|  2E  00                                                                     | 
+|  2F  00   DTLPWRSOMC  commandS CLEARED BY ANOTHER INITIATOR                 | 
+|  30  00   DT  WR OM   INCOMPATIBLE MEDIUM INSTALLED                         | 
+|  30  01   DT  WR O    CANNOT READ MEDIUM - UNKNOWN FORMAT                   | 
+|  30  02   DT  WR O    CANNOT READ MEDIUM - INCOMPATIBLE FORMAT              | 
+|  30  03   DT          CLEANING CARTRIDGE INSTALLED                          | 
+|  31  00   DT  W  O    MEDIUM FORMAT CORRUPTED                               | 
+|  31  01   D L    O    FORMAT command FAILED                                 | 
+|  32  00   D   W  O    NO DEFECT SPARE LOCATION AVAILABLE                    | 
+|  32  01   D   W  O    DEFECT LIST UPDATE FAILURE                            | 
+|  33  00    T          TAPE LENGTH ERROR                                     | 
+|  34  00                                                                     | 
+|  35  00                                                                     | 
+|  36  00     L         RIBBON, INK, OR TONER FAILURE                         | 
+|  37  00   DTL WRSOMC  ROUNDED PARAMETER                                     | 
+|  38  00                                                                     | 
+|  39  00   DTL WRSOMC  SAVING PARAMETERS NOT SUPPORTED                       | 
+|  3A  00   DTL WRSOM   MEDIUM NOT PRESENT                                    | 
+|  3B  00    TL         SEQUENTIAL POSITIONING ERROR                          | 
+|  3B  01    T          TAPE POSITION ERROR AT BEGINNING-OF-MEDIUM            | 
+|  3B  02    T          TAPE POSITION ERROR AT END-OF-MEDIUM                  | 
+|  3B  03     L         TAPE OR ELECTRONIC VERTICAL FORMS UNIT NOT READY      | 
+|  3B  04     L         SLEW FAILURE                                          | 
+|  3B  05     L         PAPER JAM                                             | 
+|  3B  06     L         FAILED TO SENSE TOP-OF-FORM                           | 
+|  3B  07     L         FAILED TO SENSE BOTTOM-OF-FORM                        | 
+|  3B  08    T          REPOSITION ERROR                                      | 
+|  3B  09         S     READ PAST END OF MEDIUM                               | 
+|  3B  0A         S     READ PAST BEGINNING OF MEDIUM                         | 
+|  3B  0B         S     POSITION PAST END OF MEDIUM                           | 
+|  3B  0C         S     POSITION PAST BEGINNING OF MEDIUM                     | 
+|  3B  0D           M   MEDIUM DESTINATION ELEMENT FULL                       | 
+|  3B  0E           M   MEDIUM SOURCE ELEMENT EMPTY                           | 
+|  3C  00                                                                     | 
+|  3D  00   DTLPWRSOMC  INVALID BITS IN IDENTIFY MESSAGE                      | 
+|  3E  00   DTLPWRSOMC  LOGICAL UNIT HAS NOT SELF-CONFIGURED YET              | 
+|  3F  00   DTLPWRSOMC  TARGET OPERATING CONDITIONS HAVE CHANGED              | 
+|  3F  01   DTLPWRSOMC  MICROCODE HAS BEEN CHANGED                            | 
+|  3F  02   DTLPWRSOMC  CHANGED OPERATING DEFINITION                          | 
+|  3F  03   DTLPWRSOMC  INQUIRY DATA HAS CHANGED                              | 
+|  40  00   D           RAM FAILURE (SHOULD USE 40 NN)                        | 
+|  40  NN   DTLPWRSOMC  DIAGNOSTIC FAILURE ON COMPONENT NN (80H-FFH)          | 
+|  41  00   D           DATA PATH FAILURE (SHOULD USE 40 NN)                  | 
+|  42  00   D           POWER-ON OR SELF-TEST FAILURE (SHOULD USE 40 NN)      | 
+|  43  00   DTLPWRSOMC  MESSAGE ERROR                                         | 
+|  44  00   DTLPWRSOMC  INTERNAL TARGET FAILURE                               | 
+|  45  00   DTLPWRSOMC  SELECT OR RESELECT FAILURE                            | 
+|  46  00   DTLPWRSOMC  UNSUCCESSFUL SOFT RESET                               | 
+|  47  00   DTLPWRSOMC  SCSI PARITY ERROR                                     | 
+|  48  00   DTLPWRSOMC  INITIATOR DETECTED ERROR MESSAGE RECEIVED             | 
+|  49  00   DTLPWRSOMC  INVALID MESSAGE ERROR                                 | 
+|  4A  00   DTLPWRSOMC  command PHASE ERROR                                   | 
+|  4B  00   DTLPWRSOMC  DATA PHASE ERROR                                      | 
+|  4C  00   DTLPWRSOMC  LOGICAL UNIT FAILED SELF-CONFIGURATION                | 
+|  4D  00                                                                     | 
+|  4E  00   DTLPWRSOMC  OVERLAPPED COMMANDS ATTEMPTED                         | 
+|  4F  00                                                                     | 
+|  50  00    T          WRITE APPEND ERROR                                    | 
+|  50  01    T          WRITE APPEND POSITION ERROR                           | 
+|  50  02    T          POSITION ERROR RELATED TO TIMING                      | 
+|  51  00    T     O    ERASE FAILURE                                         | 
+|  52  00    T          CARTRIDGE FAULT                                       | 
+|  53  00   DTL WRSOM   MEDIA LOAD OR EJECT FAILED                            | 
+|  53  01    T          UNLOAD TAPE FAILURE                                   | 
+|  53  02   DT  WR OM   MEDIUM REMOVAL PREVENTED                              | 
+|  54  00      P        SCSI TO HOST SYSTEM INTERFACE FAILURE                 | 
+|  55  00      P        SYSTEM RESOURCE FAILURE                               | 
+|  56  00                                                                     | 
+|  57  00        R      UNABLE TO RECOVER TABLE-OF-CONTENTS                   | 
+|  58  00     O         GENERATION DOES NOT EXIST                             | 
+|  59  00     O         UPDATED BLOCK READ                                    | 
+|  5A  00   DTLPWRSOM   OPERATOR REQUEST OR STATE CHANGE INPUT (UNSPECIFIED)  | 
+|  5A  01   DT  WR OM   OPERATOR MEDIUM REMOVAL REQUEST                       | 
+|  5A  02   DT  W  O    OPERATOR SELECTED WRITE PROTECT                       | 
+|  5A  03   DT  W  O    OPERATOR SELECTED WRITE PERMIT                        | 
+|  5B  00   DTLPWRSOM   LOG EXCEPTION                                         | 
+|  5B  01   DTLPWRSOM   THRESHOLD CONDITION MET                               | 
+|  5B  02   DTLPWRSOM   LOG COUNTER AT MAXIMUM                                | 
+|  5B  03   DTLPWRSOM   LOG LIST CODES EXHAUSTED                              | 
+|  5C  00   D   O       RPL STATUS CHANGE                                     | 
+|  5C  01   D   O       SPINDLES SYNCHRONIZED                                 | 
+|  5C  02   D   O       SPINDLES NOT SYNCHRONIZED                             | 
+|  5D  00                                                                     | 
+|  5E  00                                                                     | 
+|  5F  00                                                                     | 
+|  60  00         S     LAMP FAILURE                                          | 
+|  61  00         S     VIDEO ACQUISITION ERROR                               | 
+|  61  01         S     UNABLE TO ACQUIRE VIDEO                               | 
+|  61  02         S     OUT OF FOCUS                                          | 
+|  62  00         S     SCAN HEAD POSITIONING ERROR                           | 
+|  63  00        R      END OF USER AREA ENCOUNTERED ON THIS TRACK            | 
+|  64  00        R      ILLEGAL MODE FOR THIS TRACK                           | 
+|  65  00                                                                     | 
+|  66  00                                                                     | 
+|  67  00                                                                     | 
+|  68  00                                                                     | 
+|  69  00                                                                     | 
+|  6A  00                                                                     | 
+|  6B  00                                                                     | 
+|  6C  00                                                                     | 
+|  6D  00                                                                     | 
+|  6E  00                                                                     | 
+|  6F  00                                                                     | 
+|  70  00                                                                     | 
+|  71  00                                                                     | 
+|  72  00                                                                     | 
+|  73  00                                                                     | 
+|  74  00                                                                     | 
+|  75  00                                                                     | 
+|  76  00                                                                     | 
+|  77  00                                                                     | 
+|  78  00                                                                     | 
+|  79  00                                                                     | 
+|  7A  00                                                                     | 
+|  7B  00                                                                     | 
+|  7C  00                                                                     | 
+|  7D  00                                                                     | 
+|  7E  00                                                                     | 
+|  7F  00                                                                     | 
+|                                                                             | 
+|  80  xxh \                                                                  | 
+|   THROUGH &gt;  Vendor-specific.                                               | 
+|  FF  xxh /                                                                  | 
+|                                                                             | 
+|  xxh 80 \                                                                   | 
+|  THROUGH &gt;  Vendor-specific QUALIFICATION OF STANDARD ASC.                  | 
+|  xxh FF /                                                                   | 
+|               ALL CODES NOT SHOWN OR BLANK ARE RESERVED.                    | 
++=============================================================================+ </pre></body></html>

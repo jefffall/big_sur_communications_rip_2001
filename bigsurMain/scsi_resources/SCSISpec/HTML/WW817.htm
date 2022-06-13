@@ -1,0 +1,54 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base><title>SCSI-2 Spec - Table 10</title></head><body><h1>Table 10</h1><pre>+========-=========-===================================-=========-===============+ 
+|Code    | Support |Message Name                       |Direction|               | 
+|        |---------|                                   |         |   Negate ATN  | 
+|        |Init|Targ|                                   |         |before last ACK| 
+|--------+----+----+-----------------------------------+---------+---------------| 
+|06h     | O  | M  |ABORT                              |      Out|      Yes      | 
+|0Dh     | O  | O  |ABORT TAG see note 1)              |      Out|      Yes      | 
+|0Ch     | O  | M  |BUS DEVICE RESET                   |      Out|      Yes      | 
+|0Eh     | O  | O  |CLEAR QUEUE see note 1)            |      Out|      Yes      | 
+|00h     | M  | M  |COMMAND COMPLETE                   | In      |      ---      | 
+|04h     | O  | O  |DISCONNECT                         | In      |      ---      | 
+|04h     | O  | O  |DISCONNECT                         |      Out|      Yes      | 
+|80h+    | M  | O  |IDENTIFY                           | In      |      ---      | 
+|80h+    | M  | M  |IDENTIFY                           |      Out|      No       | 
+|23h     | O  | O  |IGNORE WIDE RESIDUE (two bytes)    | In      |      ---      | 
+|0Fh     | O  | O  |INITIATE RECOVERY                  | In      |      ---      | 
+|0Fh     | O  | O  |INITIATE RECOVERY see note 2)      |      Out|      Yes      | 
+|05h     | M  | M  |INITIATOR DETECTED ERROR           |      Out|      Yes      | 
+|0Ah     | O  | O  |LINKED COMMAND COMPLETE            | In      |      ---      | 
+|0Bh     | O  | O  |LINKED COMMAND COMPLETE (WITH FLAG)| In      |      ---      | 
+|09h     | M  | M  |MESSAGE PARITY ERROR               |      Out|      Yes      | 
+|07h     | M  | M  |MESSAGE REJECT                     | In   Out|      Yes      | 
+|***     | O  | O  |MODIFY DATA POINTER                | In      |      ---      | 
+|08h     | M  | M  |NO OPERATION                       |      Out|      Yes      | 
+|        |    |    |Queue tag messages (two bytes)     |         |               | 
+|21h     | O  | O  |  HEAD OF QUEUE TAG                |      Out|      No       | 
+|22h     | O  | O  |  ORDERED QUEUE TAG                |      Out|      No       | 
+|20h     | O  | O  |  SIMPLE QUEUE TAG                 | In   Out|      No       | 
+|10h     | O  | O  |RELEASE RECOVERY                   |      Out|      Yes      | 
+|03h     | O  | O  |RESTORE POINTERS                   | In      |      ---      | 
+|02h     | O  | O  |SAVE DATA POINTER                  | In      |      ---      | 
+|***     | O  | O  |SYNCHRONOUS DATA TRANSFER REQUEST  | In   Out|      Yes      | 
+|11h     | O  | O  |TERMINATE I/O PROCESS              |      Out|      Yes      | 
+|***     | O  | O  |WIDE DATA TRANSFER REQUEST         | In   Out|      Yes      | 
+|12h-1Fh |    |    |Reserved                           |         |               | 
+|24h-2Fh |    |    |Reserved for two-byte messages     |         |               | 
+|30h-7Fh |    |    |Reserved                           |         |               | 
+|--------------------------------------------------------------------------------| 
+|Key:      M    = Mandatory support, O = Optional support.                       | 
+|          In   = Target to initiator,  Out = Initiator to target.               | 
+|          Yes  = Initiator shall negate ATN before last ACK of message.         | 
+|          No   = Initiator may or may not negate ATN before last ACK of         | 
+|                 message.  (see attention condition, <a href="WW31.htm">6.2.1</a>.)                    | 
+|          ---  = Not applicable                                                 | 
+|          ***  = Extended message (see tables 11 and 12)                        | 
+|          80h+ = Codes 80h through FFh are used for IDENTIFY messages           | 
+|                 (see table 13).                                                | 
+|--------------------------------------------------------------------------------| 
+|      NOTES                                                                     | 
+|      1 The ABORT TAG and CLEAR QUEUE messages are required if tagged queuing   | 
+|        is implemented.                                                         | 
+|      2 Outbound INITIATE RECOVERY messages are only valid during the           | 
+|        asynchronous event notification protocol.                               | 
++================================================================================+ </pre></body></html>

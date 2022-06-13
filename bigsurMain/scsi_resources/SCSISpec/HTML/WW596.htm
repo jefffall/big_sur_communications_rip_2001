@@ -1,0 +1,16 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base target="main"><title>SCSI-2 Spec - Table 99</title></head><body><h1>Table 99</h1><pre>
++=======-=====================================================================+  
+| DTDC  |  Description                                                        | 
+|-------+---------------------------------------------------------------------| 
+|  00b  |  Data transfer disconnect control is not used.  Disconnect is       | 
+|       |  controlled by the other fields in this page.                       | 
+|  01b  |  A target shall not attempt to disconnect once the data transfer of | 
+|       |  a command has started until all data the command is to transfer has| 
+|       |  been transferred.  The connect time limit and bus inactivity limit | 
+|       |  are ignored during the data transfer.                              | 
+|  10b  |  Reserved                                                           | 
+|  11b  |  A target shall not attempt to disconnect once the data transfer of | 
+|       |  a command has started, until the command is complete.  The connect | 
+|       |  time limit and bus inactivity limit are ignored once data transfer | 
+|       |  has started.                                                       | 
++=============================================================================+ </pre></body></html>

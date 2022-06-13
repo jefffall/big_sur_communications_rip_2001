@@ -1,0 +1,17 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base target="main"><title>SCSI-2 Spec - Table 8</title></head><body><h1>Table 8</h1><pre>
++=============-===============-==================================-============+ 
+|    Signal   |  Phase name   |       Direction of transfer      |  Comment   | 
+|-------------|               |                                  |            | 
+| MSG|C/D|I/O |               |                                  |            | 
+|----+---+----+---------------+----------------------------------+------------| 
+|  0 | 0 | 0  |  DATA OUT     |       Initiator to target     \  |  Data      | 
+|  0 | 0 | 1  |  DATA IN      |       Initiator from target   /  |  phase     | 
+|  0 | 1 | 0  |  COMMAND      |       Initiator to target        |            | 
+|  0 | 1 | 1  |  STATUS       |       Initiator from target      |            | 
+|  1 | 0 | 0  |  *            |                                  |            | 
+|  1 | 0 | 1  |  *            |                                  |            | 
+|  1 | 1 | 0  |  MESSAGE OUT  |       Initiator to target     \  |  Message   | 
+|  1 | 1 | 1  |  MESSAGE IN   |       Initiator from target   /  |  phase     | 
+|-----------------------------------------------------------------------------| 
+| Key:  0 = False,  1 = True,  * = Reserved for future standardization        | 
++=============================================================================+</pre></body></html>

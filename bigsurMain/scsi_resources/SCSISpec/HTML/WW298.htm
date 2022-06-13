@@ -1,0 +1,200 @@
+<HTML>
+<HEAD>
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+   <META HTTP-EQUIV="PICS-Label" CONTENT="(PICS 1.0">
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.01 [en] (Win95; I) [Netscape]">
+   <TITLE>SCSI-2 Specification (Draft X3T9.2 Rev 10L)</TITLE>
+<LINK href="mailto:garyb@scitexdv.com" rev=made>
+</HEAD>
+<BODY BACKGROUND="WWR2.gif">
+
+<CENTER>
+<H1>
+<B><FONT SIZE=+3><A HREF="WW6.htm">SCSI-2 Specification</A></FONT></B></H1></CENTER>
+<IMG SRC="WWR3.gif" ALT="[SCSI-2 Logo]" HSPACE=10 VSPACE=10 HEIGHT=202 WIDTH=262 ALIGN=LEFT>
+<BR><B>This is a transcription into <FONT COLOR="#3333FF">HTML</FONT> of
+the X3T9.2 Committee's draft ANSI specification of the SCSI-2 standard,
+revision 10L. SCSI-2 (the Small Computer System Interface - 2) was approved
+by the <FONT COLOR="#3333FF">American National Standards Institute</FONT>'s
+Board of Standards Review on January 31, 1994. SCSI-2 will be designated
+<FONT COLOR="#3333FF">X3.131-1994</FONT>. The document was at revision
+10L when it was approved.</B>
+
+<P><B>This transcription was carried out by Gary Bartlett (last modified
+on <I>Friday, 22-Mar-96 16:24:21 PST</I>) using <FONT COLOR="#3333FF">Meng
+Weng Wong</FONT>'s <FONT COLOR="#3333FF">txt2html</FONT> converter and
+<I>lots</I> of manual cutting and pasting from the original ASCII document.</B>
+<DL><A NAME="disclaimer"></A>
+<DD>
+<B><FONT SIZE=-1><I>DISCLAIMER</I>: Please note that SCSI-2 Rev 10L files
+are <I>NOT</I> the ANSI SCSI-2 Standard. These files are the X3T9 Committee
+draft document prior to the approval and publication of SCSI-2 by ANSI.
+There were various editorial changes made during the publication process
+and there were several changes made to update reference standards in the
+density code and medium type tables.</FONT></B></DD>
+
+
+<P><B><FONT SIZE=-1>ANSI permits X3 to make committee drafts available
+electronically, provided it is made clear that these files are not the
+ANSI Standard. If you want the final ANSI SCSI-2 standard in electronic
+format, please contact Global Engineering Documents (800-854-7179 or 303-792-2181);
+they plan to release a CD-ROM product including SCSI-2 in the Summer of
+1995.</FONT></B></DL>
+
+<HR>
+<H3>
+<B><FONT SIZE=-1>This Document</FONT></B></H3>
+
+<UL>
+<LI>
+<B><FONT SIZE=-1><A HREF="WW7.htm">What's New</A> with the HTML SCSI-2
+document</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1>This SCSI-2 document is available in the following formats:</FONT></B></LI>
+
+<UL>
+<LI>
+<B><FONT SIZE=-1><A HREF="WW6.htm">HTML with frames</A></FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW48.htm">HTML without frames</A></FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="SCSI2txt.gz">compressed (GNU Zip) ASCII</A></FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="SCSI2.txt">uncompressed ASCII</A></FONT></B></LI>
+</UL>
+
+<LI>
+<B><FONT SIZE=-1>The accompanying figures are also available in their original
+DXF format in a <A HREF="DXFFig.tgz">compressed (GNU Zip) tar</A> and
+an <A HREF="DXFFig.tar">uncompressed tar</A> format</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW299.htm">Hyperlinked index of SCSI-2 pages</A></FONT></B></LI>
+</UL>
+
+<HR><A NAME="section"></A>
+<H2>
+<B><FONT SIZE=-1>Section Index</FONT></B></H2>
+
+<UL>
+<LI>
+<B><FONT SIZE=-1><A HREF="WW367.htm">Cover Sheet</A></FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW365.htm">Points Of Contact</A></FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW363.htm">Abstract</A></FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW361.htm">Patent Statement</A></FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW359.htm">Document Status</A></FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW357.htm">Errata</A></FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW355.htm">Full Contents</A></FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW353.htm">Figures</A></FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW351.htm">Tables</A></FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW349.htm">Foreword</A></FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW347.htm">Introduction</A></FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW345.htm">Clause 1</A> - Scope</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW343.htm">Clause 2</A> - Normative references</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW341.htm">Clause 3</A> - Definitions, symbols
+and abbreviation</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW339.htm">Clause 4</A> - General</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW337.htm">Clause 5</A> - Physical characteristics</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW335.htm">Clause 6</A> - Logical characteristics</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW333.htm">Clause 7</A> - SCSI commands and status</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW331.htm">Clause 8</A> - All device types</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW329.htm">Clause 9</A> - Direct-access devices</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW327.htm">Clause 10</A> - Sequential-access
+devices</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW325.htm">Clause 11</A> - Commands for printer
+devices</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW323.htm">Clause 12</A> - Processor devices</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW321.htm">Clause 13</A> - Write-once devices</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW319.htm">Clause 14</A> - CD-ROM devices</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW317.htm">Clause 15</A> - Scanner devices</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW315.htm">Clause 16</A> - Optical memory devices</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW313.htm">Clause 17</A> - Medium-changer devices</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW311.htm">Clause 18</A> - Communications devices</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW309.htm">Annex A</A> - SCSI signal sequence
+example</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW307.htm">Annex B</A> - Fast SCSI skew time</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW305.htm">Annex C</A> - Other SCSI standardization
+activities</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW303.htm">Annex D</A> - Numeric order codes</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW301.htm">Annex E</A> - Vendor identification</FONT></B></LI>
+
+<LI>
+<B><FONT SIZE=-1><A HREF="WW299.htm">Index</A></FONT></B></LI>
+</UL>
+
+<HR>
+<ADDRESS>
+<B><FONT SIZE=-1>Gary Bartlett</FONT></B></ADDRESS>
+
+</BODY>
+</HTML>

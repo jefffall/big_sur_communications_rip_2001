@@ -1,0 +1,30 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base><title>SCSI-2 Spec - Table 225</title></head><body><h1>Table 225</h1><pre>+=========-===================================================================+ 
+|   Code  |  Line slew option                                                 | 
+|---------+-------------------------------------------------------------------| 
+|    0h   |  Selects the target default implementation (MODE SELECT).         | 
+|         |                                                                   | 
+|    1h   |  No termination sequence.  (The target sends any remaining data   | 
+|         |  in its buffer to the printer device with no termination sequence | 
+|         |                                                                   | 
+|    2h   |  The target shall print any buffered data followed by an ASCII    | 
+|         |  carriage return character (0Dh).                                 | 
+|         |                                                                   | 
+|    3h   |  The target shall print any buffered data followed by an ASCII    | 
+|         |  line feed character (0Ah).                                       | 
+|         |                                                                   | 
+|    4h   |  The target shall print any buffered data followed by an ASCII    | 
+|         |  carriage return, line feed character sequence (0Dh, 0Ah).        | 
+|         |                                                                   | 
+|    5h   |  The target shall send any buffered data followed by an ASCII     | 
+|         |  form feed character (0Ch).                                       | 
+|         |                                                                   | 
+|    6h   |  The target shall print any buffered data followed by an ASCII    | 
+|         |  carriage return, form feed character sequence (0Dh, 0Ch).        | 
+|         |                                                                   | 
+|    7h   |  The target shall issue a zero line slew command to the printer   | 
+|         |  device.                                                          | 
+|         |                                                                   | 
+| 8h - Bh |  Reserved                                                         | 
+|         |                                                                   | 
+| Ch - Fh |  Vendor-specific                                                  | 
++=============================================================================+</pre></body></html>

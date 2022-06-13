@@ -1,0 +1,31 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base target="main"><title>SCSI-2 Spec - Table 157</title></head><body><h1>Table 157</h1><pre>
++===========-=================================================================+ 
+|   Value   |  Description                                                    | 
+|-----------+-----------------------------------------------------------------| 
+|     0h    |  Indicates the target should not distinguish between retaining  | 
+|           |  the indicated data and data placed into the cache memory by    | 
+|           |  other means (e.g. pre-fetch).                                  | 
+|           |                                                                 | 
+|     1h    |  Demand read retention priority:  Data put into the cache via a | 
+|           |  READ command should be replaced sooner (has lower priority)    | 
+|           |  than data placed into the cache by other means (e.g.           | 
+|           |  pre-fetch).                                                    | 
+|           |                                                                 | 
+|           |  Write retention priority:  Data put into the cache during a    | 
+|           |  WRITE or WRITE AND VERIFY command should be replaced sooner    | 
+|           |  (has lower priority) than data placed into the cache by other  | 
+|           |  means (e.g. pre-fetch).                                        | 
+|           |                                                                 | 
+|     Fh    |  Demand read retention priority:  Data put into the cache via a | 
+|           |  READ command should not be replaced if there is other data in  | 
+|           |  the cache that was placed into the cache by other means (e.g.  | 
+|           |  pre-fetch) and it may be replaced (i.e. it is not locked).     | 
+|           |                                                                 | 
+|           |  Write retention priority:  Data put into the cache during a    | 
+|           |  WRITE or WRITE AND VERIFY command should not be replaced if    | 
+|           |  there is other data in the cache that was placed into the cache| 
+|           |  by other means (e.g. pre-fetch) and it may be replaced (i.e.   | 
+|           |  it is not locked).                                             | 
+|           |                                                                 | 
+|  2h - Eh  |  Reserved                                                       | 
++=============================================================================+</pre></body></html>

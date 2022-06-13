@@ -1,0 +1,60 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base><title>SCSI-2 Spec - Table 236</title></head><body><h1>Table 236</h1><pre>+================-==========================-===========================================================+ 
+|                |      SCSI address        |       /--- Sub-channel information ----\                  | 
+|----------------+--------------------------+-----------------------------------------------------------| 
+|                |  Logical    |   Track    |    Absolute  |  Track |  Track    |Sector  | Mode  |CD-ROM| 
+|                |  address    |  relative  |      MSF     |   and  | relative  |is info | audio |data  | 
+|     Block      |  (decimal)  |  logical   |    address1  |  index |   MSF     | or is  |  or   |mode2 | 
+|  description   |             |  address   |              |        | address   | pause  | data  |      | 
+|----------------+-------------+------------+--------------+--------+-----------+--------+-------+------| 
+|Lead-in area3)  |      ---    |    ---     |     ---      |  0/-   |    ---    |  ---   | Audio | ---  | 
+|Pre-gap3)       |     ---     |    ---     |  00/00/00    |  1/0   | 00/02/00  | Pause  | Data  | Null | 
+|                |             |            |              |        |           |        |       |      | 
+|1st track data  |   0 0005)   |       0    |  00/02/004)  |  1/1   | 00/00/00  | Info   | Data  | L-EC | 
+|2nd track data  |   6 0005)   |       0    |  01/22/004)  |  2/1   | 00/00/00  | Info   | Data  | L-EC | 
+|                |   7 500     |   1 500    |  01/42/00    |  2/2   | 00/20/00  | Info   | Data  | L-EC | 
+|                |             |            |              |        |           |        |       |      | 
+|Post-gap        |   9 000     |   3 000    |  02/02/00    |  2/3   | 00/40/00  | Pause  | Data  | Null | 
+|                |             |            |              |        |           |        |       |      | 
+|Pause-silence   |   9 150     |    -1509)  |  02/04/00    |  3/0   | 00/02/008 | Pause  | Audio | ---  | 
+|                |             |            |              |        |           |        |       |      | 
+|3rd track audio |   9 3007)   |       0    |  02/04/006)  |  3/1   | 00/00/00  | Info   | Audio | ---  | 
+|                |  11 400     |   2 250    |  02/34/00    |  3/2   | 00/30/00  | Info   | Audio | ---  | 
+|4th track audio |  21 9757)   |       0    |  04/53/006)  |  4/1   | 00/00/00  | Info   | Audio | ---  | 
+|                |             |            |              |        |           |        |       |      | 
+|Pre-gap part 1  |  30 000     |    -2259)  |  06/40/00    |  5/0   | 00/03/00  | Pause  | Audio | ---  | 
+|Pre-gap part 2  |  30 075     |    -150    |  06/41/00    |  5/0   | 00/02/00  | Pause  | Data  | Null | 
+|                |             |            |              |        |           |        |       |      | 
+|5th track data  |  30 225     |       0    |  06/43/00    |  5/1   | 00/00/00  | Info   | Data  | L-EC | 
+|                |             |            |              |        |           |        |       |      | 
+|Last information| 263 99910)  | 233 774    |  58/39/74    |  5/1   | 51/56/74  | Info   | Data  | L-EC | 
+|                |             |            |              |        |           |        |       |      | 
+|Post-gap        |     ---     | 233 775    |  58/40/00    |  5/2   | 51/57/00  | Pause  | Data  | Null | 
+|                |             |            |              |        |           |        |       |      | 
+|Lead-out track  | 264 00011)  |       0    |  58/42/0012) | AA/13  | 00/00/00  | Pause  | Audio | ---  | 
+|-------------------------------------------------------------------------------------------------------| 
+|  Notes                                                                                                | 
+|  1  Absolute MSF address repeated in the header field of data blocks.                                 | 
+|  2  The CD-ROM data mode is stored in the header of data tracks. This indicates that                  | 
+|     the block is part of a data pre-gap or post-gap (null), that this is a data                       | 
+|     block using the auxiliary field for L-EC symbols (ECC - CD-ROM data mode one),                    | 
+|     or that this is a data block using the auxiliary field for user data (CD-ROM                      | 
+|     data mode two).                                                                                   | 
+|  3  Table of contents information is stored in the sub-channel of lead-in area.  The                  | 
+|     lead-in area is coded as track zero. Track zero and the initial 150 sector pre-                   | 
+|     -gap (or audio pause) are not accessible with logical addressing.                                 | 
+|  4  Value stored in table of contents with zero tolerance.                                            | 
+|  5  Exact value returned by READ TOC command.                                                         | 
+|  6  Value stored in table of contents plus or minus 75 sectors.                                       | 
+|  7  Value returned by READ TOC command plus or minus 75 blocks.                                       | 
+|  8  Track relative MSF value decreases to 0 in pre-gap areas.                                         | 
+|  9  Track relative logical addresses are negative in the pre-gap areas.                               | 
+|     Pre-gap areas have index values of zero.                                                          | 
+|  10  Minimum value returned by READ CD-ROM CAPACITY - exact value depends                             | 
+|      on encoding of this track and the lead out track and whether this is                             | 
+|      derived from the TOC data.                                                                       | 
+|  11  Value returned by READ TOC command - exact if lead-out track is                                  | 
+|      encoded as data, or plus or minus 75 blocks if encoded as audio.                                 | 
+|  12  Value stored in table of contents -  exact if lead-out track is coded                            | 
+|      as data, or plus or minus 75 blocks if coded as audio.                                           | 
+|  13  Lead-out track number is defined as 0AAh.                                                        | 
++=======================================================================================================+</pre></body></html>

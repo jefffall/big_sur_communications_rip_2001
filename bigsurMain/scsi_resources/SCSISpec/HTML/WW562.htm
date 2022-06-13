@@ -1,0 +1,14 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base target="main"><title>SCSI-2 Spec - Table 62</title></head><body><h1>Table 62</h1><pre>
++========-====================-==========================================+  
+|Offset  |                    |                                          | 
+|boundary| 2**Offset boundary |  Buffer offsets                          | 
+|--------+--------------------+------------------------------------------| 
+|   0    |      2**0 = 1      |  Byte boundaries                         | 
+|   1    |      2**1 = 2      |  Even-byte boundaries                    | 
+|   2    |      2**2 = 4      |  Four-byte boundaries                    | 
+|   3    |      2**3 = 8      |  Eight-byte boundaries                   | 
+|   4    |      2**4 = 16     |  16-byte boundaries                      | 
+|   .    |          .         |         .                                | 
+|   .    |          .         |         .                                | 
+|  FFh   |  Not applicable    |  0 is the only supported buffer offset.  | 
++========================================================================+ </pre></body></html>

@@ -1,0 +1,11 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base><title>SCSI-2 Spec - Table 29</title></head><body><h1>Table 29</h1><pre>+===========-=============-=============-============-=============-==========+ 
+|  Command  |  Queue tag  |  Queue tag  |  Logical   |   Transfer  |  Status  | 
+|           |   message   |    value    |   block    |    length   |          | 
+|           |             |             |  address   |             |          | 
+|-----------+-------------+-------------+------------+-------------+----------| 
+|   READ    |    SIMPLE   |     01h     |   10 000   |    1 000    |  Queued  | 
+|   READ    |    SIMPLE   |     02h     |      100   |        1    |  Queued  | 
+|   READ    |   ORDERED   |     03h     |    1 000   |    1 000    |  Queued  | 
+|   READ    |    SIMPLE   |     05h     |    2 000   |    1 000    |  Queued  | 
+|   READ    |    SIMPLE   |     04h     |   10 000   |        1    |  Queued  | 
++=============================================================================+ </pre></body></html>

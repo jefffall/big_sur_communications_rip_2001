@@ -1,0 +1,1145 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><title>SCSI-2 Spec - CD-ROM devices</title></head><body><a href="WW24.htm"><img alt="[PREV]" height=20 src="WWR10.gif" width=20></a><a href="WW48.htm"><img alt="[TOP]" height=20 src="WWR11.gif" width=20></a><a href="WW22.htm"><img alt="[NEXT]" height=20 src="WWR13.gif" width=20></a><hr><a name=14><h1>14 CD-ROM devices</h1><a name=14.1><h2>14.1 Model for CD-ROM devices</h2>
+CD-ROM devices permit reading data from a rotating media. Writing the media is not supported. Data transfer can begin with any of the consecutively numbered logical blocks. Data on CD-ROM devices are addressed the same as usual (magnetic) direct-access devices. Some CD- ROM devices support a separate information stream (e.g. audio and/or video but referred to as audio in this clause) transmitted via a connection other than the SCSI Bus. This device type defines commands for controlling these other information streams. <p>CD-ROM drives are designed to work with any disc that meets IEC. Many new drives read CD-ROM data discs, digital audio discs, and audio- combined discs (i.e. some tracks are audio, some tracks are data). <a name=14.1.1><h3>14.1.1 CD-ROM media organization</h3>
+The formats written on the CD-ROM and CD-DA (Digital Audio) media require special interfacing considerations. <p><blockquote><b>NOTE 169</b> This subclause contains a number of terms that have special meanings peculiar to CD-ROM technology or that may be unfamiliar to many readers of this International Standard. The glossary (see <a href="WW23.htm">14.4</a>.) defines these terms. </blockquote><p>Discs may contain either audio, data or a mixture of the two. <a href="WW1041.htm" target="figures">Table 236</a> gives an example of a of a audio-combined disc to illustrate the relationship between the logical block addresses reported in SCSI and the MSF address encoded on the media. The logical addresses given in the table assume a block length of 2 048, 2 336 or 2 340 bytes. For block lengths of 1 024, 512 or 256 multiply all values given in the SCSI address columns by 2, 4 or 8 respectively. <p><blockquote><b>NOTE 170</b> The term frame is used in two different ways in the CD-ROM media standard. The intended meaning can only be determined from the context. Whenever possible, this description replaces the larger data unit with the more familiar term sector. The primary exception to this policy is the use of frame when referring to the MSF address. In the MSF context, one frame (F field unit) equals one sector. On a typical two channel CD-DA media, each frame (F field unit) is played in 1/75th of a second. </blockquote><p><a name=tab236><h4>Table 236 - Example mixed mode CD-ROM disc layout</h4><pre>+================-==========================-===========================================================+ 
+|                |      SCSI address        |       /--- Sub-channel information ----\                  | 
+|----------------+--------------------------+-----------------------------------------------------------| 
+|                |  Logical    |   Track    |    Absolute  |  Track |  Track    |Sector  | Mode  |CD-ROM| 
+|                |  address    |  relative  |      MSF     |   and  | relative  |is info | audio |data  | 
+|     Block      |  (decimal)  |  logical   |    address1  |  index |   MSF     | or is  |  or   |mode2 | 
+|  description   |             |  address   |              |        | address   | pause  | data  |      | 
+|----------------+-------------+------------+--------------+--------+-----------+--------+-------+------| 
+|Lead-in area3)  |      ---    |    ---     |     ---      |  0/-   |    ---    |  ---   | Audio | ---  | 
+|Pre-gap3)       |     ---     |    ---     |  00/00/00    |  1/0   | 00/02/00  | Pause  | Data  | Null | 
+|                |             |            |              |        |           |        |       |      | 
+|1st track data  |   0 0005)   |       0    |  00/02/004)  |  1/1   | 00/00/00  | Info   | Data  | L-EC | 
+|2nd track data  |   6 0005)   |       0    |  01/22/004)  |  2/1   | 00/00/00  | Info   | Data  | L-EC | 
+|                |   7 500     |   1 500    |  01/42/00    |  2/2   | 00/20/00  | Info   | Data  | L-EC | 
+|                |             |            |              |        |           |        |       |      | 
+|Post-gap        |   9 000     |   3 000    |  02/02/00    |  2/3   | 00/40/00  | Pause  | Data  | Null | 
+|                |             |            |              |        |           |        |       |      | 
+|Pause-silence   |   9 150     |    -1509)  |  02/04/00    |  3/0   | 00/02/008 | Pause  | Audio | ---  | 
+|                |             |            |              |        |           |        |       |      | 
+|3rd track audio |   9 3007)   |       0    |  02/04/006)  |  3/1   | 00/00/00  | Info   | Audio | ---  | 
+|                |  11 400     |   2 250    |  02/34/00    |  3/2   | 00/30/00  | Info   | Audio | ---  | 
+|4th track audio |  21 9757)   |       0    |  04/53/006)  |  4/1   | 00/00/00  | Info   | Audio | ---  | 
+|                |             |            |              |        |           |        |       |      | 
+|Pre-gap part 1  |  30 000     |    -2259)  |  06/40/00    |  5/0   | 00/03/00  | Pause  | Audio | ---  | 
+|Pre-gap part 2  |  30 075     |    -150    |  06/41/00    |  5/0   | 00/02/00  | Pause  | Data  | Null | 
+|                |             |            |              |        |           |        |       |      | 
+|5th track data  |  30 225     |       0    |  06/43/00    |  5/1   | 00/00/00  | Info   | Data  | L-EC | 
+|                |             |            |              |        |           |        |       |      | 
+|Last information| 263 99910)  | 233 774    |  58/39/74    |  5/1   | 51/56/74  | Info   | Data  | L-EC | 
+|                |             |            |              |        |           |        |       |      | 
+|Post-gap        |     ---     | 233 775    |  58/40/00    |  5/2   | 51/57/00  | Pause  | Data  | Null | 
+|                |             |            |              |        |           |        |       |      | 
+|Lead-out track  | 264 00011)  |       0    |  58/42/0012) | AA/13  | 00/00/00  | Pause  | Audio | ---  | 
+|-------------------------------------------------------------------------------------------------------| 
+|  Notes                                                                                                | 
+|  1  Absolute MSF address repeated in the header field of data blocks.                                 | 
+|  2  The CD-ROM data mode is stored in the header of data tracks. This indicates that                  | 
+|     the block is part of a data pre-gap or post-gap (null), that this is a data                       | 
+|     block using the auxiliary field for L-EC symbols (ECC - CD-ROM data mode one),                    | 
+|     or that this is a data block using the auxiliary field for user data (CD-ROM                      | 
+|     data mode two).                                                                                   | 
+|  3  Table of contents information is stored in the sub-channel of lead-in area.  The                  | 
+|     lead-in area is coded as track zero. Track zero and the initial 150 sector pre-                   | 
+|     -gap (or audio pause) are not accessible with logical addressing.                                 | 
+|  4  Value stored in table of contents with zero tolerance.                                            | 
+|  5  Exact value returned by READ TOC command.                                                         | 
+|  6  Value stored in table of contents plus or minus 75 sectors.                                       | 
+|  7  Value returned by READ TOC command plus or minus 75 blocks.                                       | 
+|  8  Track relative MSF value decreases to 0 in pre-gap areas.                                         | 
+|  9  Track relative logical addresses are negative in the pre-gap areas.                               | 
+|     Pre-gap areas have index values of zero.                                                          | 
+|  10  Minimum value returned by READ CD-ROM CAPACITY - exact value depends                             | 
+|      on encoding of this track and the lead out track and whether this is                             | 
+|      derived from the TOC data.                                                                       | 
+|  11  Value returned by READ TOC command - exact if lead-out track is                                  | 
+|      encoded as data, or plus or minus 75 blocks if encoded as audio.                                 | 
+|  12  Value stored in table of contents -  exact if lead-out track is coded                            | 
+|      as data, or plus or minus 75 blocks if coded as audio.                                           | 
+|  13  Lead-out track number is defined as 0AAh.                                                        | 
++=======================================================================================================+</pre>
+
+The physical format defined by the CD-ROM media standards provides 2 352 bytes per sector. For usual computer data applications, 2 048 bytes are used for user data, 12 bytes for a synchronization field, 4 bytes for a sector address tag field and 288 bytes - the auxiliary field - for L-EC (CD-ROM data mode 1). In less critical applications, the auxiliary field may also be used for user data (CD-ROM data mode 2). A CD-ROM physical sector size is 2 048, 2 336 or 2 340 bytes per sector. These values correspond to user data field only, user data plus auxiliary data, the 4 byte address tag plus user data plus auxiliary data. <p>Selection among these options is made by setting the density code field of the MODE SELECT block descriptor. The usual selection is 2 048 bytes per physical sector via a density code setting of 1. See the table of CD-ROM density code values in <a href="WW23.htm">14.3.3</a>. <p>This same area of the CD-ROM or CD audio media may store 1/75th of a second of two channel audio information formatted according to the CD- DA specification. (These audio channels are usually the left and right components of a stereo pair.) An audio only density code value can be used to declare an area of the media to be invalid for data operations. <p>For data and mixed mode media (those conforming to ISO/IEC 10149), logical block address zero shall be assigned to the block at MSF address 00/02/00. For audio media (those conforming only to IEC 908), logical block address zero should be assigned to the actual starting address of track 1. This may be approximated by using the starting address of track 1 contained in the table of contents (TOC) or by assigning logical block address zero to the block at MSF address 00/02/00. <p>Logical addressing of CD-ROM information may use any logical block length. When the specified logical block length is an exact divisor or integral multiple of the selected number of bytes per CD-ROM sector, the device shall map (one to one) the bytes transferred from CD-ROM sectors to the bytes of logical blocks. For instance, if 2 048 bytes are transferred from each CD-ROM sector (specified by the CD-ROM density code value), and the logical block length is 512 bytes, then each CD-ROM sector shall map to exactly four logical blocks. This International Standard does not define the mapping of logical block lengths which do not evenly divide or are not exact multiples of the selected number of bytes per CD-ROM sector. <p>A track may be viewed as a partition of the CD-ROM address space. A CD- ROM media contains from one to ninety-nine tracks. All information sectors of a track are required to be of the same type (audio or data) and mode. Each change in the type of information on the disc requires a change in track number. A disc containing both audio and data would have at least two tracks, one for audio and one for data. <p>The tracks of a CD media are numbered consecutively with values between 1 and 99. However, the first information track may have a number greater than 1. Tracks have a minimum length of 300 sectors including any transition area that is part of a e used at the beginning or end of any track. For audio tracks the transition areas are called pause areas. For data tracks, transition areas are called pre-gap and post-gap areas. See <a href="WW1041.htm" target="figures">table 236</a> for an example. The IEC 908 and ISO/IEC 10149 standards specify minimum time durations for these areas. Maximum time durations are not specified. <p>Transition areas are formatted and the logical address continues to increment through transition areas. Some media (i.e. discs with only one track) may not have transition areas. The means to determine the location of the transition areas is vendor or application-specific and is addressed by other standards (e.g. ISO 9660). <p>CD-ROM is a unique SCSI device in the respect that some logical blocks on a disc may not be accessible by all commands. SEEK commands may be issued to any logical block address within the reported capacity of the disc. READ commands cannot be issued to logical blocks that occur in some transition areas, or to logical blocks within an audio track. PLAY commands cannot be issued to logical blocks within a data track. <p>The blank verify (BlkVfy) option of the verify command (see <a href="WW21.htm">16.2.11</a>), for CD-ROM devices, shall verify that the addressed blocks are transition area blocks. <p>CD-ROM media have lead-in and lead-out areas. These areas are outside of the user-accessible area as reported in the READ CD-ROM CAPACITY data. The lead-in area of the media is designated track zero. The lead-out area is designated track 0AAh. The sub-channel Q in the lead- in track contains a table of contents (TOC) of the disc. <p><blockquote><b>NOTE 171</b> The READ CD-ROM CAPACITY command returns the logical block address of the last block prior to the lead-out area. This location may be in a transition area and therefore not a valid address for read operations. </blockquote><p>The table of contents gives the absolute MSF location of the first information sector of each track. Control information (audio/data, method of audio encoding, etc.) for each track is also given in the TOC. However, the TOC does not distinguish between the different modes of data tracks (i.e. CD-ROM data mode one vs. CD-ROM data mode two). <p>The MSF locations of the beginning of data tracks in the TOC are required to be accurate, however, the TOC values for audio tracks have a tolerance of plus or minus 75 sectors. Information from the TOC can be used to reply to a READ CD-ROM CAPACITY command. When this is done, the drive implementor should consider the possible tolerances and return a value that allows access to all information sectors. <p>An index is a partition of a track. Pre-gap areas are encoded with an index value of zero. Pause areas at the beginning of audio tracks are also encoded with an index value of zero. The first information sector of a track has an index value of one. Consecutive values up to 99 are permitted. Index information is not contained in the TOC. Not all sectors are encoded with the index value in the Q-sub-channel data (the requirement is 9 out of 10). A sector without an index value is presumed to have the same index as the preceding sector. <p>Tracks and indexes are not defined to be any particular length, (except for a minimum track length of 300 sectors.) A CD disc may be created with a single information track that has a single index; or with 99 information tracks, each with 99 indexes. <p>The sub-channel information which is part of each sector includes a track relative MSF location value giving the distance from the first information sector of the track. On the media, this value decreases during the pre-gap area (sectors with index values of 0) and increases for the rest of the track. The data, returned by the READ SUB-CHANNEL command with MSF bit set to zero, converts this to a track relative logical block address (TRLBA). The TRLBA is continually increasing over the whole track, and pre-gap areas shall return negative values. When the MSF bit in the read sub-channel command is set to one, the MSF track relative location value from the media is reported without change. <a name=14.1.2><h3>14.1.2 CD-ROM physical data format</h3>
+The physical format of CD-ROM and CD-DA media uses a smaller unit of synchronization than the more familiar magnetic or optical recording systems. The basic data stream synchronization unit is a small frame. This is not the same large frame (sector) as referred to in the MSF unit. Each small frame consists of 588 bits. A sector on CD-ROM media consists of 98 small frames. <p>A CD-ROM small frame consists of: a) 1 synchronization pattern (24+3 bits) b) 1 byte of sub-channel data (14+3 bits) c) 24 bytes of data (24 x (14+3) bits) d) 8 bytes of CIRC code (8 x (14+3) bits) Total: 588 bits. <p>Data, sub-channel and CIRC bytes are encoded with an eight-to-fourteen bit code; then three merging bits are added. The merging bits are chosen to provide minimum low-frequency signal content and optimize phase lock loop performance. <p><a name=14.1.2.1><h4>14.1.2.1 Frame format for audio</h4><p>Each small frame of an audio track on a two-channel CD-DA or CD-ROM media consists of six digitized 16-bit samples of each audio channel. These 24 bytes of data are combined with a synchronization pattern, CIRC bytes and a sub-channel byte to make a frame. Each frame takes approximately 136.05 uS to play. This gives a sampling rate of 44,1 khz for each channel. The sub-channel information creates the higher level sector grouping for audio tracks. <p><a name=14.1.2.2><h4>14.1.2.2 Sector format for data</h4><p>The data bytes of 98 small frames comprise the physical unit of data referred to as a sector. (98 small frames times 24 bytes per small frame equal 2 352 bytes of data per sector.) <p>A sector that contains CD-ROM data mode one data has the following format: <p>a) 12 bytes Synchronization field b) 4 bytes CD-ROM data header Absolute M field in bcd format Absolute S field in bcd format Absolute F field in bcd format CD-ROM data mode field c) 2048 bytes User data field d) 4 bytes Error detection code e) 8 bytes Zero f) 276 bytes Layered error correction code <p>A sector that contains CD-ROM Data Mode two data has the following format: <p>a) 12 bytes Synchronization field b) 4 bytes CD-ROM data header Absolute M field in bcd format Absolute S field in bcd format Absolute F field in bcd format CD-ROM data mode field c) 2 336 bytes User data field (2048 bytes of mode 1 data plus 288 bytes of auxiliary data) <p><blockquote><b>NOTE 172</b> Many drives are capable of returning CD-ROM data mode one data in a CD-ROM data mode two format. This allows the user to investigate the error detection and error correction codes. However data encoded as CD- ROM data mode two cannot be read as CD-ROM data mode one data. </blockquote><p><a name=14.1.2.3><h4>14.1.2.3 Sub-channel information formats</h4><p>The sub-channel byte of each frame is assigned one bit for each of the 8 sub-channels, designated P, Q, R, S, T, U, V, W. Only sub-channels P and Q are defined for CD-ROM media. The other sub-channel bits are zero. <p>Sub-channel P is a simple flag bit that may be used for audio muting control and track boundary determination. <p>Sub-channel Q has a higher level of structure. All the sub-channel Q bits of a sector define the sub-channel Q information block. (For audio tracks, decoding the Q sub-channel is the only way to distinguish sector boundaries.) <p>The sub-channel Q block consists of 98 bits, one bit from each small frame in a sector. Three formats are defined for the sub-channel Q information block. The first format provides location information and is defined as follows: <p>a) 2 bits Sub-channel synchronization field b) 4 bits ADR field - defines the format c) 4 bits Control field - defines the type of information in this sector d) 8 bits Track number (in BCD) e) 8 bits Index number (in BCD) f) 24 bits Track relative MSF address g) 8 bits Reserved (0) h) 24 bits Absolute MSF address i) 16 bits CRC error detection code <p>This format is required to exist in at least nine out of ten consecutive sectors. <p>The second and third formats are optional. If used, they must exist in at least one out of 100 consecutive sectors. They include the absolute frame byte of the MSF address to provide location information continuity. <p>The second format gives the catalogue number of the disc (UPC/EAN bar code number). This information is constant over the whole media. <p>The third format gives the International Standard Recording Code (ISRC) for each track. The ISRC is defined in ISO 3901. This format is not present on lead-in or lead-out tracks and may change only after the track number changes. <a name=14.1.3><h3>14.1.3 CD Audio error reporting</h3>
+PLAY AUDIO commands with the immediate bit set in the audio control mode return status as soon as the command has been validated (which may involve a seek to the starting address). The playback operation continues and may complete without notification to the initiator. Error termination of audio operations shall be reported to the initiator by returning immediate CHECK CONDITION status to the next command (except for REQUEST SENSE and INQUIRY.) The deferred error sense data (see <a href="WW29.htm">8.2.14.2</a>.) is used to indicate that the error is not due to the current command. <p>The status of the play operation may be determined by issuing a REQUEST SENSE command. The sense key is set to NO SENSE and the audio status (see <a href="WW23.htm">14.2.10</a>) is reported in the additional sense code qualifier field. <a name=14.1.4><h3>14.1.4 CD-ROM ready condition/not ready condition</h3>
+The ready condition occurs after a cartridge is inserted and the drive has performed its initialization tasks. These may include reading the table of contents from the media. <p>A not ready condition may occur for the following reasons: a) There is no cartridge inserted. b) The drive is unable to load or unload the cartridge. c) The drive is unable to recover the table of contents. d) The controller cannot select the drive. <a name=14.1.5><h3>14.1.5 CD-ROM address reporting formats (MSF bit)</h3>
+Several CD-ROM specific commands can report addresses either in logical or in MSF format (see <a href="WW1042.htm" target="figures">table 237</a>). The READ HEADER, READ SUB-CHANNEL and READ TABLE OF CONTENTS commands have this feature. <p><a name=tab237><h4>Table 237 - MSF address format</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                           M field                                     | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           S field                                     | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           F field                                     | 
++=============================================================================+</pre>
+
+An MSF bit of zero requests that the logical block address format be used for the CD-ROM absolute address field or for the offset from the beginning of the current track expressed as a number of logical blocks in a CD-ROM track relative address field. This track relative logical block address (TRLBA) value is reported as a negative value in twos- complement notation for transition areas that have decreasing MSF encoded relative addresses. <p>An MSF bit of one requests that the MSF format be used for these fields. In certain transition areas, the relative MSF addresses are decreasing positive values. The absolute MSF addresses are always increasing positive values (see entry in <a href="WW23.htm">14.4</a>). <p>The M, S, and F fields are expressed as binary numbers. The values match those on the media, except for the encoding. The ratios of M field units to S field units and S field units to F field units are reported in the mode parameters page (see <a href="WW23.htm">14.3.3</a>). <a name=14.1.6><h3>14.1.6 Sensing support for CD-audio commands.</h3>
+If any commands related to audio operations are implemented, then the PLAY AUDIO command shall be implemented to allow a method for the initiator to determine if audio operations are supported. A target responding to a PLAY AUDIO command which has a transfer length of zero, with CHECK CONDITION status, and setting the sense key to ILLEGAL REQUEST does not support audio play operations. <p><blockquote><b>NOTE 173</b> The PLAY AUDIO command may be implemented without support for any of the other audio operations commands. </blockquote><a name=14.1.7><h3>14.1.7 Error reporting</h3>
+If any of the following conditions occur during the execution of a command, the target shall return CHECK CONDITION status. The appropriate sense key and additional sense code should be set. The following list illustrates some error conditions and the applicable sense keys. The list does not provide an exhaustive enumeration of all conditions that may cause the CHECK CONDITION status. <p>Condition Sense Key Invalid logical block address ILLEGAL REQUEST <p>Unsupported option requested ILLEGAL REQUEST <p>Target reset or medium change since last command from this initiator UNIT ATTENTION <p>Self diagnostic failed HARDWARE ERROR <p>Unrecovered read error MEDIUM ERROR HARDWARE ERROR <p>Recovered read error RECOVERED ERROR <p>Overrun or other error that might be resolved by repeating the command ABORTED command <p>Attempt to read a blank block BLANK CHECK <p>Attempt to play a data block as audio BLANK CHECK <p>In the case of an invalid logical block address, the sense data information field shall be set to the logical block address of the first invalid address. <p>In the case of an attempt to read a blank or previously unwritten block, the sense data information field shall be set to the logical block address of the first blank block encountered. The data read up to that block shall be transferred. <p>There are other special error situations for CD-ROM devices. In the following cases the sense key shall be set to BLANK CHECK and the additional sense code set to END OF USER AREA ENCOUNTERED ON THIS TRACK: a) a post-gap area is encountered (i.e. a block with CD-ROM Data Mode 0); b) a pre-gap area is encountered (i.e. a block with index equal to 0); c) The information type (data vs. audio) changes. <p>When not performing audio playback, if the logical block address requested is not within a data track, the command shall be terminated with CHECK CONDITION status. The sense key shall be set to BLANK CHECK and the additional sense code set to ILLEGAL MODE FOR THIS TRACK. This applies to audio-combined and audio media. <a name=14.2><h2>14.2 Commands for CD-ROM devices</h2>
+The commands for CD-ROM devices shall be as shown in <a href="WW1043.htm" target="figures">table 238</a>. <p><a name=tab238><h4>Table 238 - Commands for CD-ROM device</h4><pre>+=====================================-============-======-============+ 
+|  Command name                       | Operation  | Type |  Subclause | 
+|                                     |   code     |      |            | 
+|-------------------------------------+------------+------+------------| 
+| CHANGE DEFINITION                   |    40h     |   O  |   <a href="WW29.htm">8.2.1</a>    | 
+| COMPARE                             |    39h     |   O  |   <a href="WW29.htm">8.2.2</a>    | 
+| COPY                                |    18h     |   O  |   <a href="WW29.htm">8.2.3</a>    | 
+| COPY AND VERIFY                     |    3Ah     |   O  |   <a href="WW29.htm">8.2.4</a>    | 
+| INQUIRY                             |    12h     |   M  |   <a href="WW29.htm">8.2.5</a>    | 
+| LOCK/UNLOCK CACHE                   |    36h     |   O  |   <a href="WW28.htm">9.2.2</a>    | 
+| LOG SELECT                          |    4Ch     |   O  |   <a href="WW29.htm">8.2.6</a>    | 
+| LOG SENSE                           |    4Dh     |   O  |   <a href="WW29.htm">8.2.7</a>    | 
+| MODE SELECT(6)                      |    15h     |   O  |   <a href="WW29.htm">8.2.8</a>    | 
+| MODE SELECT(10)                     |    55h     |   O  |   <a href="WW29.htm">8.2.9</a>    | 
+| MODE SENSE(6)                       |    1Ah     |   O  |   <a href="WW29.htm">8.2.10</a>   | 
+| MODE SENSE(10)                      |    5Ah     |   O  |   <a href="WW29.htm">8.2.11</a>   | 
+| PAUSE/RESUME                        |    4Bh     |   O  |  <a href="WW23.htm">14.2.1</a>    | 
+| PLAY AUDIO(10)                      |    45h     |   O* |  <a href="WW23.htm">14.2.2</a>    | 
+| PLAY AUDIO(12)                      |    A5h     |   O* |  <a href="WW23.htm">14.2.3</a>    | 
+| PLAY AUDIO MSF                      |    47h     |   O* |  <a href="WW23.htm">14.2.4</a>    | 
+| PLAY AUDIO TRACK/INDEX              |    48h     |   O* |  <a href="WW23.htm">14.2.5</a>    | 
+| PLAY TRACK RELATIVE(10)             |    49h     |   O* |  <a href="WW23.htm">14.2.6</a>    | 
+| PLAY TRACK RELATIVE(12)             |    A9h     |   O* |  <a href="WW23.htm">14.2.7</a>    | 
+| PRE-FETCH                           |    34h     |   O  |   <a href="WW28.htm">9.2.3</a>    | 
+| PREVENT/ALLOW MEDIUM REMOVAL        |    1Eh     |   O  |   <a href="WW28.htm">9.2.4</a>    | 
+| READ(6)                             |    08h     |   O  |   <a href="WW28.htm">9.2.5</a>    | 
+| READ(10)                            |    28h     |   M  |   <a href="WW28.htm">9.2.6</a>    | 
+| READ(12)                            |    A8h     |   O  |  <a href="WW21.htm">16.2.4</a>    | 
+| READ BUFFER                         |    3Ch     |   O  |   <a href="WW29.htm">8.2.12</a>   | 
+| READ CD-ROM CAPACITY                |    25h     |   M  |  <a href="WW23.htm">14.2.8</a>    | 
+| READ HEADER                         |    44h     |   O  |  <a href="WW23.htm">14.2.9</a>    | 
+| READ LONG                           |    3Eh     |   O  |   <a href="WW28.htm">9.2.9</a>    | 
+| READ SUB-CHANNEL                    |    42h     |   O  |  <a href="WW23.htm">14.2.10</a>   | 
+| READ TOC                            |    43h     |   O  |  <a href="WW23.htm">14.2.11</a>   | 
+| RECEIVE DIAGNOSTIC RESULTS          |    1Ch     |   O  |   <a href="WW29.htm">8.2.13</a>   | 
+| RELEASE                             |    17h     |   M  |   <a href="WW28.htm">9.2.11</a>   | 
+| REQUEST SENSE                       |    03h     |   M  |   <a href="WW29.htm">8.2.14</a>   | 
+| RESERVE                             |    16h     |   M  |   <a href="WW28.htm">9.2.12</a>   | 
+| REZERO UNIT                         |    01h     |   O  |   <a href="WW28.htm">9.2.13</a>   | 
+| SEARCH DATA EQUAL(10)               |    31h     |   O  |   <a href="WW28.htm">9.2.14.1</a> | 
+| SEARCH DATA EQUAL(12)               |    B1h     |   O  |  <a href="WW21.htm">16.2.8</a>    | 
+| SEARCH DATA HIGH(10)                |    30h     |   O  |   <a href="WW28.htm">9.2.14.2</a> | 
+| SEARCH DATA HIGH(12)                |    B0h     |   O  |  <a href="WW21.htm">16.2.8</a>    | 
+| SEARCH DATA LOW(10)                 |    32h     |   O  |   <a href="WW28.htm">9.2.14.3</a> | 
+| SEARCH DATA LOW(12)                 |    B2h     |   O  |  <a href="WW21.htm">16.2.8</a>    | 
+| SEEK(6)                             |    0Bh     |   O  |   <a href="WW28.htm">9.2.15</a>   | 
+| SEEK(10)                            |    2Bh     |   O  |   <a href="WW28.htm">9.2.15</a>   | 
+| SEND DIAGNOSTIC                     |    1Dh     |   M  |   <a href="WW29.htm">8.2.15</a>   | 
+| SET LIMITS(10)                      |    33h     |   O  |   <a href="WW28.htm">9.2.16</a>   | 
+| SET LIMITS(12)                      |    B3h     |   O  |  <a href="WW21.htm">16.2.9</a>    | 
+| START STOP UNIT                     |    1Bh     |   O  |   <a href="WW28.htm">9.2.17</a>   | 
+| SYNCHRONIZE CACHE                   |    35h     |   O  |   <a href="WW28.htm">9.2.18</a>   | 
+| TEST UNIT READY                     |    00h     |   M  |   <a href="WW29.htm">8.2.16</a>   | 
+| VERIFY(10)                          |    2Fh     |   O  |  <a href="WW21.htm">16.2.11</a>   | 
+| VERIFY(12)                          |    Afh     |   O  |  <a href="WW21.htm">16.2.12</a>   | 
+| WRITE BUFFER                        |    3Bh     |   O  |   <a href="WW29.htm">8.2.17</a>   | 
+|----------------------------------------------------------------------| 
+|Key:  M = command implementation is mandatory.                        | 
+|      O = command implementation is optional.                         | 
+|      * = indicates a PLAY AUDIO command                              | 
++======================================================================+</pre>
+
+The following command codes are vendor-specific: 02h, 05h, 06h, 09h, 0Ch, 0Dh, 0Eh, 0Fh, 10h, 11h, 13h, 14h, 19h, 20h, 21h, 22h, 23h, 24h, 26h, 27h, 29h, and C0h through FFh. All remaining command codes for CD-ROM devices are reserved for future standardization. <p>If any of the PLAY AUDIO commands (indicated by an * in the type column) are implemented, the PLAY AUDIO command shall be implemented by the target. <a name=14.2.1><h3>14.2.1 PAUSE RESUME command</h3>
+The PAUSE RESUME command (see <a href="WW1044.htm" target="figures">table 239</a>) requests that the device stop or start an audio play operation. This command is used with PLAY AUDIO commands issued while the immediate bit is set to one. <p><a name=tab239><h4>Table 239 - PAUSE RESUME command</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (4Bh)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |                     Reserved               | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 7   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 8   |                           Reserved                           | Resume | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Control                                     | 
++=============================================================================+</pre>
+
+A resume bit of zero causes the drive to enter the hold track state with the audio output muted after the current block is played. A resume bit of one causes the drive to release the pause and begin play at the block following the last block played. <p>If an audio play operation cannot be resumed and the resume bit is one, the command is terminated with CHECK CONDITION status. If the resume bit is zero and an audio play operation cannot be paused, (no audio play operation has been requested, or the requested audio play operation has been completed), the command is terminated with CHECK CONDITION status. <p>It shall not be considered an error to request a pause when a pause is already in effect, or to request a resume when a play operation is in progress. <a name=14.2.2><h3>14.2.2 PLAY AUDIO(10) command</h3>
+The PLAY AUDIO command (see <a href="WW1045.htm" target="figures">table 240</a>) requests that the target begin an audio playback operation. The command function (Immed and SOTC bits) and the output of audio signals shall be as specified by the settings of the mode parameters (see <a href="WW23.htm">14.3.3.1</a>.). <p><a name=tab240><h4>Table 240 - PLAY AUDIO(10) command</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (45h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |             Reserved              | RelAdr | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                                                                       | 
+|-----+---                 Starting logical block address                  ---| 
+| 4   |                                                                       | 
+|-----+---                                                                 ---| 
+| 5   |                                                                  (LSB)| 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 7   | (MSB)                                                                 | 
+|-----+---                        Transfer length                          ---| 
+| 8   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Control                                     | 
++=============================================================================+</pre>
+
+If any commands related to audio operations are implemented then the PLAY AUDIO command shall be implemented to allow a method for the initiator to determine if audio operations are supported. A target responding to a PLAY AUDIO command that has a transfer length of zero with CHECK CONDITION status and setting the sense key to ILLEGAL REQUEST does not support audio play operations. <p>The logical block address field specifies the logical block at which the audio playback operation shall begin. <p>The transfer length field specifies the number of contiguous logical blocks that shall be played. A transfer length field of zero indicates that no audio operation shall occur. This condition shall not be considered an error. <p>If the logical block length is not equal to the sector size, the target may adjust the starting logical block address and the transfer length. In such case, it is recommended that the target start the audio play operation with the beginning of a sector whenever the starting logical address falls within that sector (MSF unit). If the requested transfer length causes the end of an audio play operation to fall within a sector, the target may continue the play operation through the end of that sector. <p>If the starting address is not found, if the address is not within an audio track, or if a not ready condition exists, the command shall be terminated with CHECK CONDITION status. <p>If the CD-ROM information type (data vs. audio) changes, the sense key shall be set to BLANK CHECK and the additional sense code set to END OF USER AREA ENCOUNTERED ON THIS TRACK. <p>If the logical block address requested is not within an audio track, the command shall be terminated with CHECK CONDITION status. The sense key shall be set to BLANK CHECK and the additional sense code set to ILLEGAL MODE FOR THIS TRACK. <a name=14.2.3><h3>14.2.3 PLAY AUDIO(12) command</h3>
+The PLAY AUDIO(12) command (see <a href="WW1046.htm" target="figures">table 241</a>) requests that the target to begin an audio playback operation. The command function (Immed and SOTC bits) and the output of audio signals shall be as specified by the settings of the mode parameters (see <a href="WW23.htm">14.3.3.1</a>.). See the PLAY AUDIO(10) command for a description of the fields in this command. <p><a name=tab241><h4>Table 241 - PLAY AUDIO(12) command</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (A5h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |               Reserved            | RelAdr | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                                                                       | 
+|-----+---                      Logical block address                      ---| 
+| 4   |                                                                       | 
+|-----+---                                                                 ---| 
+| 5   |                                                                  (LSB)| 
+|-----+-----------------------------------------------------------------------| 
+| 6   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 7   |                                                                       | 
+|-----+---                        Transfer length                          ---| 
+| 8   |                                                                       | 
+|-----+---                                                                 ---| 
+| 9   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 10  |                             Reserved                                  | 
+|-----+-----------------------------------------------------------------------| 
+| 11  |                           Control                                     | 
++=============================================================================+</pre>
+
+14.2.4 PLAY AUDIO MSF command <p>The PLAY AUDIO MSF command (see <a href="WW1047.htm" target="figures">table 242</a>) requests that the target to begin an audio playback operation. The command function (Immed and SOTC bits) and the output of audio signals shall be as specified by the settings of the mode parameters (see <a href="WW23.htm">14.3.3.1</a>.). <p><a name=tab242><h4>Table 242 - PLAY AUDIO MSF command</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|        |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (47h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |                  Reserved                  | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Starting M field                            | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                           Starting S field                            | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Starting F field                            | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           Ending M field                              | 
+|-----+-----------------------------------------------------------------------| 
+| 7   |                           Ending S field                              | 
+|-----+-----------------------------------------------------------------------| 
+| 8   |                           Ending F field                              | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Control                                     | 
++=============================================================================+</pre>
+
+The starting M field, the starting S field, and the starting F field specify the absolute MSF address at which the audio play operation shall begin. The ending M field, the ending S field, and the ending F field specify the absolute MSF address where the audio play operation shall end. All contiguous audio sectors between the starting and the ending MSF address shall be played. <p>A starting MSF address equal to an ending MSF address causes no audio play operation to occur. This shall not be considered an error. If the starting MSF address is less than the ending MSF address, the command shall be terminated with CHECK CONDITION status. The sense key shall be set to ILLEGAL REQUEST. <p>If the starting address is not found, if the address is not within an audio track, or if a not ready condition exists, the command shall be terminated with CHECK CONDITION status. See <a href="WW23.htm">14.1.7</a> for a description of error reporting information. <a name=14.2.5><h3>14.2.5 PLAY AUDIO TRACK INDEX command</h3>
+The PLAY AUDIO TRACK INDEX command (see <a href="WW1048.htm" target="figures">table 243</a>) requests the target to begin an audio play operation. The command function (Immed and SOTC bits) and the output of audio signals shall be as specified by the settings of the mode parameters (see <a href="WW23.htm">14.3.3.1</a>.). <p><a name=tab243><h4>Table 243 - PLAY AUDIO TRACK INDEX command</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (48h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |                  Reserved                  | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                           Starting track                              | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Starting index                              | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 7   |                           Ending track                                | 
+|-----+-----------------------------------------------------------------------| 
+| 8   |                           Ending index                                | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Control                                     | 
++=============================================================================+</pre>
+
+The starting track field specifies the track number of the starting audio track. The starting index field specifies the index number within the track at which the audio play operation shall begin. <p>The ending track field specifies the track number of the ending audio track. The ending index field specifies the index number within the track after which the audio play operation shall stop. The audio play operation shall terminate at the last block with an index number equal to the ending index. All contiguous audio sectors between the starting and the ending address shall be played. <p>If the starting address is less than the ending address, the command shall be terminated with CHECK CONDITION status. The sense key shall be set to ILLEGAL REQUEST. <p>If the starting address is not found, or if the address is not within an audio track, or if a not ready condition exists, the command shall be terminated with CHECK CONDITION status. See <a href="WW23.htm">14.1.7</a> for a description of error reporting information. <p><blockquote><b>NOTE 174</b> Valid values for the track and index fields are 1 to 99. A starting index value of one specifies that playback is to start with the first audio sector of the track following the (optional) pause. A last index value of 99 specifies that playback continues through the last sector of the track. </blockquote><p>If the ending track is greater than the last information track on the media, the playback shall continue until the last track is complete. If the ending index is greater than the largest index value on the ending track, the playback shall continue until this track is complete; then terminate. These conditions shall not be considered errors. <p>If the starting index is greater than the largest index value on the starting track, and the stop on track crossing (SOTC) bit of the audio control MODE SELECT parameters page (see <a href="WW23.htm">14.3.3.1</a>) is zero, the playback operation shall start at the beginning of the next track. This situation is not an error. <p>If the starting index is greater than the largest index value on the starting track, and the stop on track crossing (SOTC) bit of the audio control MODE SELECT parameters page (see <a href="WW23.htm">14.3.3.1</a>) is one, the playback shall not begin. The target shall return CHECK CONDITION, and the sense key shall be set to ILLEGAL REQUEST. <p><blockquote><b>NOTE 175</b> The operation of the SOTC bit described above comes about because the user may not be able to determine the largest index value on a track, either from the table of contents or by other means. The SOTC bit one case allows the user to determine the largest index. The SOTC bit zero case allows the user to set up play operations without complete knowledge of the media layout. </blockquote><a name=14.2.6><h3>14.2.6 PLAY AUDIO TRACK RELATIVE(10) command</h3>
+The PLAY AUDIO TRACK RELATIVE(10) command (see <a href="WW1049.htm" target="figures">table 244</a>) requests that the device begin an audio playback operation. The starting address is specified as a track relative logical block address within the specified starting track. The command function (Immed and SOTC bits) and the output of audio signals shall be as specified by the settings of the mode parameters (see <a href="WW23.htm">14.3.3.1</a>). <p><a name=tab244><h4>Table 244 - PLAY AUDIO TRACK RELATIVE(10) command</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (49h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |                  Reserved                  | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                                                                       | 
+|-----+---              Track relative logical block address               ---| 
+| 4   |                                                                       | 
+|-----+---                                                                 ---| 
+| 5   |                                                                  (LSB)| 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           Starting track                              | 
+|-----+-----------------------------------------------------------------------| 
+| 7   | (MSB)                                                                 | 
+|-----+---                        Transfer length                          ---| 
+| 8   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Control                                     | 
++=============================================================================+</pre>
+
+The starting track field specifies the track number of the starting audio track. <p>The track relative logical block address (TRLBA) field specifies the two's complement starting logical block address relative to the beginning of the first sector on the track with an index value of one. Negative values indicate a starting location within the audio pause area at the beginning of the requested track. <p>The transfer length field specifies the number of contiguous logical blocks that shall be output as audio data. A transfer length field of zero indicates that no audio playback operation shall occur. This condition shall not be considered an error. Any other value indicates the number of logical blocks that shall be output. <p>If the logical block length is not equal to the sector size the target may adjust the starting logical block address and the transfer length. In such case, it is recommended that the target start the audio play operation with the beginning of a sector whenever the starting logical address falls within that sector (MSF unit). If the requested transfer length causes the end of an audio play operation to fall within a sector, the target may continue the play operation through the end of that sector. <p>If the starting address is not found, or if the address is not within an audio track, or if a not ready condition exists, the command is terminated with CHECK CONDITION status. See <a href="WW23.htm">14.1.7</a> for a description of error reporting information. <a name=14.2.7><h3>14.2.7 PLAY AUDIO TRACK RELATIVE(12) command</h3>
+The PLAY AUDIO TRACK RELATIVE(12) command (see <a href="WW1050.htm" target="figures">table 245</a>) requests that the device begin an audio playback operation. The command function (Immed and SOTC bits) and the output of audio signals shall be as specified by the settings of the mode parameters (see <a href="WW23.htm">14.3.3.1</a>). See the PLAY AUDIO TRACK RELATIVE(10) command for a description of the fields in this command. <p><a name=tab245><h4>Table 245 - PLAY AUDIO TRACK RELATIVE(12) command</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (A9h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |                  Reserved                  | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                                                                       | 
+|-----+---              Track relative logical block address               ---| 
+| 4   |                                                                       | 
+|-----+---                                                                 ---| 
+| 5   |                                                                  (LSB)| 
+|-----+-----------------------------------------------------------------------| 
+| 6   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 7   |                                                                       | 
+|-----+---                        Transfer length                          ---| 
+| 8   |                                                                       | 
+|-----+---                                                                 ---| 
+| 9   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 10  |                           Starting track                              | 
+|-----+-----------------------------------------------------------------------| 
+| 11  |                           Control                                     | 
++=============================================================================+</pre>
+
+14.2.8 READ CD-ROM CAPACITY command <p>The READ CD-ROM CAPACITY command (see <a href="WW1051.htm" target="figures">table 246</a>) provides a means for the initiator to request information regarding the capacity of the logical unit. <p><a name=tab246><h4>Table 246 - READ CD-ROM CAPACITY command</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (25h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |             Reserved              | RelAdr | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                                                                       | 
+|-----+---                        Logical block address                    ---| 
+| 4   |                                                                       | 
+|-----+---                                                                 ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 7   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 8   |                           Reserved                           |  PMI   | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Control                                     | 
++=============================================================================+</pre><blockquote><b>NOTE 176</b> This command has the same operation code (25h) as the READ CAPACITY command (see <a href="WW28.htm">9.2.7</a>). The general function is the same but the exact definitions of the returned logical block address is modified to allow returning a possibly inexact value (but one with a known error bound) based on CD-ROM table of contents data. For many CD-ROM devices, this implementation allows a quicker response. </blockquote><p>A partial medium indicator (PMI) bit of zero indicates that the information returned in the READ CD-ROM CAPACITY data shall be the logical block address and block length (in bytes) of the last valid logical block of the logical unit for seek operations. The logical block address returned shall be greater than or equal to the last readable or playable block. If greater, this address may be in a transition area beyond the last valid logical block for read or audio play operations. The value returned shall not be not be more than 75 sectors (MSF units) greater than the logical block address of the last readable or playable block. (This value arises because the CD-ROM table of contents lead-out track location has a +/- 75 sector tolerance when the lead-out track is encoded as an audio track.) The logical block address in the command descriptor block shall be set to zero for this option. <p>A PMI bit of one indicates that the information returned shall be the logical block address and block length (in bytes) of the last logical block address after which a substantial delay in data transfer will be encountered. This logical block address shall be greater than or equal to the logical block address specified in the command descriptor block. On CD-ROM media, this is interpreted as being the last readable or playable logical block of the information area containing or immediately following the specified logical block address. <p><blockquote><b>NOTE 177</b> This option may take several seconds to complete on CD-ROM media. </blockquote><p>See <a href="WW28.htm">9.1.10</a> for a description of the relative address bit (RelAdr). <p>Eight bytes of READ CD-ROM CAPACITY data (see <a href="WW1052.htm" target="figures">table 247</a>) shall be sent during the DATA IN phase of the command. <p><a name=tab247><h4>Table 247 - READ CAPACITY data format</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   | (MSB)                                                                 | 
+|- - -+---                        Logical block address                    ---| 
+| 3   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 4   | (MSB)                                                                 | 
+|- - -+---                        Block length                             ---| 
+| 7   |                                                                 (LSB) | 
++=============================================================================+</pre>
+
+14.2.9 READ HEADER command <p>The READ HEADER command (see <a href="WW1053.htm" target="figures">table 248</a>) requests that the device return the CD-ROM data block address header of the requested logical block. <p><a name=tab248><h4>Table 248 - READ HEADER command</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (44h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |         Reserved         |  MSF   |Reserved| 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                                                                       | 
+|-----+---                        Logical block address                    ---| 
+| 4   |                                                                       | 
+|-----+---                                                                 ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 7   | (MSB)                                                                 | 
+|-----+---                        Allocation length                        ---| 
+| 8   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Control                                     | 
++=============================================================================+</pre>
+
+See <a href="WW23.htm">14.1.5</a>. for a description of the MSF bit. <p>The logical block address field specifies the logical block at which the read header operation shall begin. <p>See the READ command for exception handling. If the logical block size is other than the physical block size, it shall be mapped into the appropriate physical block from which the data would have been read. <p>The READ HEADER data format (see <a href="WW1054.htm" target="figures">table 249</a>) defines the CD-ROM data block address header of the requested logical block. <p><a name=tab249><h4>Table 249 - READ HEADER data format</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                       CD-ROM data mode                                | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                          Reserved                                     | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                          Reserved                                     | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                          Reserved                                     | 
+|-----+-----------------------------------------------------------------------| 
+| 4   | (MSB)                                                                 | 
+|- - -+---                    Absolute CD-ROM address                      ---| 
+| 7   |                                                                 (LSB) | 
++=============================================================================+</pre>
+
+The CD-ROM data mode field specifies the CD-ROM data mode of the logical blocks in this sector of data. The values in this field are defined in <a href="WW1055.htm" target="figures">table 250</a>. <p><a name=tab250><h4>Table 250 - CD-ROM data mode codes</h4><pre>+=============-============================-============================+ 
+|    CD-ROM   |  User data field contents  |  Auxiliary field contents  | 
+|     mode    |       (2 048 bytes)        |        (288 bytes)         | 
+|-------------+----------------------------+----------------------------| 
+|     00h     |  All bytes zero            |  All bytes zero            | 
+|     01h     |  User data                 |  L-EC symbols              | 
+|     02h     |  User data                 |  User data                 | 
+|  03h - FFh  |  Reserved                  |  Reserved                  | 
++=======================================================================+</pre>
+
+If the MSF bit is zero, the absolute address field gives the logical block address of the first logical block in the physical sector where the data for the requested logical block address is found. If the MSF bit is one, the absolute address field gives the MSF address of the sector where the data for the requested logical block address is found. (See <a href="WW23.htm">14.1.5</a>.) <a name=14.2.10><h3>14.2.10 READ SUB-CHANNEL command</h3>
+The READ SUB-CHANNEL command (see <a href="WW1056.htm" target="figures">table 251</a>) requests that the target return the requested sub-channel data plus the state of audio play operations. <p><a name=tab251><h4>Table 251 - READ SUB-CHANNEL command</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                          Operation code (42h)                         | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |         Reserved         |  MSF   |Reserved| 
+|-----+-----------------------------------------------------------------------| 
+| 2   |Reserved|  SubQ  |                       Reserved                      | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                        Sub-channel data format                        | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                               Reserved                                | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                               Reserved                                | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                             Track number                              | 
+|-----+-----------------------------------------------------------------------| 
+| 7   | (MSB)                                                                 | 
+|-----+---                       Allocation length                         ---| 
+| 8   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                               Control                                 | 
++=============================================================================+</pre><blockquote><b>NOTE 178</b> Sub-channel data returned by this command may be from the last appropriate sector encountered by a current or previous media accessing operation. When there is no current audio play operation, the target may access the media to read the sub-channel data. The target is responsible that the data returned are current and consistent. For example with sub- channel data format 0, the International Standard Recording Code (ISRC) data reported must have been read from the same track as the reported current position data. </blockquote><p>See <a href="WW23.htm">14.1.5</a>. for a description of the MSF bit. <p>The sub Q bit set to one requests that the target return the Q sub- channel data. The sub Q bit set to zero requests that no sub-channel data be returned. This shall not be considered an error. <p><blockquote><b>NOTE 179</b> The other bits in this byte are reserved for future standardization when they may be defined to request other sub-channel data. </blockquote><p>The sub-channel data format field specifies the returned sub channel data (see <a href="WW1057.htm" target="figures">table 252</a>). If this field is 00h, sub-Q channel data is returned. If this field is 01h, 02h or 03h, the requested sub-Q data item is returned. <p><a name=tab252><h4>Table 252 - Sub-channel data format codes</h4><pre>+=============-======================================================+ 
+| Format Code |  Returned data                                       | 
+|-------------+------------------------------------------------------| 
+|     00h     |  Sub-Q channel data                                  | 
+|     01h     |  CD-ROM current position                             | 
+|     02h     |  Media catalogue number (UPC/bar code)               | 
+|     03h     |  Track international standard recording code (ISRC)  | 
+|  04h - EFh  |  Reserved                                            | 
+|  F0h - FFh  |  Vendor-specific                                     | 
++====================================================================+</pre>
+
+The track number field specifies the track from which ISRC data is read. This field must have a value between 01h and 63h (99bcd), and is valid only when the sub-channel data format field is 03h. In this case, the target returns ISRC data for this track. <p><a name=14.2.10.1><h4>14.2.10.1 Sub-Q channel data format</h4><p>The sub-CHANNEL command data formats consist of a four-byte header followed by a sub-channel data block. The header contains the audio status byte and the sub-channel data length field. If the sub Q bit is zero, the target shall not return the sub-channel data block; in this case, the sub-channel data length is 0. <p>Table 253 defines the sub-Q channel data format. <p><a name=tab253><h4>Table 253 - Sub-Q channel data format</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+|     |                        Sub-channel data header                        | 
+|=====+=======================================================================| 
+| 0   |                                Reserved                               | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                              Audio status                             | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                     Sub-channel data length                     ---| 
+| 3   |                                                                 (LSB) | 
+|=====+=======================================================================| 
+|     |                        Sub-Q channel data block                       | 
+|=====+=======================================================================| 
+| 4   |                    Sub channel data format code (00h)                 | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                ADR                |             Control               | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                             Track number                              | 
+|-----+-----------------------------------------------------------------------| 
+| 7   |                             Index number                              | 
+|-----+-----------------------------------------------------------------------| 
+| 8   | (MSB)                                                                 | 
+|- - -+---                     Absolute CD-ROM address                     ---| 
+| 11  |                                                                 (LSB) | 
+|--- -+-----------------------------------------------------------------------| 
+| 12  | (MSB)                                                                 | 
+|- - -+---                  Track relative CD-ROM address                  ---| 
+| 15  |                                                                 (LSB) | 
+|--- -+-----------------------------------------------------------------------| 
+| 16  |  MCVal |                       Reserved                               | 
+|--- -+-----------------------------------------------------------------------| 
+| 17  | (MSB)                                                                 | 
+|- - -+---                Media catalogue number (UPC/Bar code)            ---| 
+| 31  |                                                                 (LSB) | 
+|--- -+-----------------------------------------------------------------------| 
+| 32  |  TCVal |                       Reserved                               | 
+|--- -+-----------------------------------------------------------------------| 
+| 33  | (MSB)                                                                 | 
+|- - -+---        Track international standard recording code (ISRC)       ---| 
+| 47  |                                                                 (LSB) | 
++=============================================================================+</pre>
+
+The audio status field indicates the status of audio play operations. The audio status values are defined in <a href="WW1059.htm" target="figures">table 254</a>. Audio status values greater than zero are returned only to the initiator that requested the last audio play operation. Audio status values 13h and 14h return information on previous audio operations; they are returned only once after the condition has occurred. If another audio play operation is not requested, the audio status returned for subsequent READ SUB- CHANNEL commands is 15h. <p><a name=tab254><h4>Table 254 - Audio status codes</h4><pre>+========-================================================+ 
+| Status |  Description                                   | 
+|--------+------------------------------------------------| 
+|   00h  |  Audio status byte not supported or not valid  | 
+|   11h  |  Audio play operation in progress              | 
+|   12h  |  Audio play operation paused                   | 
+|   13h  |  Audio play operation successfully completed   | 
+|   14h  |  Audio play operation stopped due to error     | 
+|   15h  |  No current audio status to return             | 
++=========================================================+</pre>
+
+The sub-channel data length specifies the length in bytes of the following sub-channel data block. A sub-channel data length of zero indicates that no sub-channel data block is included in the returned data. <p><blockquote><b>NOTE 180</b> Usual values for sub-channel data length are 0, 12, 20, 28 and 44 bytes. Sub-channel data length does not include the sub channel header. </blockquote><p>The sub-Q channel data block consists of control data (bytes 4-5), current position data (bytes 6 - 15) and identification data (bytes 16 - 47). The control data and current position data is obtained from the Q sub-channel information of the current block. Identification data may be reported that was obtained from a previous block. If identification data is reported, the data shall be valid for the sector addressed by the current position data. a) If an audio play operation is proceeding in the background, position data for the last sector played shall be reported. b) In other cases, for instance after a READ command, the target may either report position data for the last sector processed for that operation or may report position data from the sector at the current read head position. <p><blockquote><b>NOTE 181</b> When the type of information encoded in the Q sub-channel of the current sector is the media catalog number or ISRC; the track, index, and address fields should be extrapolated from the previous sector. </blockquote><p>The ADR field gives the type of information encoded in the Q sub- channel of this block, as shown in <a href="WW1060.htm" target="figures">table 255</a>. <p><a name=tab255><h4>Table 255 - ADR sub-channel Q field</h4><pre>+===========-===========================================================+ 
+|  ADR code |  Description                                              | 
+|-----------+-----------------------------------------------------------| 
+|     0h    |  Sub-channel Q mode information not supplied              | 
+|     1h    |  Sub-channel Q encodes current position data              | 
+|           |  (i.e. track, index, absolute address, relative address)  | 
+|     2h    |  Sub-channel Q encodes media catalogue number             | 
+|     3h    |  Sub-channel Q encodes ISRC                               | 
+|  4h - Fh  |  Reserved                                                 | 
++=======================================================================+</pre>
+
+The control bits are defined in <a href="WW1061.htm" target="figures">table 256</a>. <p><a name=tab256><h4>Table 256 - Sub-channel Q control bits</h4><pre>+=====-==============================-===========================+ 
+| Bit |       Equals zero            |       Equals one          | 
+|-----+------------------------------+---------------------------| 
+|  0  |  Audio without pre-emphasis  |  Audio with pre-emphasis  | 
+|  1  |  Digital copy prohibited     |  Digital copy permitted   | 
+|  2  |  Audio track                 |  Data track               | 
+|  3  |  Two-channel audio           |  Four-channel audio       | 
++================================================================+</pre>
+
+The track number specifies the current track number. <p>The index number specifies the index number in the current track. <p>The absolute CD-ROM address field gives the current location relative to the logical beginning of the media. If the MSF bit is zero, this field is a logical block address. If the MSF bit is one, this field is an absolute MSF address. (See <a href="WW23.htm">14.1.5</a>.) <p>The track relative CD-ROM address field gives the current location relative to the logical beginning of the current track. If the MSF bit is zero, this field is a track relative logical block address. (If the current block is in the pre-gap area of a track, this will be a negative value, expressed as a twos-complement number. See <a href="WW23.htm">14.1.5</a>). If the MSF bit is one, this field is the relative MSF address from the Q sub-channel. <p>A media catalogue valid (MCVal) bit of one indicates that the media catalogue number field is valid. A MCVal bit of zero indicates that the media catalogue number field is not valid. <p>The media catalogue number field contains the identifying number of this media according to the uniform product code values (UPC/EAN bar coding) expressed in ASCII. Non-zero values in this field are controlled by the Uniform Product Code Council 1) and the European Article Number Council 2). A value in this field of all ASCII zeros indicates that the media catalog number is not supplied. <p>The track code valid (TCVal) bit of one indicates that the track ISRC field is valid. A TCVal bit of zero indicates that the track international standard recording code (ISRC) field is not valid. <p>The track ISRC field contains the identifying number of this media according to the ISRC standards (DIN-31-621) expressed in ASCII. ---- 1) The Uniform Product Code Council is located at 8163 Old Yankee Road, Suite J, Dayton, Ohio 45459. 2) The European Article Number Council is located at Rue des Colonies, 54-BTE8, 1000 Brussels, Belgium. <p><a name=14.2.10.2><h4>14.2.10.2 CD-ROM current position data format</h4><p>Table 257 defines the CD-ROM current position data format. <p><a name=tab257><h4>Table 257 - CD-ROM current position data format</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+|     |                        Sub-channel data header                        | 
+|=====+=======================================================================| 
+| 0   |                               Reserved                                | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                             Audio status                              | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                     Sub-channel data length                     ---| 
+| 3   |                                                                 (LSB) | 
+|=====+=======================================================================| 
+|     |                  CD-ROM current position data block                   | 
+|=====+=======================================================================| 
+| 4   |                  Sub channel data format code (01h)                   | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                ADR                |             Control               | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                             Track number                              | 
+|-----+-----------------------------------------------------------------------| 
+| 7   |                             Index number                              | 
+|-----+-----------------------------------------------------------------------| 
+| 8   | (MSB)                                                                 | 
+|- - -+---                     Absolute CD-ROM address                     ---| 
+| 11  |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 12  | (MSB)                                                                 | 
+|- - -+---                  Track relative CD-ROM address                  ---| 
+| 15  |                                                                 (LSB) | 
++=============================================================================+</pre>
+
+14.2.10.3 Media catalogue number data format <p>Table 258 defines the media catalogue number data format. <p><a name=tab258><h4>Table 258 - Media catalogue number data format</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+|     |                        Sub-channel data header                        | 
+|=====+=======================================================================| 
+| 0   |                               Reserved                                | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                             Audio status                              | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                     Sub-channel data length                     ---| 
+| 3   |                                                                 (LSB) | 
+|=====+=======================================================================| 
+|     |                   Media catalogue number data block                   | 
+|=====+=======================================================================| 
+| 4   |                  Sub channel data format code (02h)                   | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                               Reserved                                | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                               Reserved                                | 
+|-----+-----------------------------------------------------------------------| 
+| 7   |                               Reserved                                | 
+|-----+-----------------------------------------------------------------------| 
+| 8   |  MCVal |                      Reserved                                | 
+|-----+-----------------------------------------------------------------------| 
+| 9   | (MSB)                                                                 | 
+|- - -+---              Media catalogue number (UPC/Bar code)              ---| 
+| 23  |                                                                 (LSB) | 
++=============================================================================+</pre>
+
+If media catalogue number data is found, the MCVal bit is set to one. If MCN data is not detected, the MCVal bit is set to zero to indicate the media catalogue number field is invalid. <p><blockquote><b>NOTE 182</b> Media catalogue number data returned by this command with sub- channel data format field code 02h may be from any block that has UPC bar code Q sub-channel data. (This code is constant anywhere in every applicable disc.) </blockquote><p><a name=14.2.10.4><h4>14.2.10.4 Track international standard recording code data format</h4><p>Table 259 defines the track international standard recording code data format. <p><a name=tab259><h4>Table 259 - Track international standard recording code data format</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+|     |                       Sub-channel data header                         | 
+|=====+=======================================================================| 
+| 0   |                               Reserved                                | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                             Audio status                              | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                     Sub-channel data length                     ---| 
+| 3   |                                                                 (LSB) | 
+|=====+=======================================================================| 
+|     |                         Track ISRC data block                         | 
+|=====+=======================================================================| 
+| 4   |                    Sub channel data format code (03h)                 | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |              ADR                  |               Control             | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                             Track number                              | 
+|-----+-----------------------------------------------------------------------| 
+| 7   |                               Reserved                                | 
+|-----+-----------------------------------------------------------------------| 
+| 8   |  TCVal |                      Reserved                                | 
+|-----+-----------------------------------------------------------------------| 
+| 9   | (MSB)                                                                 | 
+|- - -+---         Track international standard recording code (ISRC)      ---| 
+| 23  |                                                                 (LSB) | 
++=============================================================================+</pre>
+
+If ISRC data is detected, the TCVal bit is set to one. If ISRC data is not detected, the TCVal bit is set to zero to indicate the ISRC field is invalid. <p><blockquote><b>NOTE 183</b> Track ISRC data returned by this command with sub-channel data format field 03h may be from any block in the specified track that has ISRC data. </blockquote><a name=14.2.11><h3>14.2.11 READ TOC command</h3>
+The READ TOC command (see <a href="WW1065.htm" target="figures">table 260</a>) requests that the target transfers data from the table of contents to the initiator. <p><a name=tab260><h4>Table 260 - READ TOC command</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                         Operation code (43h)                          | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |         Reserved         |  MSF   |Reserved| 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           Starting track                              | 
+|-----+-----------------------------------------------------------------------| 
+| 7   | (MSB)                                                                 | 
+|-----+---                        Allocation length                        ---| 
+| 8   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Control                                     | 
++=============================================================================+</pre>
+
+See <a href="WW23.htm">14.1.5</a> for a description of the MSF bit. <p>The starting track field specifies the starting track number for which the data shall be returned. If this value is zero, the table of contents data shall begin with the first track on the medium. The data are returned in contiguous ascending track number order. <p>If the starting track field is not valid for the currently installed medium, the command shall be terminated with CHECK CONDITION status. The sense key shall be set to ILLEGAL REQUEST and the additional sense code set to INVALID FIELD IN CDB. <p><blockquote><b>NOTE 184</b> The maximum TOC data length possible on currently available CD- ROM media is 804 bytes, or 100 TOC track descriptors. </blockquote><p>The format of the data returned is specified in <a href="WW1066.htm" target="figures">table 261</a>. <p><a name=tab261><h4>Table 261 - READ TOC data format</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   | (MSB)                                                                 | 
+|-----+---                        TOC data length                          ---| 
+| 1   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           First track number                          | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Last track number                           | 
+|=====+=======================================================================| 
+|     |                         TOC track descriptor(s)                       | 
+|=====+=======================================================================| 
+| 0   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |              ADR                  |             Control               | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Track number                                | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 4   | (MSB)                                                                 | 
+|- ---+---                        Absolute CD-ROM address                  ---| 
+| 7   |                                                                 (LSB) | 
++=============================================================================+</pre>
+
+The TOC data block contains a four-byte header followed by zero or more TOC track descriptors. <p>The TOC data length specifies the length in bytes of the following TOC data that is available to be transferred during the DATA IN phase. The TOC data length value does not include the TOC data length field itself. <p>The first track number field indicates the first track number in the table of contents. <p>The last track number field indicates the last track number in the table of contents before the lead-out track number. <p><blockquote><b>NOTE 185</b> The first track number is not required to be one. A disc may start at any valid track number. The track numbers between the first track number and the last track number are required to be in contiguous ascending order, except for the lead-out track. </blockquote><p>The ADR field gives the type of information encoded in the Q sub- channel of the block where this TOC entry was found. The possible ADR values are defined in <a href="WW23.htm">14.2.10.1</a>. <p>The control field indicates the attributes of the track. The possible control field values are defined in <a href="WW23.htm">14.2.10.1</a>. <p>The track number field indicates the track number for which the data in the TOC track descriptor is valid. A track number of 0AAh indicates that the track descriptor is for the start of the lead-out area. <p>The absolute CD-ROM address contains the address of the first block with user information for that track number as read from the table of contents. An MSF bit of zero indicates that the absolute CD-ROM address field contains a logical block address. An MSF bit of one indicates the absolute CD-ROM address field contains an MSF address (see <a href="WW23.htm">14.1.5</a>). <p><blockquote><b>NOTE 186</b> The starting logical block address value recovered from the TOC has a tolerance of zero for data tracks and plus or minus 75 CD sectors for audio tracks. This tolerance is multiplied by a factor dependent on the logical block length. </blockquote><a name=14.3><h2>14.3 Parameters for CD-ROM devices</h2><a name=14.3.1><h3>14.3.1 Diagnostic parameters</h3>
+This subclause defines the descriptors and pages for diagnostic parameters used with CD-ROM devices. <p>The diagnostic page codes for CD-ROM devices are defined in <a href="WW1067.htm" target="figures">table 262</a>. <p><a name=tab262><h4>Table 262 - Diagnostic page codes</h4><pre>+=============-==================================================-============+ 
+|  Page code  |  Description                                     |  Subclause | 
+|-------------+--------------------------------------------------+------------| 
+|     00h     |  Supported diagnostic pages                      |  <a href="WW29.htm">8.3.1.1</a>   | 
+|  01h - 3Fh  |  Reserved (for all device type pages)            |            | 
+|  40h - 7Fh  |  Reserved                                        |            | 
+|  80h - FFh  |  Vendor-specific pages                           |            | 
++=============================================================================+</pre>
+
+14.3.2 Log parameters <p>This subclause defines the descriptors and pages for log parameters used with CD-ROM devices. <p>The log page codes for CD-ROM devices are defined in <a href="WW1068.htm" target="figures">table 263</a>. <p><a name=tab263><h4>Table 263 - Log page codes</h4><pre>+=============-==================================================-============+ 
+|  Page code  |  Description                                     |  Subclause | 
+|-------------+--------------------------------------------------+------------| 
+|     01h     |  Buffer over-run/under-run page                  |  <a href="WW29.htm">8.3.2.1</a>   | 
+|     03h     |  Error counter page (read) page                  |  <a href="WW29.htm">8.3.2.2</a>   | 
+|     07h     |  Last n error events page                        |  <a href="WW29.htm">8.3.2.3</a>   | 
+|     06h     |  Non-medium error page                           |  <a href="WW29.htm">8.3.2.4</a>   | 
+|     02h     |  Reserved                                        |            | 
+|  04h - 05h  |  Reserved                                        |            | 
+|  08h - 2Fh  |  Reserved                                        |            | 
+|     3Fh     |  Reserved                                        |            | 
+|     00h     |  Supported log pages                             |  <a href="WW29.htm">8.3.2.5</a>   | 
+|  30h - 3Eh  |  Vendor-specific pages                           |            | 
++=============================================================================+</pre>
+
+14.3.3 Mode parameters <p>This subclause defines the descriptors and pages for mode parameters used with CD-ROM devices. <p>The mode parameter list, including the mode parameter header and mode block descriptor are defined in <a href="WW29.htm">8.3.3</a>. <p>The medium-type code field is contained in the mode parameter header (see <a href="WW29.htm">8.3.3</a>). <a href="WW1069.htm" target="figures">Table 264</a> defines the medium type values for CD-ROM devices. <p><a name=tab264><h4>Table 264 - CD-ROM medium type codes</h4><pre>+=============-=========================================+ 
+|     Code    |  Medium type description                | 
+|=============+=========================================| 
+|     00h     |  Default (only one type supported)      | 
+|     01h     |  120 mm CD-ROM data only                | 
+|     02h     |  120 mm CD-DA audio only                | 
+|     03h     |  120 mm CD-ROM data and audio combined  | 
+|     04h     |  Reserved                               | 
+|     05h     |  80 mm CD-ROM data only                 | 
+|     06h     |  80 mm CD-DA audio only                 | 
+|     07h     |  80 mm CD-ROM data and audio combined   | 
+|  08h - 7Fh  |  Reserved                               | 
+|  80h - FFh  |  Vendor-specific                        | 
++=======================================================+</pre>
+
+The device-specific parameter field is contained in the mode parameter header (see <a href="WW29.htm">8.3.3</a>). <a href="WW1070.htm" target="figures">Table 265</a> defines the device-specific parameter field for CD-ROM devices. <p><a name=tab265><h4>Table 265 - CD-ROM device-specific parameter</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|=====+==========================+========+==========================+========| 
+|     |         Reserved         | DPOFUA |           Reserved       |  EBC   | 
++=============================================================================+</pre>
+
+When used with the MODE SELECT command, the DPOFUA bit is not used and the field is reserved. <p>When used with the MODE SENSE command, a DPOFUA bit of one indicates that the target supports the DPO and FUA bits (see <a href="WW28.htm">9.2.6</a>). <p>The enable blank check (EBC) bit is reserved. <p>The density code field is contained in the mode parameter block descriptor (see <a href="WW29.htm">8.3.3</a>). <a href="WW1071.htm" target="figures">Table 266</a> defines the density code values for CD-ROM devices. <p><a name=tab266><h4>Table 266 - CD-ROM density codes</h4><pre>+================-==================================================+ 
+|    Code        |  Data types to be transferred                    | 
+|================+==================================================| 
+|     00h        |  Default density code                            | 
+|     01h        |  User data only                                  | 
+|                |    (2 048 bytes per physical sector)             | 
+|     02h        |  User data plus auxiliary data field             | 
+|                |    (2 336 bytes per sector)                      | 
+|     03h        |  4-byte tag field, user data plus auxiliary data | 
+|                |    (2 340 bytes per sector)                      | 
+|     04h        |  Audio information only                          | 
+|                |    (1/75th of a second per logical block)        | 
+|  05h - 7Fh     |  Reserved                                        | 
+|  80h - FFh     |  Vendor-specific                                 | 
++===================================================================+</pre><blockquote><b>NOTE 187</b> The number of bytes per sector specified by this parameter is used with the block length to map CD-ROM sectors to logical block addresses. </blockquote><p>The mode page codes for CD-ROM devices are defined in <a href="WW1072.htm" target="figures">table 267</a>. <p><a name=tab267><h4>Table 267 - Mode page codes</h4><pre>+=============-==================================================-============+ 
+|  Page code  |  Description                                     |  Subclause | 
+|-------------+--------------------------------------------------+------------| 
+|     08h     |  Caching page                                    |   <a href="WW28.htm">9.3.3.1</a>  | 
+|     0Eh     |  CD-ROM audio control page                       |  <a href="WW23.htm">14.3.3.1</a>  | 
+|     0Dh     |  CD-ROM page                                     |  <a href="WW23.htm">14.3.3.2</a>  | 
+|     0Ah     |  Control mode page                               |   <a href="WW29.htm">8.3.3.1</a>  | 
+|     02h     |  Disconnect-reconnect page                       |   <a href="WW29.htm">8.3.3.2</a>  | 
+|     0Bh     |  Medium types supported page                     |   <a href="WW28.htm">9.3.3.4</a>  | 
+|     09h     |  Peripheral device page                          |   <a href="WW29.htm">8.3.3.3</a>  | 
+|     01h     |  Read error recovery page                        |  <a href="WW23.htm">14.3.3.3</a>  | 
+|  03h - 06h  |  Reserved                                        |            | 
+|     0Ch     |  Reserved                                        |            | 
+|  0Fh - 1Fh  |  Reserved                                        |            | 
+|     07h     |  Verify error recovery page                      |  <a href="WW23.htm">14.3.3.4</a>  | 
+|     00h     |  Vendor-specific (does not require page format)  |            | 
+|  20h - 3Eh  |  Vendor-specific (page format required)          |            | 
+|     3Fh     |  Return all pages                                |            | 
+|             |     (valid only for the MODE SENSE command)      |            | 
++=============================================================================+</pre>
+
+14.3.3.1 CD-ROM audio control parameters <p>The CD-ROM audio control parameters page (see <a href="WW1073.htm" target="figures">table 268</a>) sets the playback modes and output controls for subsequent PLAY AUDIO commands and any current audio playback operation. <p><a name=tab268><h4>Table 268 - CD-ROM audio control parameters page</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+========+========+=====================================================| 
+| 0   |   PS   |Reserved|            Page code (0Eh)                          | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                           Parameter length (0Eh)                      | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                  Reserved                  | Immed  |  SOTC  |Reserved| 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 5   | APRVal |         Reserved         |        Format of LBAs / Sec.      | 
+|-----+-----------------------------------------------------------------------| 
+| 6   | (MSB)                                                                 | 
+|-----+---          Logical blocks per second of audio playback            ---| 
+| 7   |                                                                  (LSB)| 
+|-----+-----------------------------------------------------------------------| 
+| 8   |              Reserved             |  Output port 0 channel selection  | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Output port 0 volume                        | 
+|-----+-----------------------------------------------------------------------| 
+| 10  |              Reserved             |  Output port 1 channel selection  | 
+|-----+-----------------------------------------------------------------------| 
+| 11  |                           Output port 1 volume                        | 
+|-----+-----------------------------------------------------------------------| 
+| 12  |              Reserved             |  Output port 2 channel selection  | 
+|-----+-----------------------------------------------------------------------| 
+| 13  |                           Output port 2 volume                        | 
+|-----+-----------------------------------------------------------------------| 
+| 14  |              Reserved             |  Output port 3 channel selection  | 
+|-----+-----------------------------------------------------------------------| 
+| 15  |                           Output port 3 volume                        | 
++=============================================================================+</pre>
+
+The parameters savable (PS) bit is only used with the MODE SENSE command. This bit is reserved with the MODE SELECT command. A PS bit of one indicates that the target is capable of saving the page in a non-volatile vendor-specific location. <p>An immediate (Immed) bit of zero indicates the target shall not send completion status until the audio playback operation is terminated. <p>An Immed bit of one indicates the target shall send completion status as soon as the playback operation has been started. <p><blockquote><b>NOTE 188</b> It is recommended that a Logical Unit type RESERVE be issued prior to starting audio play operations with an Immed bit of one in any multiple initiator environment. </blockquote><p>A stop on track crossing (SOTC) bit of zero indicates the target shall terminate the audio playback operation when the transfer length is satisfied. Multiple tracks shall be played as necessary. Periods of time encoded as audio pause/silence at the beginning of tracks, (index 0) shall also be played. <p>A stop on track crossing (SOTC) bit of one indicates the target shall terminate the audio playback operation when the beginning of a following track is encountered. <p>The audio playback rate valid (APRVal) bit value of one indicates that the format of logical blocks per second field and the logical blocks per second of audio playback field are valid. <p>The format of logical blocks addresses per second field gives the multiplier to be used with the logical blocks per second of audio playback. This is defined in <a href="WW1074.htm" target="figures">table 269</a>. <p><a name=tab269><h4>Table 269 - Multiplier for LBAs</h4><pre>+==============================-===================================+ 
+|  Format of LBAs / Sec value  |  Multiplier for LBAs / Sec field  | 
+|------------------------------+-----------------------------------| 
+|                0h            |                1                  | 
+|              1h - 7h         |                Reserved           | 
+|                8h            |                1/256              | 
+|              9h - Fh         |                Reserved           | 
++==================================================================+</pre><blockquote><b>NOTE 189</b> This field is provided as a means to return fractional (i.e. non- integral) values in the logical block addresses per second of audio playback. This shall occur when logical block sizes that are not even multiples or divisions of the physical block size are used. </blockquote><p>The logical blocks per second of audio playback field gives the relationship between time and the duration of play per logical block address. The value in this field is to be multiplied by the value in format of LBAs per second field. <p><blockquote><b>NOTE 190</b> The logical blocks per second of audio playback field and its companion format of LBAs per second field may not be supported by most current CD-ROM devices as a modifiable mode select parameter. </blockquote><p>The output port channel selection specifies the audio channels from the disc to which this output port should be connected (see <a href="WW1075.htm" target="figures">table 270</a>). More than one output port may be connected to an audio channel. More than one audio channel may be connected to an output port. <p><a name=tab270><h4>Table 270 - Output port channel selection</h4><pre>+==========-===============================================+ 
+|   Code   |  Description                                  | 
+|==========+===============================================| 
+|   0000b  |  output port muted                            | 
+|   0001b  |  connect audio channel 0 to this output port  | 
+|   0010b  |  connect audio channel 1 to this output port  | 
+|   0100b  |  connect audio channel 2 to this output port  | 
+|   1000b  |  connect audio channel 3 to this output port  | 
++==========================================================+</pre>
+
+The channel volume control indicates the relative volume level for this audio output port. A value of zero indicates the output is muted, and a value of FFh indicates maximum volume level. <p><blockquote><b>NOTE 191</b> If volume controls are implemented, the default volume level should be no more than 25 % of the maximum level as a personal safety consideration. </blockquote><p><a name=14.3.3.2><h4>14.3.3.2 CD-ROM device parameters</h4><p>The CD-ROM parameters page (see <a href="WW1076.htm" target="figures">table 271</a>) specifies parameters that affect all CD-ROM data types. <p><a name=tab271><h4>Table 271 - CD-ROM parameters page</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+========+========+=====================================================| 
+| 0   |   PS   |Reserved|         Page code (0Dh)                             | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                           Parameter length (06h)                      | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |             Reserved              |     Inactivity timer multiplier   | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                                                                       | 
+|-----| - - -         Number of MSF - S units per MSF - M unit          - - - | 
+| 5   |                                                                       | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                                                                       | 
+|-----| - - -         Number of MSF - F units per MSF - S unit          - - - | 
+| 7   |                                                                       | 
++=============================================================================+</pre>
+
+The parameters savable (PS) bit is only used with the MODE SENSE command. This bit is reserved with the MODE SELECT command. A PS bit of one indicates that the target is capable of saving the page in a non-volatile vendor-specific location. <p>The inactivity timer multiplier specifies the length of time that the drive shall remain in the hold track state after completion of a seek or read operation (see <a href="WW1077.htm" target="figures">table 272</a>). <p><blockquote><b>NOTE 192</b> Higher values in this parameter may have an adverse effect on the drive MTBF, in some implementations. </blockquote><p><a name=tab272><h4>Table 272 - Inactivity timer multiplier values</h4><pre>+==================-==================-===================-==================+ 
+| Inactivity timer | Minimum time in  | Inactivity timer  | Minimum time in  | 
+|    multiplier    | hold track state |    multiplier     | hold track state | 
+|------------------+------------------+-------------------+------------------| 
+|       0h         | Vendor-specific  |       8h          |      16s         | 
+|       1h         | 125 ms           |       9h          |      32s         | 
+|       2h         | 250 ms           |       Ah          |      1 min       | 
+|       3h         | 500 ms           |       Bh          |      2 min       | 
+|       4h         |   1 s            |       Ch          |      4 min       | 
+|       5h         |   2 s            |       Dh          |      8 min       | 
+|       6h         |   4 s            |       Eh          |     16 min       | 
+|       7h         |   8 s            |       Fh          |     32 min       | 
++=====================================-======================================+</pre>
+
+The number of S units per M unit field gives the ratio of these MSF address values. For media conforming to the CD-ROM and CD-DA standard, this value is 60. <p>The number of F units per S unit field gives the ratio of these MSF address values. For media conforming to the CD-ROM and CD-DA standard, this value is 75. <p><a name=14.3.3.3><h4>14.3.3.3 Read error recovery parameters</h4><p>The read error recovery parameters page (see <a href="WW1078.htm" target="figures">table 273</a>) specifies the error recovery parameters the target shall use during any command that performs a data read operation to the media (e.g. READ, READ TOC, etc.). <p><a name=tab273><h4>Table 273 - Read error recovery parameters page</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+========+========+=====================================================| 
+| 0   |   PS   |Reserved|                 Page code (01h)                     | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                       Parameter length (06h)                          | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                       Error recovery parameter                        | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                        Read retry count                               | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 7   |                           Reserved                                    | 
++=============================================================================+</pre>
+
+The parameters savable (PS) bit is only used with the MODE SENSE command. This bit is reserved with the MODE SELECT command. A PS bit of one indicates that the target is capable of saving the page in a non-volatile vendor-specific location. <p>The error recovery parameter bits are defined in <a href="WW28.htm">9.3.3.6</a>. <p><blockquote><b>NOTE 193</b> The implementation of error recovery procedures for CD-ROM devices is markedly different from those used for magnetic medium disk drives. At least one level of error correction (i.e. CIRC) is required to transfer the data stream. Therefore, the performance of the drive may differ substantially from what would be expected by sending the same error recovery parameters to a magnetic medium device. </blockquote><p>The correlation of the error recovery parameter and the bit settings defined for CD-ROM devices is given in <a href="WW1079.htm" target="figures">table 274</a>. The interpretation of these bit settings for CD-ROM devices is given in <a href="WW1080.htm" target="figures">table 275</a>. If the error recovery parameter is set to any other value, the command shall be terminated with CHECK CONDITION status. The sense key shall be set to ILLEGAL REQUEST and the additional sense code set to INVALID FIELD IN PARAMETER LIST. <p><a name=tab274><h4>Table 274 - Error recovery bit settings</h4><pre>+===========-=================+ 
+| Error     |   Bit settings  | 
+| recovery  |-----------------| 
+| parameter | 7 6 5 4 3 2 1 0 | 
+|===========+=================| 
+|    00h    | R R 0 0 R 0 0 0 | 
+|    01h    | R R 0 0 R 0 0 1 | 
+|    04h    | R R 0 0 R 1 0 0 | 
+|    05h    | R R 0 0 R 1 0 1 | 
+|    06h    | R R 0 0 R 1 1 0 | 
+|    07h    | R R 0 0 R 1 1 1 | 
+|    10h    | R R 0 1 R 0 0 0 | 
+|    11h    | R R 0 1 R 0 0 1 | 
+|    14h    | R R 0 1 R 1 0 0 | 
+|    15h    | R R 0 1 R 1 0 1 | 
+|    20h    | R R 1 0 R 0 0 0 | 
+|    21h    | R R 1 0 R 0 0 1 | 
+|    24h    | R R 1 0 R 1 0 0 | 
+|    25h    | R R 1 0 R 1 0 1 | 
+|    26h    | R R 1 0 R 1 1 0 | 
+|    27h    | R R 1 0 R 1 1 1 | 
+|    30h    | R R 1 1 R 0 0 0 | 
+|    31h    | R R 1 1 R 0 0 1 | 
+|    34h    | R R 1 1 R 1 0 0 | 
+|    35h    | R R 1 1 R 1 0 1 | 
+|-----------------------------| 
+|NOTE   Reserved bits shall   | 
+|       be set to zero.       | 
++=============================+</pre><a name=tab275><h4>Table 275 - CD-ROM error recovery descriptions</h4><pre>+==============================================================================+ 
+|Error recovery description                                                    | 
+|------------------------------------------------------------------------------| 
+| 00h The maximum error recovery procedures available are used.  If an error   | 
+|     occurs which is uncorrectable with the error correction codes (ECC) on   | 
+|     the media, data transfer is terminated with CHECK CONDITION status. The  | 
+|     block with the error is not transferred. The sense key is set to MEDIUM  | 
+|     ERROR. The information bytes give the address of the block where the     | 
+|     unrecovered error was detected. Recovered errors are not reported.       | 
+|                                                                              | 
+| 01h Only retries of the read operation and CIRC are used (layered error      | 
+|     correction is not used). Only CIRC unrecovered data errors are reported. | 
+|     If an CIRC unrecovered data error occurs, data transfer is terminated    | 
+|     with CHECK CONDITION status.  The block with the error is not            | 
+|     transferred. The sense key is set to MEDIUM ERROR. The information bytes | 
+|     give the address of the block where the unrecovered error was detected.  | 
+|     Recovered errors are not reported.                                       | 
+|                                                                              | 
+| 04h The maximum error recovery procedures available are used. Recovered data | 
+|     errors are reported.  If a recovered data error occurs, data transfer is | 
+|     not terminated.   However, when the data transfer has completed CHECK    | 
+|     CONDITION status is reported.  The sense key is set to RECOVERED ERROR.  | 
+|     The information bytes give the address of the last block where a         | 
+|     recovered data error was detected.                                       | 
+|                                                                              | 
+|     If a data error occurs that is uncorrectable with the ECC information    | 
+|     available on the media, data transfer is terminated and CHECK CONDITION  | 
+|     status is reported. The block with the error is not transferred. The     | 
+|     sense key is set to MEDIUM ERROR. The information bytes give the address | 
+|     of the block where the uncorrectable error was detected.                 | 
+|                                                                              | 
+| 05h Only retries of the read operation and CIRC are used (layered error      | 
+|     correction is not used).  Recovered data errors are reported.  If a      | 
+|     recovered data error occurs, data transfer is not terminated.  However,  | 
+|     when the data transfer has completed CHECK CONDITION status is reported. | 
+|     The sense key is set to RECOVERED ERROR. The information bytes give the  | 
+|     address of the last block where a CIRC recovered data error was          | 
+|     detected.                                                                | 
+|                                                                              | 
+|     If an unrecovered data error occurs, data transfer is terminated and     | 
+|     CHECK CONDITION status is reported. The block with the error is not      | 
+|     transferred. The sense key is set to MEDIUM ERROR. The information bytes | 
+|     give the address of the block where the unrecovered error was detected.  | 
+|                                                                              | 
+| 06h The maximum error recovery procedures are used. Recovered data errors    | 
+|     are reported.  If a recovered data error occurs data transfer is         | 
+|     terminated and CHECK CONDITION status is reported.  The block with the   | 
+|     recovered error is not transferred. The sense key is set to RECOVERED    | 
+|     ERROR.  The information bytes give the address of the block where the    | 
+|     recovered data error was detected.                                       | 
+|                                                                              | 
+|     If a data error occurs that is uncorrectable with the ECC information    | 
+|     on the medium, data transfer is terminated with CHECK CONDITION status.  | 
+|     The block with the error is not transferred.  The sense key is set to    | 
+|     MEDIUM ERROR. The information bytes give the address of the block where  | 
+|     the uncorrectable error was detected.                                    |</pre><pre>|                                                                              | 
+| 07h Only retries of the read operation are used (layer error correction is   | 
+|     not used).  CIRC recovered data errors are reported.  If a CIRC          | 
+|     recovered data error occurs, data transfer is terminated with CHECK      | 
+|     CONDITION status.  The block with the recovered error is not             | 
+|     transferred.  The sense key is set to RECOVERED ERROR. The information   | 
+|     bytes give the address of the block where the recovered data error was   | 
+|     detected.                                                                | 
+|                                                                              | 
+|     If an CIRC unrecovered data error occurs, data transfer is terminated    | 
+|     with CHECK CONDITION status.  The block with the error is not            | 
+|     transferred.  The sense key is set to MEDIUM ERROR. The information      | 
+|     bytes give the address of the block where the unrecovered error was      | 
+|     detected.                                                                | 
+|                                                                              | 
+| 10h If data transfer can be maintained, the maximum error recovery           | 
+|     procedures available are used. (RC = 1.) If an error occurs which is     | 
+|     uncorrectable with the error correction codes (ECC) on the media, or is  | 
+|     uncorrectable in time to maintain data transfer, the data transfer is    | 
+|     not terminated.  However, when the data transfer has completed, CHECK    | 
+|     CONDITION status is reported.  The sense key is set to MEDIUM ERROR.     | 
+|     The information bytes give the address of the block where the first      | 
+|     unrecovered error was detected. Recovered errors are not reported.       | 
+|                                                                              | 
+| 11h If data transfer can be maintained, retries of the read operation and    | 
+|     CIRC are used (layered error correction is not used). (RC = 1.)  Only    | 
+|     CIRC unrecovered data errors are reported. If a CIRC unrecovered data    | 
+|     error occurs, data transfer is not terminated. However, when the data    | 
+|     transfer has completed, CHECK CONDITION status is reported.  The sense   | 
+|     key is set to MEDIUM ERROR. The information bytes give the address of    | 
+|     the block where the first unrecovered error was detected.  Recovered     | 
+|     errors are not reported.                                                 | 
+|                                                                              | 
+| 14h If data transfer can be maintained, the maximum error recovery           | 
+|     procedures available are used. (RC = 1.)  Recovered data errors are      | 
+|     reported.  If a recovered data error occurs, data transfer is not        | 
+|     terminated.   However, when the data transfer has completed, CHECK       | 
+|     CONDITION status is reported.  The sense key is set to RECOVERED ERROR.  | 
+|     The information bytes give the address of the block where a recovered    | 
+|     data error was detected.                                                 | 
+|                                                                              | 
+|     If an data error occurs that is uncorrectable with the ECC information   | 
+|     available on the media, or is uncorrectable in time to maintain data     | 
+|     transfer, the data transfer is not terminated.  However, when the data   | 
+|     transfer has completed CHECK CONDITION, status is reported. The sense key| 
+|     is set to MEDIUM ERROR. The information bytes give the address of the    | 
+|     block where the first uncorrectable error was detected.  Reporting       | 
+|     unrecovered errors takes precedence over reporting recovered errors.     |</pre><pre>|                                                                              | 
+| 15h If data transfer can be maintained, retries of the read operation and    | 
+|     CIRC are used (layered error correction is not used). (RC = 1.)          | 
+|     Recovered data errors are reported.  If a recovered data error occurs,   | 
+|     data transfer is not terminated.  However, when the data transfer has    | 
+|     completed CHECK CONDITION status is reported.  The sense key is set to   | 
+|     RECOVERED ERROR. The information bytes give the address of the block     | 
+|     where a CIRC recovered data error was detected.                          | 
+|                                                                              | 
+|     If an unrecovered data error occurs, data transfer is not terminated.    | 
+|     However, when the data transfer has completed CHECK CONDITION status is  | 
+|     reported.  The sense key is set to MEDIUM ERROR. The information bytes   | 
+|     give the address of the block where the first unrecovered error was      | 
+|     detected.  Reporting unrecovered errors takes precedence over reporting  | 
+|     recovered errors.                                                        | 
+|                                                                              | 
+| 20h The maximum error recovery procedures available are used.  If an error   | 
+|     occurs which is uncorrectable with the error correction codes (ECC) on   | 
+|     the media, data transfer is terminated with CHECK CONDITION status. The  | 
+|     block with the error is transferred. The sense key is set to MEDIUM      | 
+|     ERROR. The information bytes give the address of the block where the     | 
+|     unrecovered error was detected. Recovered errors are not reported.       | 
+|                                                                              | 
+| 21h Only retries of the read operation and CIRC are used (layered error      | 
+|     correction is not used). Only CIRC unrecovered data errors are reported. | 
+|     If a CIRC unrecovered data error occurs data transfer is terminated      | 
+|     with CHECK CONDITION status. The block with the error is transferred.    | 
+|     The sense key is set to MEDIUM ERROR. The information bytes give the     | 
+|     address of the block where the unrecovered error was detected.           | 
+|     Recovered errors are not reported.                                       | 
+|                                                                              | 
+| 24h The maximum error recovery procedures available are used. Recovered data | 
+|     errors are reported.  If a recovered data error occurs data transfer is  | 
+|     not terminated.   However, when the data transfer has completed, CHECK   | 
+|     CONDITION status is reported.  The sense key is set to RECOVERED ERROR.  | 
+|     The information bytes give the address of the last block where a         | 
+|     recovered data error was detected.                                       | 
+|                                                                              | 
+|     If a data error occurs that is uncorrectable with the ECC information    | 
+|     available on the media data transfer is terminated and CHECK CONDITION   | 
+|     status is reported. The block with the error is transferred. The sense   | 
+|     key is set to MEDIUM ERROR. The information bytes give the address of    | 
+|     the block where the uncorrectable error was detected.                    |</pre><pre>|                                                                              | 
+| 25h Only retries of the read operation and CIRC are used (layered error      | 
+|     correction is not used).  Recovered data errors are reported.  If a      | 
+|     recovered data error occurs, data transfer is not terminated.  However,  | 
+|     when the data transfer has completed, CHECK CONDITION status is reported.| 
+|     The sense key is set to RECOVERED ERROR. The information bytes give the  | 
+|     address of the last block where an CIRC recovered data error was         | 
+|     detected.                                                                | 
+|                                                                              | 
+|     If an unrecovered data error occurs, data transfer is terminated and     | 
+|     CHECK CONDITION status is reported. The block with the error is          | 
+|     transferred.  The sense key is set to MEDIUM ERROR.  The information     | 
+|     bytes give the address of the block where the unrecovered error was      | 
+|     detected.                                                                | 
+|                                                                              | 
+| 26h The maximum error recovery procedures are used.  Recovered data errors   | 
+|     are reported.  If a recovered data error occurs, data transfer is        | 
+|     terminated and CHECK CONDITION status is reported.  The block with the   | 
+|     recovered error is transferred.  The sense key is set to RECOVERED       | 
+|     ERROR.  The information bytes give the address of the block where the    | 
+|     recovered data error was detected.                                       | 
+|                                                                              | 
+|     If a data error occurs that is uncorrectable with the ECC information    | 
+|     on the media, data transfer is terminated with CHECK CONDITION status.   | 
+|     The block with the error is transferred. The sense key is set to MEDIUM  | 
+|     ERROR. The information bytes give the address of the block where the     | 
+|     uncorrectable error was detected.                                        | 
+|                                                                              | 
+| 27h Only retries of the read operation are used (layer error correction is   | 
+|     not used).  CIRC recovered data errors are reported.  If a CIRC          | 
+|     recovered data error occurs, data transfer is terminated with CHECK      | 
+|     CONDITION status.  The block with the recovered error is transferred.    | 
+|     The sense key is set to RECOVERED ERROR. The information bytes give the  | 
+|     address of the block where the recovered data error was detected.        | 
+|                                                                              | 
+|     If a CIRC unrecovered data error occurs, data transfer is terminated     | 
+|     with CHECK CONDITION status. The block with the error is transferred.    | 
+|     The sense key is set to MEDIUM ERROR. The information bytes give the     | 
+|     address of the block where the unrecovered error was detected.           | 
+|                                                                              | 
+| 30h  Same as code 10H.                                                       | 
+|                                                                              | 
+| 31h  Same as code 11H.                                                       | 
+|                                                                              | 
+| 34h  Same as code 14H.                                                       | 
+|                                                                              | 
+| 35h  Same as code 15H.                                                       | 
++==============================================================================+ </pre>
+The read retry count field specifies the number of times that the controller shall attempt its read recovery algorithm. <p>A CIRC recovered data error is defined as a block for which the CIRC based error correction algorithm was unsuccessful for a read attempt, but on a subsequent read operation no error was reported. The number of subsequent read operations is limited to the read retry count. Layered error correction was not used. A CIRC unrecovered data error is defined as a block for which the CIRC based error correction algorithm was unsuccessful on all read attempts up to the read retry count. Layered error correction was not used. <p>An L-EC recovered data error is defined as a block for which the CIRC based error correction algorithm was unsuccessful, but the layered error correction was able to correct the block within the read retry count. <p>An L-EC uncorrectable data error is defined as a block which could not be corrected by layered error correction within the read retry count. <p><a name=14.3.3.4><h4>14.3.3.4 Verify error recovery parameters</h4><p>The verify error recovery parameters page (see <a href="WW1081.htm" target="figures">table 276</a>) specifies the error recovery parameter the target shall use during verify operations. <p><a name=tab276><h4>Table 276 - Verify error recovery parameters page</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+========+========+=====================================================| 
+| 0   |   PS   |Reserved|                  Page code (07h)                    | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                      Parameter length (06h)                           | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                    Error recovery parameter                           | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                       Verify retry count                              | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 7   |                           Reserved                                    | 
++=============================================================================+</pre>
+
+The parameters savable (PS) bit is only used with the MODE SENSE command. This bit is reserved with the MODE SELECT command. A PS bit of one indicates that the target is capable of saving the page in a non-volatile vendor-specific location. <p>The error recovery parameters for verify operations are as defined by the read error recovery parameters (see <a href="WW23.htm">14.3.3.3</a>). <a name=14.4><h2>14.4 Definitions specific to CD-ROM devices</h2><a name=14.4.1><h3>14.4.1 absolute F field:</h3>
+ The sub-division of the S Field part of the absolute physical address from the beginning of the media. One physical sector. Written on CD-ROM media in binary coded decimal notation. The value is from 00bcd to 74bcd. (See <a href="WW23.htm">14.4.12</a> and <a href="WW23.htm">14.4.18</a>.)<a name=14.4.2><h3>14.4.2 absolute M field:</h3>
+ The most significant part of the absolute physical address from the beginning of the media. Written on CD-ROM media in binary coded decimal notation. The value is from 00bcd to 74bcd. (See <a href="WW23.htm">14.4.18</a>.)<a name=14.4.3><h3>14.4.3 absolute S field:</h3>
+ The intermediate significant part of the absolute physical address from the beginning of the media. Written on CD-ROM media in binary coded decimal notation. The value is from 00bcd to 59bcd. (See <a href="WW23.htm">14.4.18</a>.)<a name=14.4.4><h3>14.4.4 bcd; binary coded decimal:</h3>
+ The number system used on the physical CD-ROM and CD-DA media. Numbers that use this notation have the 'bcd' suffix attached. A byte has two four-bit values each of which can have a value from 0 to 9. The maximum value is 99bcd (99 decimal). Hence the maximum number of tracks is 99bcd.<p>Example: 00 01 02 03 ... 08 09 10 11 ... 19 20 21 ... 98 99. <a name=14.4.5><h3>14.4.5 block:</h3>
+ The term block refers to the data in one logical block - the number of bytes defined by the logical block length in the mode block descriptor.<a name=14.4.6><h3>14.4.6 blocks per sector:</h3>
+ The number of logical blocks read from each CD-ROM physical sector. The value depends on the logical block Length as defined in the mode block descriptor. The value for blocks per sector is: 1 if the logical block length is 2 048, 2 if the logical block length is 1 024, 4 if the logical block length is 512, and 8 if the logical block length is 256 bytes. (Assuming a density code of 1 - 2 048 bytes of data per sector.)<a name=14.4.7><h3>14.4.7 CD-DA; compact disc - digital audio:</h3>
+ The standardized media for recording digital audio information. The 'Red Book' defines CD-DA media.<a name=14.4.8><h3>14.4.8 CD-ROM; compact disc - read only memory:</h3>
+ A standardized medium for recording digitized audio and digital data. CD-ROM is used to describe media with digital data rather than discs that encode audio only. The ISO/IEC 10149 standard defines CD-ROM media.<a name=14.4.9><h3>14.4.9 CD-ROM control field:</h3>
+ A four bit field in the Q sub-channel data indicating the type of information encoded on the current track. Indicates audio versus data and the type of audio encoding, etc. The control field is also found in the table of contents entries.<a name=14.4.10><h3>14.4.10 CD-ROM data mode:</h3>
+ A byte in the header of CD-ROM data sectors. This indicates if data is present and if layered error correction information is present.<a name=14.4.11><h3>14.4.11 CIRC; cross interleaved reed-solomon code:</h3>
+ The error detection and correction technique used within small frames of audio or data. The CIRC bytes are present in all CD-ROM data modes. The error correction procedure which uses the CIRC bytes is referred to as the CIRC based algorithm. In most CD-ROM drives, this function is implemented in hardware.<a name=14.4.12><h3>14.4.12 frame:</h3>
+ A physical sector on CD-ROM media. Also the F field unit of a MSF CD-ROM address. The term frame is also used in the CD- ROM model to describe the amount of data received between synchronization patterns. 98 of these frames make a sector. This sort of frame is referred to as 'small frames' where the meaning is not clear from context.<a name=14.4.13><h3>14.4.13 hold track state:</h3>
+ When a CD-ROM device enters the hold track state the optical pick-up is maintained at an approximately constant position on the media. This allows a paused operation to be resumed without latency due to seeking. Rotational latency may be incurred, however.<a name=14.4.14><h3>14.4.14 index:</h3>
+ An index is a subdivision of a CD-ROM track. A track can have from 1 to 99 index numbers. Index numbers within a track are sequential starting with 1.<a name=14.4.15><h3>14.4.15 lead-in area:</h3>
+ The area on a CD-ROM disc prior to track one. The main channel in the lead-in area contains audio or data null information. This area is coded as track zero but is not addressable via the SCSI command set. The Q sub-channel in this area is coded with the table of contents information.<a name=14.4.16><h3>14.4.16 lead-out area:</h3>
+ The area on a CD-ROM disc beyond the last information track. The main channel in the lead-out area contains audio or data null information. This area is coded as track AAbcd but is not addressable via the SCSI command set. The READ CD-ROM CAPACITY data is the first logical block address of this area minus one.<a name=14.4.17><h3>14.4.17 L-EC; layered error correction:</h3>
+ The error correction technique used with CD-ROM data mode one sectors. In such sectors, 276 bytes of the auxiliary data field contain L-EC bytes. The algorithm that uses these bytes to perform error correction is often implemented in the drive firmware.<a name=14.4.18><h3>14.4.18 MSF address:</h3>
+ The physical address written on CD-ROM discs. Expressed as a sector count relative to either the beginning of the medium (absolute) or to the beginning of the current track (relative). As defined by the CD-DA and CD-ROM standards, each F field unit is one physical sector; each S field unit is 75 F field units; each M field unit is 60 S field units. Valid contents of F fields are binary values from 0 through 74. Valid contents of S fields are binary values from 0 through 59. Valid contents of M fields are binary values from 0 through 74.<a name=14.4.19><h3>14.4.19 output port:</h3>
+ A means for connecting the audio signal being played to equipment outside the CD-ROM device.<a name=14.4.20><h3>14.4.20 pause area:</h3>
+ A transition area at the beginning or end of an audio track encoded with audio silence. This transition area is required where the audio track immediately precedes a data track.<a name=14.4.21><h3>14.4.21 post-gap area:</h3>
+ A transition area at the end of a data track encoded with null information. This transition area is required where the data track immediately precedes an audio track.<a name=14.4.22><h3>14.4.22 pre-gap area:</h3>
+ A transition area at the beginning of a data track encoded with null information. This transition area is required where the data track immediately follows an audio track.<a name=14.4.23><h3>14.4.23 relative F field:</h3>
+ The sub-division of the S field part of the relative physical address from the beginning of the current track. One physical sector. Written on CD-ROM medium in binary coded decimal notation. The value is from 00bcd to 74bcd. (See <a href="WW23.htm">14.4.12</a> and <a href="WW23.htm">14.4.18</a>.)<a name=14.4.24><h3>14.4.24 relative M field:</h3>
+ The most significant part of the relative physical address from the beginning of the current track. Written on CD-ROM media in binary coded decimal notation. The value is from 00bcd to 74bcd. (See <a href="WW23.htm">14.4.18</a>.)<a name=14.4.25><h3>14.4.25 relative S field:</h3>
+ The intermediate significant part of the relative physical address from the beginning of the current track. Written on CD-ROM medium in binary coded decimal notation. The value is from 00bcd to 59bcd. (See <a href="WW23.htm">14.4.18</a>.)<a name=14.4.26><h3>14.4.26 sector:</h3>
+ Refers to the data contained during one frame time. (On CD-DA medium with two channels of audio this is 1/75th of a second). In the CD-ROM standard document the term block is used for this unit. There may be more than one logical block per sector. Similarly, a single logical block may map to multiple sectors.<a name=14.4.27><h3>14.4.27 sub-channel:</h3>
+ CD-ROM and CD-DA media have a main channel and a sub-channel. The sub-channel area has eight parts called P, Q, R, S, T, U, V, and W. The Q-sub-channel contains information useful to the controller and drive, such as the control field and MSF addresses. The data rate of each sub-channel (P, Q, etc.) is 1/192nd of that of the main channel.<a name=14.4.28><h3>14.4.28 TOC:</h3>
+ The table of contents has information on the type of disc and the starting address of the tracks. This information is encoded in the Q sub-channel.<a name=14.4.29><h3>14.4.29 track:</h3>
+ A sub-division of the CD-ROM media. A disc has from one to ninety-nine tracks. The data within a track is always of the same type. A track can be either CD-ROM or CD-Audio. A disc can start at any track number.<a name=14.4.30><h3>14.4.30 track relative logical address:</h3>
+ An offset from the beginning of the recorded information on a track expressed in units of the logical block length. The value is used to address logical blocks relative to the beginning of a track using the relative MSF address encoded in the CD-ROM Q sub-channel.<a name=14.4.31><h3>14.4.31 transition area:</h3>
+ Sectors at the beginning or end of tracks coded with null information. Where required by the media standards, these areas have minimum lengths of 1 s or 2 s. The maximum lengths are not specified. Transition areas at the beginning of a track are encoded with index zero. Addresses within transition areas may not be read.<hr><a href="WW24.htm"><img alt="[PREV]" height=20 src="WWR10.gif" width=20></a><a href="WW48.htm"><img alt="[TOP]" height=20 src="WWR11.gif" width=20></a><a href="WW22.htm"><img alt="[NEXT]" height=20 src="WWR13.gif" width=20></a></body></html>

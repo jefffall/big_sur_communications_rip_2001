@@ -1,0 +1,19 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base><title>SCSI-2 Spec - Table 196</title></head><body><h1>Table 196</h1><pre>+===========-=================================================================+ 
+|  Code     |  Description                                                    | 
+|-----------+-----------------------------------------------------------------| 
+|   0h      |  The target shall not report GOOD status on write commands until| 
+|           |  the data blocks are actually written on the medium.            | 
+|           |                                                                 | 
+|   1h      |  The target may report GOOD status on write commands as soon as | 
+|           |  as all the data specified in the write command has been        | 
+|           |  transferred to the target's buffer.  One or more blocks may be | 
+|           |  buffered prior to writing the block(s) to the medium.          | 
+|           |                                                                 | 
+|   2h      |  The target may report GOOD status on write commands as soon as:| 
+|           |     a) All the data specified in the write command has been     | 
+|           |    successfully transferred to the target's buffer, and         | 
+|           |     b) All buffered data from different initiators has been     | 
+|           |    successfully written to the medium.                          | 
+|           |                                                                 | 
+|  3h - 7h  |  Reserved                                                       | 
++=============================================================================+</pre></body></html>

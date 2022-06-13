@@ -1,0 +1,21 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base target="main"><title>SCSI-2 Spec - Table 42</title></head><body><h1>Table 42</h1><pre>
++=====-=====-=================================================================+  
+| Pad | Cat | COPY manager's action                                           | 
+|-----+-----+-----------------------------------------------------------------| 
+|  0  |  0  | On inexact segments, it is device specific whether the COPY     | 
+|     |     | manager rejects the COPY command with CHECK CONDITION status and| 
+|     |     | ILLEGAL REQUEST sense key, the COPY manager writes or accepts   | 
+|     |     | short blocks (variable-block mode on sequential-access devices),| 
+|     |     | or the COPY manager adds pad characters (00h) to the destination| 
+|     |     | block or strips pad characters from the source block.           | 
+|     |     |                                                                 | 
+|  1  |  0  | On inexact segments, the COPY manager shall add pad characters  | 
+|     |     | (00h) to the destination block to completely fill the block, or | 
+|     |     | it shall strip pad characters from the source block, always     | 
+|     |     | stopping at the end of a complete block.                        | 
+|     |     |                                                                 | 
+|  X  |  1  | The COPY manager shall always write or read complete blocks.  On| 
+|     |     | inexact segments, the remainder of the block contains data from | 
+|     |     | the next segment.  This code is not valid in the last segment of| 
+|     |     | the COPY command.                                               | 
++=============================================================================+ </pre></body></html>

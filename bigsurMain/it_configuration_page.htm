@@ -1,0 +1,306 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>IT Configuration page, BigSur Communications, Jeff Fall</title>
+</head>
+
+<body bgcolor="#D2C4C1">
+
+<p align="center"><img border="0" src="jpgs/bigsur_communications.jpg" width="284" height="100"></p>
+
+<p align="center"><font size="5" color="#FF0000"><u><b>BigSur Information Technology</b></u></font></p>
+<hr>
+<p align="left"><b>This page attempts to answer common configuration questions
+of interest to a new employee. Everything you need to know regarding PC
+configuration and email and network settings is here.</b></p>
+<hr>
+<p align="left"><b>PC's are mostly DELL Dimension 4100's.&nbsp; For support, see
+Dell's website by clicking <a href="http://support.dell.com">HERE</a></b></p>
+<p align="left"><b>Most of the Dimension 4100's are equipped with Windows 2000
+installed. The latest graphics driver is probably not installed for the Geforce graphics
+card. You can tell this by looking at the scan rate of the monitor.&nbsp; The
+highest scan rate should be 100HZ at 1024 X 768 size and colour depth of 32
+million colours.</b></p>
+<p align="left"><b>There are also upgrades for the latest drivers for the
+CHIPSET and for the IDE controller to gain ULTRA speeds, (PIO level 5).</b></p>
+<p align="left"><b>For the upgrades below, save them to disk then click on them.
+Read the information from the webpage that pops up and perform the
+installation.&nbsp; Disclaimer: This information is supplied with out warranty.
+DATA on the hard disk has been lost once due to upgrades, perform at your own
+risk.</b></p>
+<p align="left"><b>GeForce Video Driver upgrade click <a href="Dell_software_updates/geforce%20drivers/12.41-W2K.exe"> HERE</a></b></p>
+<p align="left"><b>Dell Dimension 4100 Chipset upgrade - click <a href="Dell_software_updates/4100%20Chip%20Set/4100%20Chip%20Set.exe"> HERE</a></b></p>
+<p align="left"><b>IDE Ultra Drivers upgrade - click <a href="Dell_software_updates/IDE%20Drivers/Dell%204100%20IDE%20Drivers.exe"> HERE</a></b></p>
+<p align="left"><b>Driver package for Dell Dimension 4100 on board sound chip -
+click <a href="Dell_software_updates/Dell%20Dim%204100%20On%20board%20sound%20driver/Z1405U03.exe">HERE</a></b></p>
+<p align="left"><b>Motorola Modem shipped with Dimension 4100 (on CD with
+computer if you can find it) Click <a href="Dell_software_updates/motorola_modem_in_4100/2k0227.exe">HERE</a></b></p>
+<p align="left"><b>(note: if you plug the modem into an outgoing phone line -
+you can FAX directly from your PC without using a traditional FAX machine.
+Pretty cool.)</b></p>
+<hr>
+<p align="center"><font size="5" color="#FF0000"><u><b>HP 4100N Printer Configuration</b></u></font></p>
+<p align="center"><font size="5" color="#FF0000"><u><b>for Windows 2000 only</b></u></font></p>
+<p align="center"><font size="1"><u><b>for windows 98, Windows ME or a laptop
+see below this article</b></u></font></p>
+<p align="center"><img border="0" src="gifs/hp_4100_printer.gif" width="170" height="136"></p>
+<p align="left">We are connecting to the printer directly using TCP/IP.&nbsp;
+Currently, there is no unix server to spool to the printer. And, that's
+fine.&nbsp; The print jobs are spooled up on your Windows 2000 Professional PC
+and transferred via a TCP/IP port to the EIO network card on the HP 4100N
+printer. Maybe more than you wanted to know.</p>
+<p align="left">How to do it? Here are the steps..</p>
+<ol>
+  <li>
+    <p align="left">Open the Printers folder from the control panel</li>
+  <li>
+    <p align="left">Now top left do FILE and then select SERVER PROPERTIES</li>
+  <li>
+    <p align="left">Select the PORTS tab.</li>
+  <li>
+    <p align="left">Click ADD PORTS</li>
+  <li>
+    <p align="left">Highlight Standard TCP/IP Port by clicking the mouse ONCE on
+    it.</li>
+  <li>
+    <p align="left">Now click once on NEW PORT - TCP/IP Wizard presents itself</li>
+  <li>
+    <p align="left">Click on NEXT</li>
+  <li>
+    <p align="left">For printer name or IP address use this IP address: <b>10.1.2.1</b></li>
+  <li>
+    <p align="left">For Port name use HP LJ 4100N</li>
+  <li>
+    <p align="left">Click on NEXT</li>
+  <li>
+    <p align="left">Now CLOSE or FINISH</li>
+  <li>
+    <p align="left">Next phase - Get the HP printer driver onto your computer by
+    clicking <a href="HP%204100%20Printer/lj828en.exe">[HERE]&nbsp; DOWNLOAD HP
+    4100N driver</a> (!! For Windows 2000 ONLY !!) For Windows ME, see next
+    article below.</li>
+  <li>
+    <p align="left">Save the driver to somewhere on your hard drive where you
+    will remember where you put it.</li>
+  <li>
+    <p align="left">Find where you put the file on your hard drive and rapidly
+    click twice on it with the mouse.</li>
+  <li>
+    <p align="left">The driver packed exe file will expand and unzip its
+    contents to lj828en on your C:\ drive.&nbsp; That's OK, just remember where
+    that is. So, all the driver files for the printer are now at <a href="file:///C:/lj828en">C:\lj828en</a>
+    on your C:\ hard disk, OK?</li>
+  <li>
+    <p align="left">Now, go back to the control panel and find the Printers
+    folder. Double click the folder to open it.</li>
+  <li>
+    <p align="left">Now hit ADD PRINTER</li>
+  <li>
+    <p align="left">Add Printer Wizard presents itself. Hit NEXT with mouse.</li>
+  <li>
+    <p align="left">Now, only allow &quot;Local Printer&quot; to be selected. <b>Do
+    not allow &quot;Automatically detect ...&quot; or &quot;network
+    printer&quot; to be selected.. </b>(whew - thanks)</li>
+  <li>
+    <p align="left">Now NEXT with the mouse.</li>
+  <li>
+    <p align="left">A list of ports is presented. <b>Make sure &quot;Use
+    following port&quot; is selected. </b></li>
+  <li>
+    <p align="left">From the list of ports, find the port you made in step 8
+    above.</li>
+  <li>
+    <p align="left">Highlight port called &quot;HP LJ 4100N&quot; which is near
+    the end of the list. </li>
+  <li>
+    <p align="left">Now you see a bunch of names of printers presented.&nbsp;
+    Not to worry. You have the printer driver and that will automatically figure
+    out the name of the printer - so you don't have to.. <b>Select &quot;HAVE
+    DISK&quot;.</b></li>
+  <li>
+    <p align="left">Install from Disk menu comes up. Remember that disk path I
+    told you to remember? Put <b><a href="file:///C:/lj828en">C:\lj828en</a> </b>into
+    the &quot;Copy Manu files from&quot; area. and hit NEXT</li>
+  <li>
+    <p align="left">Note the name of the printer driver it found from your
+    directory..It is called HP Laserjet 4100 PCL 6. That's fine. Hit NEXT.</li>
+  <li>
+    <p align="left">Select &quot;Replace existing Driver&quot;</li>
+  <li>
+    <p align="left">NEXT</li>
+  <li>
+    <p align="left">Now type in a name for the printer. You could use &quot;HP
+    Laserjet 4100 PCL 6&quot; if you want to.</li>
+  <li>
+    <p align="left">Printer sharing - Do not share the printer. As you really
+    don't need to. Everyone can get to the printer using the method contained in
+    the summary just as you are doing now.. </li>
+  <li>
+    <p align="left">NEXT</li>
+  <li>
+    <p align="left">Print a TEST page - NO, do that later.</li>
+  <li>
+    <p align="left">Whew - you are finished.. Select FINISH</li>
+  <li>
+    <p align="left">If you made this printer your default printer, then bring up
+    Internet Explorer and try to print a test page.. Do a FILE then
+    PRINT...&nbsp;&nbsp; Do you see the printer you just created - Click the
+    mouse on it and click PRINT.</li>
+  <li>
+    <p align="left">You should see a little printer on the lower right portion
+    of your taskbar.&nbsp; If all is well, it will only be there for a short
+    time and be gone.</li>
+  <li>
+    <p align="left">Please go down to get your first output from the printer. It
+    is located near Peggy round the corner and near the Xerox copier.</li>
+</ol>
+<hr>
+<p align="center"><font size="5" color="#FF0000"><u><b>HP 4100N Printer Configuration</b></u></font></p>
+
+<p align="center"><font color="#FF0000" size="5">Windows 98 or ME on a laptop or
+similar only</font></p>
+
+<p align="center"><img border="0" src="gifs/hp_4100_printer.gif" width="170" height="136"></p>
+
+<p align="center">&nbsp;</p>
+
+<p align="left">We have been relying on the Jetdirect EIO card in the HP 4100N
+printer to supply us with a nice embedded print spooler.&nbsp; This works fine
+for Windows2000 which supports the concept of an HP printer port.</p>
+
+<p align="left">Windows 98 and Windows ME do not have these features.</p>
+
+<p align="left">To use the printer from these systems, you can share the printer
+from your windows 2000 Dell computer (or similar) and use the shared printer to
+gain access. There are certain things you have to set up first.</p>
+
+<ol>
+  <li>
+    <p align="left">Your laptop must be configured to use DHCP and it must get
+    it's IP address automatically from our DHCP server.</li>
+  <li>
+    <p align="left">You must have the Windows 98 or Windows ME driver for the HP
+    4100N on your laptop and ready to be used for installation.</li>
+  <li>
+    <p align="left">IMPORTANT!! This is the bugaboo. You typed in a username a
+    long time ago when you first setup windows 98 or ME&nbsp; on your
+    laptop.&nbsp; That username MUST BE the exact same one you use in your
+    Windows 2000 computer.&nbsp; This then, establishes a trust relationship
+    between the laptop and your Windows 2000 machine. Due to Win2000 using
+    encrypted passwords (and the inability of windows ME) to use this feature,
+    the way around this is keeping the usernames matching.</li>
+  <li>
+    <p align="left">You now share the printer on your Windows2000 machine. Give
+    it a nice short descriptive name you can use for step 7.</li>
+  <li>
+    <p align="left">On your Windows 98 or ME machine, you go to the printers
+    folder and select NEW PRINTER.</li>
+  <li>
+    <p align="left">You choose NETWORK printer.</li>
+  <li>
+    <p align="left">for the name of the network printer you type in this:&nbsp; <a href="file://nameofyourcomputer/nameofprinter">\\nameofyourcomputer\nameofprinter</a>
+    Where name of your computer is the name which shows up in the BigSur
+    workgroup. Name of the printer is the name the printer was given when you
+    shared it in step 4.</li>
+  <li>
+    <p align="left">For the driver, you now select HAVE DISK and point the
+    install program to the area of the driver where you put it when you
+    downloaded and expanded it. Probably <a href="file:///C:/hpxxxen">C:\hp844en</a>,
+    where 844 is some model number internal to Hewlett Packard. If you need the
+    driver for Windows ME download it from the BigSur Web server by clicking <a href="HP%204100%20Printer/lj844en_ME.exe">HERE</a>.&nbsp;
+    Once you download the driver, it is in zipped .exe form. Double click on it
+    and it will expand to the directory as in step 8.</li>
+  <li>
+    <p align="left">Now, keep answering questions and hitting NEXT until you get
+    to Finish.</li>
+  <li>
+    <p align="left">Make sure your main Windows 2000 computer is ON when you are
+    trying to print from your other computer which we just setup.</li>
+  <li>
+    <p align="left">Try a test print from Internet Explorer.</li>
+</ol>
+<hr>
+<p align="center">&nbsp;</p>
+
+<p align="center"><font size="5" color="#FF0000">Email and the Internet</font></p>
+
+<ul>
+  <li>
+    <p align="left">We use DHCP to supply PC's with their IP, mask, gateway, ect,
+    so please setup your PC's TCP/IP stack accordingly.</li>
+  <li>
+    <p align="left">We use pacbell DSL at a 1.5Mbps service rate which is
+    divided up and the speed will vary according to load.</li>
+  <li>
+    <p align="left">Mail POP server (incoming) <b>mail.bigsurcomm.com </b>See
+    Chandra for your email ID and password.</li>
+  <li>
+    <p align="left">Mail SMTP server (outgoing) <b>smtp.pacbell.net</b></li>
+  <li>
+    <p align="left">Internet proxy/firewall - not needed (yet), so don't use
+    one.</li>
+</ul>
+<hr>
+<p align="center"><font size="5" color="#FF0000"><b>Personal Web Server</b></font></p>
+<p align="left">All computers with Windows 2000 Professional have personal web
+servers built in. It may not be installed. To install it:</p>
+<ol>
+  <li>
+    <p align="left">Control Panel</li>
+  <li>
+    <p align="left">Add/Remove programs</li>
+  <li>
+    <p align="left">Add/Remove Windows Components</li>
+  <li>
+    <p align="left">Check the checkbox for &quot;Internet Information
+    Services&quot; IIS</li>
+  <li>
+    <p align="left">Hit Next and let it install</li>
+  <li>
+    <p align="left">Finish.</li>
+  <li>
+    <p align="left">Probably a good idea to reboot.</li>
+  <li>
+    <p align="left">This process creates a Inetpub folder on your C:\ drive.</li>
+  <li>
+    <p align="left">In the Inetpub folder is a wwwroot folder.</li>
+  <li>
+    <p align="left">Put an index.html file into the location <a href="file:///C:/Inetpub/wwwroot">C:\Inetpub\wwwroot</a>
+    folder.</li>
+  <li>
+    <p align="left">The index.html is the first webpage your website will
+    display</li>
+  <li>
+    <p align="left">Use Microsoft Front Page or Netscape Composer to modify the
+    index.html page.</li>
+  <li>
+    <p align="left">Tell your IIS webserver to use the index.html page. To do
+    this firstly go to control panel</li>
+  <li>
+    <p align="left">From control panel open Administrative Tools folder </li>
+  <li>
+    <p align="left">&nbsp;Double click on the &quot;Personal Web Manager&quot;</li>
+  <li>
+    <p align="left">Click on &quot;ADVANCED&quot; on the left</li>
+  <li>
+    <p align="left">For default documents, erase all of them and enter &quot;index.html&quot;
+    without the &quot;&quot;.</li>
+  <li>
+    <p align="left">Close the perweb manager.</li>
+  <li>
+    <p align="left">Test your Webserver!&nbsp; Enter the name of your computer
+    as it appears in the bigsur Network. For example for jefffall you would
+    enter jefffall at the Address area of Internet Explorer.</li>
+  <li>
+    <p align="left">Add content to your webpage and help BigSur grow by allowing
+    all of us to educate and help eachother via information exchange.</li>
+</ol>
+<hr>
+
+</body>
+
+</html>

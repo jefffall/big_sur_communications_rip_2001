@@ -1,0 +1,104 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><title>SCSI-2 Spec - Commands for processor devices</title></head><body><a href="WW26.htm"><img alt="[PREV]" height=20 src="WWR10.gif" width=20></a><a href="WW48.htm"><img alt="[TOP]" height=20 src="WWR11.gif" width=20></a><a href="WW24.htm"><img alt="[NEXT]" height=20 src="WWR13.gif" width=20></a><hr><a name=12><h1>12 Processor devices</h1><a name=12.1><h2>12.1 Model for processor devices</h2>
+The SCSI processor device is a target with the characteristics of a primary computing device, typically a personal computer, minicomputer, mainframe computer, or auxiliary computing device or server. Such a primary computing device is often called a host. The processor device receives or provides packets of data as requested by the initiator. <p>In the SCSI processor device, the target accepts and provides the data packets transferred according to the commands of the initiator. The initiator and the processor device are both assumed to know the rules by which information is exchanged between them, how the information is interpreted by the processor device, and when it is allowable to exchange the information. These rules are not specified by this International Standard. <p>The initiator requests that the processor device accept a packet of data by transmitting a SEND command. The initiator requests that the processor device return a packet of data by transmitting a RECEIVE command. A COPY command can also be transmitted to the processor device to request that it serve as a copy manager. The actual data flow can be between the processor device and another SCSI device or can be between two SCSI devices under control of the processor device acting as a copy manager. <p>If a processor device temporarily has no resource available to manage a data packet from the initiator, has no data packet to provide to the initiator, or has no resources assigned to perform the operation, the device may then choose one of the following responses:<ul><li>a) Terminate the command with CHECK CONDITION status and the sense key NOT READY with the appropriate additional sense code for the condition. This is the appropriate response to a TEST UNIT READY command.<li>b) Disconnect until the necessary resource or data packet becomes available, and then reconnect to the initiator and resume the operation.<li>c) Terminate the command with BUSY status. </ul><p>More than one logical unit can be implemented by a processor device. Logical units can serve as additional paths to a single resource, and/or each logical unit can serve as a path to different resources within the device. A single logical unit may also serve as a path to multiple resources if the processor device can interpret information within the data packet and route the packet to the appropriate resource. If the logical unit addressed by the initiator does not have an available resource or data packet associated with it, the processor device may choose to treat the logical unit as an invalid logical unit (see <a href="WW30.htm">7.5.3</a>) or respond as described in the previous paragraph. <p>If the processor device determines that an error or unusual condition has occurred while performing an operation specified by the contents of a data packet, the information describing the condition is normally returned as a part of a data packet. If the processor device determines that an error or unusual condition has occurred while executing the SCSI command from the initiator, the command is terminated with a CHECK CONDITION and the failures are identified through a REQUEST SENSE command. <p>The SCSI processor device is distinguished from a SCSI communications device by the fact that the primary destination of the data packets is within the target device. A SCSI communications device, in contrast, passes the data on to an ultimate destination outside the target through a network. Many types of devices may find it convenient to function as processor devices if no other suitable SCSI device type exists and if the packet exchange protocol dictated by the processor device model meets their functional requirements. Devices requiring totally incompatible protocols and command sets should be examined carefully to ensure that the incompatibilities are based on functional requirements. If they are, they should be treated as vendor-unique device types. <p>Several examples of processor device implementations are provided to clarify the range of utility of the SCSI processor device. <a name=12.1.1><h3>12.1.1 Host-to-host communication, SEND only</h3>
+A host system, (host A), takes the initiator role and selects a processor device (host B), transmitting a packet to host B using the SEND command. The SEND command contains an operating system call that requests data from the local storage devices attached to host B. After performing the functions required by the data packet, Host B assumes the initiator mode and selects host A as a processor device and uses a SEND command to transmit the requested data back to host A. Host A thus acts as a primary computer and host B acts as a specialized data server computer. Note that the SEND command is sufficient to perform a complete transaction if both host A and host B are capable of acting as initiators. This provides the capability of a high bandwidth inter- communication among nearby host processors. <a name=12.1.2><h3>12.1.2 Host-to-host communication, SEND and RECEIVE</h3>
+A host system (host A) takes the initiator role and selects a processor device (host B), transmitting a packet using the SEND command to host B containing instructions about an operation to be performed. Host A again takes the initiator role and sends the data to be used by host B in the operation. Host A then assumes that a result will be obtained consistent with rules understood by both devices. Host A generates a RECEIVE command to obtain the result from host B. If the result is not yet ready, host B may disconnect until the calculation is complete and the requested data packet can be returned to host A. <p><blockquote><b>NOTE 168</b> Host A need not support target mode and host B need not support initiator mode to successfully complete an exchange between the two devices. </blockquote><a name=12.1.3><h3>12.1.3 Host-to-special-output peripheral</h3>
+A special co-processor device which can use the processor device command set is a high-performance graphics display terminal. The initiator sends to the display terminal control and data packets that contain the image to be displayed. Only the SEND command is required. A peripheral failure should be indicated through the normal CHECK CONDITION / REQUEST SENSE protocol. <a name=12.1.4><h3>12.1.4 Host-to-special-input peripheral</h3>
+A second special co-processor device that can use the processor device command set is a data acquisition subsystem. Such subsystems may multiplex and compact streams of data from many sources. A host could control the data acquisition modes and the selection of data streams by transmitting control packets to the processor device using the SEND command. The host could then obtain the acquired data by executing a series of RECEIVE commands. The data acquisition device could also serve as an initiator, selecting peripheral storage devices and storing the compacted acquired data there for later access directly by the host or through host to host communication protocols. A peripheral failure would be indicated through the normal CHECK CONDITION / REQUEST SENSE protocol. <a name=12.2><h2>12.2 Commands for processor devices</h2>
+The commands for processor devices shall be as shown in <a href="WW1034.htm" target="figures">table 229</a>. <p><a name=tab229><h4>Table 229 - Commands for processor devices</h4><pre>+=====================================-============-======-============+ 
+|  Command name                       | Operation  | Type |  Subclause | 
+|                                     |   code     |      |            | 
+|-------------------------------------+------------+------+------------| 
+| CHANGE DEFINITION                   |    40h     |   O  |   <a href="WW29.htm">8.2.1</a>    | 
+| COMPARE                             |    39h     |   O  |   <a href="WW29.htm">8.2.2</a>    | 
+| COPY                                |    18h     |   O  |   <a href="WW29.htm">8.2.3</a>    | 
+| COPY AND VERIFY                     |    3Ah     |   O  |   <a href="WW29.htm">8.2.4</a>    | 
+| INQUIRY                             |    12h     |   M  |   <a href="WW29.htm">8.2.5</a>    | 
+| LOG SELECT                          |    4Ch     |   O  |   <a href="WW29.htm">8.2.6</a>    | 
+| LOG SENSE                           |    4Dh     |   O  |   <a href="WW29.htm">8.2.7</a>    | 
+| READ BUFFER                         |    3Ch     |   O  |   <a href="WW29.htm">8.2.12</a>   | 
+| RECEIVE                             |    08h     |   O  |  <a href="WW25.htm">12.2.1</a>    | 
+| RECEIVE DIAGNOSTIC RESULTS          |    1Ch     |   O  |   <a href="WW29.htm">8.2.13</a>   | 
+| REQUEST SENSE                       |    03h     |   M  |   <a href="WW29.htm">8.2.14</a>   | 
+| SEND                                |    0Ah     |   M  |  <a href="WW25.htm">12.2.2</a>    | 
+| SEND DIAGNOSTIC                     |    1Dh     |   M  |   <a href="WW29.htm">8.2.15</a>   | 
+| TEST UNIT READY                     |    00h     |   M  |   <a href="WW29.htm">8.2.16</a>   | 
+| WRITE BUFFER                        |    3Bh     |   O  |   <a href="WW29.htm">8.2.17</a>   | 
+|----------------------------------------------------------------------| 
+|Key:  M = command implementation is mandatory.                        | 
+|      O = command implementation is optional.                         | 
++======================================================================+</pre>
+
+The following operation codes are vendor-specific: 02h, 05h, 06h, 09h, 0Ch, 0Dh, 0Eh, 0Fh, 10h, 11h, 13h, 14h, 19h, C0h through FFh. All remaining operation codes for processor devices are reserved for future standardization. <a name=12.2.1><h3>12.2.1 RECEIVE command</h3>
+The RECEIVE command (see <a href="WW1035.htm" target="figures">table 230</a>) requests that the target transfer data to the initiator. The contents of the data are not defined by this International Standard. <p><a name=tab230><h4>Table 230 - RECEIVE command</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (08h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |                  Reserved                  | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                           Allocation length                           | 
+|-----+---                                                                 ---| 
+| 4   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Control                                     | 
++=============================================================================+</pre><a name=12.2.2><h3>12.2.2 SEND command</h3><p>The SEND command (see <a href="WW1036.htm" target="figures">table 231</a>) requests that the target transfer data from the initiator. <p><a name=tab231><h4>Table 231 - SEND command</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (0Ah)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |                  Reserved         |  AEN   | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                           Transfer length                             | 
+|-----+---                                                                 ---| 
+| 4   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Control                                     | 
++=============================================================================+</pre>
+
+An asynchronous event notification (AEN) bit of one indicates that the data to be transferred conforms to AEN data format as defined in <a href="WW1037.htm" target="figures">table 232</a>. A SEND command with an AEN bit of one shall be only issued to logical unit zero. <p><a name=tab232><h4>Table 232 - SEND command - AEN data format</h4><pre>+=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=================+========+=================+==========================| 
+| 0   |     Reserved    | LUNTAR |     Reserved    |          LUNTRN          | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                               Reserved                                | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                               Reserved                                | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                               Reserved                                | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                               Sense data byte (0)                     | 
+|- - -+---                                                                 ---| 
+| n+4 |                               Sense data byte (n)                     | 
++=============================================================================+</pre>
+
+An AEN bit of zero indicates that the data to be transferred are vendor-specific. <p>The transfer length specifies the length in bytes of data that shall be sent during the DATA OUT phase. A transfer length of zero indicates that no data shall be sent. This condition shall not be considered an error. <p>A logical unit target (LUNTAR) bit of zero specifies that the asynchronous event occurred on a logical unit. A LUNTAR bit of one specifies that the asynchronous event occurred on a target routine. <p>If the LUNTAR bit is zero, the logical unit number target routine number (LUNTRN) field specifies the logical unit on which the asynchronous event occurred. If the LUNTAR bit is one, the LUNTRN field specifies on the routine on which the asynchronous event occurred. <p>The sense data bytes are defined in <a href="WW806.htm" target="figures">table 65</a>. <a name=12.3><h2>12.3 Parameters for processor devices</h2><a name=12.3.1><h3>12.3.1 Diagnostic parameters</h3>
+This subclause defines the descriptors and pages for diagnostic parameters used with processor devices. <p>The diagnostic page codes for processor devices are defined in <a href="WW1038.htm" target="figures">table 233</a>. <p><a name=tab233><h4>Table 233 - Diagnostic page codes</h4><pre>+=============-==================================================-============+ 
+|  Page code  |  Description                                     | Subclause  | 
+|-------------+--------------------------------------------------+------------| 
+|     00h     |  List of supported parameters page               |  <a href="WW29.htm">8.3.1.1</a>   | 
+|  01h - 3Fh  |  Reserved (for all device type pages)            |            | 
+|  40h - 7Fh  |  Reserved                                        |            | 
+|  80h - FFh  |  Vendor-specific pages                           |            | 
++=============================================================================+</pre><a name=12.3.2><h3>12.3.2 Log parameters</h3>
+This subclause defines the descriptors and pages for log parameters used with processor devices. <p>The log page codes for processor devices are defined in <a href="WW1039.htm" target="figures">table 234</a>. <p><a name=tab234><h4>Table 234 - Log page codes</h4><pre>+=============-==================================================-============+ 
+|  Page code  |  Description                                     |  Subclause | 
+|-------------+--------------------------------------------------+------------| 
+|     01h     |  Buffer over-run/under-run page                  |  <a href="WW29.htm">8.3.2.1</a>   | 
+|     07h     |  Last n error events page                        |  <a href="WW29.htm">8.3.2.3</a>   | 
+|     00h     |  List of supported parameters page               |  <a href="WW29.htm">8.3.2.5</a>   | 
+|     06h     |  Non-medium error page                           |  <a href="WW29.htm">8.3.2.4</a>   | 
+|  02h - 05h  |  Reserved                                        |            | 
+|  08h - 2Fh  |  Reserved                                        |            | 
+|  30h - 3Eh  |  Vendor-specific pages                           |            | 
+|     3Fh     |  Reserved                                        |            | 
++=============================================================================+</pre><a name=12.4><h2>12.4 Definitions specific to processor devices</h2><a name=12.4.1><h3>12.4.1 host:</h3>
+A device with the characteristics of a primary computing device, typically a personal computer, workstation, minicomputer, mainframe computer, or auxiliary computing device or server. <a name=12.4.2><h3>12.4.2 data packet:</h3>
+The data transferred during the DATA IN phase of a RECEIVE command, or during the DATA OUT phase of a SEND command. A data packet often contains information at the beginning or end of the packet that describes the contents of the packet. A data packet might contain control or status information for the destination device. <a name=12.4.3><h3>12.4.3 resource:</h3>
+A part of the device required to operate on or store the data packet. <hr><a href="WW26.htm"><img alt="[PREV]" height=20 src="WWR10.gif" width=20></a><a href="WW48.htm"><img alt="[TOP]" height=20 src="WWR11.gif" width=20></a><a href="WW24.htm"><img alt="[NEXT]" height=20 src="WWR13.gif" width=20></a></body></html>

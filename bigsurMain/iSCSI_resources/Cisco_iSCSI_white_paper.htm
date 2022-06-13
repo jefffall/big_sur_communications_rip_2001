@@ -1,0 +1,533 @@
+<HTML>
+<HEAD>
+<!-- FileName = IMDPM_WP.FM -->
+<!-- Folder = /EP/PRODUCT/WAN/AGENERAL -->
+<!-- Object_ID = 090019e9807e5218 -->
+<!-- Chronicle ID = 090019e9807e5218 -->
+<!-- Revision = 1.0 -->
+<!-- DocType = White Papers -->
+<!-- ProdType = cc/pd/rt/5420/prodlit -->
+<!-- Sector = Enterprise/CiscoPro -->
+<!-- RelState = Released -->
+<!-- PubDate = 06/06/2001 -->
+<!-- PushDate = Mon Jun 25 12:06:21 PDT 2001 -->
+<!-- Competitors =  -->
+<!-- ParentTree = cc/pd/rt/5420/prodlit, cc/so/cuso/epso/entdes, cc/so/neso/stneso/prodlit -->
+<!-- Parents = cc/pd/rt/5420/prodlit, cc/so/neso/stneso/prodlit -->
+<!-- IsCategory =  -->
+<!-- EncodeDesc = Explains+iSCSI+concepts+allowing+universal+access+to+storage+devices+and+SANs+over+standard+Ethernet%2dbased+TCP%2fIP+networks -->
+<!-- Language = English -->
+<!-- Robots = 0 -->
+<!-- Category = Cisco SN 5420 Storage Router -->
+<!-- Keyword = Cisco SN 5420 Storage Router -->
+<META NAME="FileName" CONTENT="IMDPM_WP.FM">
+<META NAME="Folder" CONTENT="/EP/PRODUCT/WAN/AGENERAL">
+<META NAME="Object_ID" CONTENT="090019e9807e5218">
+<META NAME="Chronicle ID" CONTENT="090019e9807e5218">
+<META NAME="Revision" CONTENT="1.0">
+<META NAME="DocType" CONTENT="White Papers">
+<META NAME="ProdType" CONTENT="cc/pd/rt/5420/prodlit">
+<META NAME="Sector" CONTENT="Enterprise/CiscoPro">
+<META NAME="RelState" CONTENT="Released">
+<META NAME="PubDate" CONTENT="06/06/2001">
+<META NAME="PushDate" CONTENT="Mon Jun 25 12:06:21 PDT 2001">
+<META NAME="Competitors" CONTENT="">
+<META NAME="ParentTree" CONTENT="cc/pd/rt/5420/prodlit, cc/so/cuso/epso/entdes, cc/so/neso/stneso/prodlit">
+<META NAME="Parents" CONTENT="cc/pd/rt/5420/prodlit, cc/so/neso/stneso/prodlit">
+<META NAME="IsCategory" CONTENT="">
+<META NAME="EncodeDesc" CONTENT="Explains+iSCSI+concepts+allowing+universal+access+to+storage+devices+and+SANs+over+standard+Ethernet%2dbased+TCP%2fIP+networks">
+<META NAME="Language" CONTENT="English">
+<META NAME="Robots" CONTENT="0">
+<META NAME="Category" CONTENT="Cisco SN 5420 Storage Router">
+<META NAME="Keyword" CONTENT="Cisco SN 5420 Storage Router">
+<TITLE>
+Cisco&nbsp;-
+iSCSI Protocol Concepts and Implementation
+</TITLE>
+</HEAD>
+<BODY BGCOLOR=#FFFFFF>
+<H1><A NAME="xtocid26910">  White Paper from Cisco</A></H1>
+<H1><A NAME="xtocid26911"> iSCSI</A><EM> Protocol Concepts <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and Implementation</EM></H1>
+<H2><A NAME="xtocid26912"> Introduction</A></H2>
+ <P> This white paper describes the concepts and implementation of the Internet draft proposal for the mapping</P>
+<P> of Small Computer Systems Interface (SCSI) commands, data, and status over TCP/IP networks. iSCSI is an SCSI transport protocol for mapping of block-oriented storage data over TCP/IP networks. This white paper covers standardization efforts along with the high-level mechanics of iSCSI, including naming, addressing and discovery, sessions and connections, and current issues such as performance and data integrity.</P>
+<P> The iSCSI protocol enables universal access to storage devices and storage-area networks (SANs) over standard Ethernet-based TCP/IP networks. These networks may be dedicated networks or may be shared with traditional Ethernet applications. IP LAN/wide-area network (WAN) routers and switches can be used to extend the IP storage network to the wide area for applications such as synchronous and asynchronous remote disk copy or tape backup and restore. In the WAN environment, TCP will ensure data reliability, manage network congestion, and adapt retransmission strategies to WAN delays.</P>
+<P> IP Ethernet network infrastructures provide major advantages for interconnection of servers to block-oriented storage devices. IP networks provide security, scalability, interoperability, network management, storage management, and is cost-effective.</P>
+<P> IP network advantages:</P>
+<UL><P><LI>The availability of network protocols and middleware for the management, security, and quality of service&nbsp;(QoS).</P>
+<P><LI>Skills developed in the design and management of IP local-area network (LAN) networks can be applied to&nbsp;native IP SANs. Trained and experienced IP networking staffs are available to install and operate these networks.</P>
+<P><LI>Economies achieved from using a standard IP infrastructure, products, and service across the organization.</P>
+<UL><P>
+<LI>SANs are complex to design, lacking interoperability, and have high implementation costs.</P>
+</UL><P><LI>Gigabit Ethernet switches and routers have advanced capabilities including: ultra low error rates, flow control, link aggregation, and full duplex operation.</P>
+<UL><P>
+<LI>Transfer data at optimal data rates over LAN, WAN, and metropolitan-area networks (MANs).</P>
+</UL><P><LI>iSCSI is compatible with existing Ethernet and IP WAN infrastructures.</P>
+<P><LI>iSCSI will coexist with other IP protocols on a network infrastructure.</P>
+</UL>
+<H2><A NAME="xtocid26913"> iSCSI Concepts and Functional Overview</A></H2>
+ <H3><A NAME="xtocid26914"> SCSI</A></H3>
+<P> The Small Computer Systems Interface (SCSI) is a popular family of protocols for communicating with I/O devices, especially storage devices. </P>
+<P> There are two types of devices in SCSI protocol; the SCSI <EM>Initiators (clients)</EM> start the communications and the <EM>Targets (servers)</EM> responds. The initiators are devices that request commands be executed. Targets are devices that carry out the commands. The endpoint, within the target, that executes the command is referred to as a "logical unit" (LU). A target is a collection of logical units, in general of the same type, and are directly addressable. The structure used to communicate a command from an application client to a device server is referred to as a Command Descriptor Block (CDB). An SCSI command or a linked set of commands is referred to as a "task." Only one command in a task can be outstanding at any given time. SCSI command execution results in an optional data phase and a status phase. In the data phase, data travels either from the initiator to the target, as in a WRITE command, or from the target to the initiator, as in a READ command.&nbsp;In the status phase, the target returns the final status of the operation. The status response terminates an SCSI command or task.</P>
+<P> The basic function of the SCSI driver is to build SCSI Command Descriptor Blocks (CDB) from requests issued by the application, and forwards them to the iSCSI layer. The SCSI driver also receives CDBs from the iSCSI layer and forwarding the data to the application layer. Figure 1 is a basic SCSI Command Descriptor Block (CDB).</P>
+<BR>
+<B>Table 1: SCSI Command Descriptor Block (CDB) Format 
+<TABLE BORDER="1" cellpadding="10">
+<TR VALIGN=TOP><TH ALIGN=LEFT ALIGN=Center><B><STRONG>Bit</STRONG></B>
+</TH><TH ALIGN=LEFT ALIGN=Center><B>7</B>
+</TH><TH ALIGN=LEFT ALIGN=Center><B>6</B>
+</TH><TH ALIGN=LEFT ALIGN=Center><B>5</B>
+</TH><TH ALIGN=LEFT ALIGN=Center><B>4</B>
+</TH><TH ALIGN=LEFT ALIGN=Center><B>3</B>
+</TH><TH ALIGN=LEFT ALIGN=Center><B>2</B>
+</TH><TH ALIGN=LEFT ALIGN=Center><B>1</B>
+</TH><TH ALIGN=LEFT ALIGN=Center><B>0</B>
+</TH></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>Byte</B>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> &nbsp;</P>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> &nbsp;</P>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> &nbsp;</P>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> &nbsp;</P>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> &nbsp;</P>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> &nbsp;</P>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> &nbsp;</P>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> &nbsp;</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>0</B>
+</TD><TD COLSPAN=8 ROWSPAN=1 ALIGN=Center><P> Operation Code</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>1</B>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> &nbsp;</P>
+</TD><TD COLSPAN=6 ROWSPAN=2 ALIGN=Center><P> Command Specific Parameters&nbsp;</P>
+<P> </P>
+<P> </P>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> &nbsp;</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>n-1</B>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> &nbsp;</P>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> &nbsp;</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>n</B>
+</TD><TD COLSPAN=8 ROWSPAN=1 ALIGN=Center><P> Control</P>
+</TD></TR>
+</TABLE>
+<TABLE cellpadding="10">
+<TR><TD>
+</TABLE>
+</B>
+<H3><A NAME="xtocid26915"> iSCSI</A></H3>
+<P> iSCSI protocol is an Internet draft standard being defined to allow SCSI commands to be carried over TCP/IP protocol. Internet drafts are working documents of the Internet Engineering Task Force (IETF), its areas, and working groups. Cisco and&nbsp;IBM developed a draft standard for iSCSI in January of 2000. The iSCSI protocol Internet draft has been submitted to&nbsp;the IP Storage (IPS) Working Group of the IETF, in August of 2000, for standardization. The standard should be well defined&nbsp;by&nbsp;the fall of 2001, numerous vendors are currently developing products to the current draft standard. The iSCSI draft standards&nbsp;are available at the IETF Web site <A HREF="http://www.ietf.org/">http://www.ietf.org/. </A> The IP Storage Working Group (IPS) Web site is at <A HREF="http://www.ece.cmu.edu/~ips/">http://www.ece.cmu.edu/~ips/.</P> </A> 
+<P> iSCSI provides initiators and targets with unique names as well as a discovery method. The iSCSI protocol establishes communication sessions between initiators and targets, and provides methods for them to authenticate one another. An iSCSI session may contain one or more TCP connections and provides recovery in the event connections fail.</P>
+<P> SCSI CDBs are passed from the SCSI generic layer to the iSCSI transport layer. The iSCSI transport layer encapsulates the SCSI CDB into an iSCSI Protocol Data Unit (PDU) and forwards it to the Transmission Control Protocol (TCP) layer. On a read, the iSCSI transport layer extracts the CDB from the iSCSI PDU, received from the TCP layer, and forwards the CDB to the SCSI generic layer. iSCSI provides the SCSI generic command layer with a reliable transport.</P>
+<P> The following diagram illustrates the layering of the various SCSI command sets and data over different transport and physical layers.  
+<TABLE BORDER="1" cellpadding="10">
+<TR VALIGN=TOP><TH ALIGN=LEFT><B></B>
+</TH><TH COLSPAN=3 ROWSPAN=1 ALIGN=Center><B>SCSI Applications (File Systems, Databases)</B>
+</TH></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT><B>SCSI Device Layer</B>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> SCSI Block Commands</P>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> SCSI Stream Commands</P>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> Other SCSI Commands</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT><B>SCSI Generic Layer</B>
+</TD><TD COLSPAN=3 ROWSPAN=1 ALIGN=Center><P> SCSI Commands, Data, and Status</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT><B>SCSI Transport Layer</B>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> Parallel SCSI Transport</P>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> FCP SCSI over FC</P>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> iSCSI over TCP/IP</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT><B></B>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> &nbsp;</P>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> &nbsp;</P>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> TCP</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT><B></B>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> &nbsp;</P>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> &nbsp;</P>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> IP</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT><B>Physical Layer</B>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> Parallel SCSI Interface</P>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> Fibre Channel</P>
+</TD><TD ALIGN=LEFT ALIGN=Center><P> Layer 2 Ethernet</P>
+</TD></TR>
+</TABLE>
+<TABLE cellpadding="10">
+<TR><TD>
+</TABLE>
+<H4><A NAME="xtocid26916"> iSCSI Naming and Addressing</A></H4>
+<P> The iSCSI protocol enables a methodology for both naming and address of initiators and targets. iSCSI provides a means of uniquely identifying (naming) iSCSI initiators and targets with a URN like iSCSI Name. In addition to an iSCSI Name each iSCSI initiator and target has one or more addresses. Addresses can change as an initiator or target move, but the name stays the same. For human readability initiators and targets may also have a non-unique alias.</P>
+<P> The iSCSI Names are used in iSCSI:</P>
+<OL>
+<P>1. To identify an initiator and target that may be addressable via more than one IP address and TCP port.</P>
+<P>2. As an identifier for configurations that present multiple initiators or targets or both behind a single IP address and TCP&nbsp;port.</P>
+<P>3. As a method to recognize multiple paths to the same initiators or targets on different IP addresses and TCP ports.</P>
+<P>4. As an identifier for initiators and targets to enable them to recognize each other regardless of IP address and TCP port mapping on intermediary firewalls. </P>
+<P>5. As a symbolic address for source and destination targets for use in third-party commands.</P>
+</OL>
+<P> The iSCSI Name defines a method to provide naming authorities with a unique top-level name space. The use of the naming authority means that iSCSI Names can be assigned by OS vendors, driver or NIC vendors, device vendors, gateway vendors, service provider, or even the customers. An iSCSI Name consists of three parts: a type designator, followed by a naming authority, with the remaining format designated by the naming authority. In the first iSCSI Name of the following examples "iscsi" is the type designator and the naming authority is "com.acme".</P>
+<P> Examples of typical iSCSI Names are as follows:</P>
+<DL><DL><DT><DD>iscsi.com.acme.sn.8675309<BR>
+<DT><DD>iscsi.com.acme.sw.hostid.4567890<BR>
+</DL>
+</DL><P> The target may also provide a default iSCSI Target Name called "iSCSI" that is not a globally unique name. An initiator can log into this default target iSCSI Target Name and use a text command called "SendTargets" to retrieve a list of iSCSI Target Names that exist at that address.</P>
+<P> iSCSI targets can be identified by a flexible path address (URL), where the path is the combination of DNS name or IP address, a TCP port, and the target iSCSI Name. An iSCSI address specifies a single path to an iSCSI target. The iSCSI address contains the iSCSI Name and is presented in a URL-like format. The iSCSI address format is as follows.</P>
+<DL><DL><DT><DD>&lt;domain-name&gt;[:&lt;port &gt;]/&lt;iSCSI Name&gt; <BR>
+</DL>
+</DL><P> The iSCSI address or URL is not generally used within normal connections between iSCSI initiators and targets; it is primarily used during discovery. </P>
+<P> An alias is simply a descriptive name that can be assigned to an initiator or target that is independent of the iSCSI Name, and does not have to be unique. </P>
+<P> iSCSI Names and aliases are encoded in the UTF-8 text format, which allows them to include international characters, as well as ASCII.<BR><BR><IMG ALIGN=TOP SRC="imdpm_w1.gif" width="351" height="286"><BR>  
+</P>
+<H4><A NAME="xtocid26917"> iSCSI Discovery</A></H4>
+<P> Domain Name Service (DNS) may be used to resolve the &lt;domain-name&gt; of the URL to one or multiple IP addresses. When a domain-name resolves to multiple IP addresses, these addresses should be equivalent for functional purposes. This means that the addresses can be used interchangeably with consistent performance. The discovery process responds to two basic inquiries from an initiator:</P>
+<P> 1) Where is iSCSI Target Name "iscsi.com.acme.sn.8675309"?</P>
+<P> 2) I am iSCSI Initiator Name "iscsi.com.ame.sw.hostid.4567890" which target should I attempt to access?</P>
+<P> An iSCSI initiator can discover an iSCSI target in the following different ways: </P>
+<OL>
+<P>1. By configuring the target's address on the initiator. </P>
+<P>2. By configuring a default target address on the initiator and the initiator connects to the target and requests a list of iSCSI Names, via a separate SendTargets command.</P>
+<P>3. By issuing Service Location Protocol (SLP) multicast requests, to which the targets may respond.</P>
+<P>4. By querying a storage name server for a list of targets that it can access. </P>
+</OL>
+<H4><A NAME="xtocid26918"> iSCSI Login and Negotiations</A></H4>
+<P> Before iSCSI initiators can send SCSI commands to a target, it must first establish an iSCSI session. A session is composed of one or more TCP connections. The initiator establishes each TCP connection and begins the login phase of that connection. The login phase must be completed on each TCP connection before it can be used to transport SCSI commands.</P>
+<P> iSCSI login is a mechanism used to establish a TCP connection, between initiators and targets. It authenticates the parties, negotiates the session's parameters, open security association protocol, and marks the connection as belonging to an iSCSI session. The initiator begins the login process by connecting to a well known TCP port. The target listens on the well-known TCP port for incoming connections.</P>
+<P> A single TCP connection is established to transfer SCSI commands, data, and status information for a single "task." Communication between an initiator and target may occur over one or more TCP connections. One or more TCP connections linking an initiator and a target form a "session." A session is used to identify to a target all the connections with a given initiator. TCP connections may be added to or deleted from a session. </P>
+<P> As part of the login process the initiator and target my wish to authenticate each other and set the security association protocol for the session. </P>
+<P> Once the login process has completed the iSCSI session is said to be in the full feature phase. The initiator may then send SCSI commands and data to the various LUs on the target by encapsulating them in iSCSI messages that are sent over the established iSCSI session.</P>
+<H4><A NAME="xtocid26919"> Command Numbering and Acknowledging</A></H4>
+<P> Commands in transit from the initiator to the target SCSI layer are numbered by iSCSI and the number is carried by the iSCSI PDU as the Command Sequence Number (CmdSN). Command numbering is on a session basis and during command delivery the allocated CmdSNs are unique session wide. The iSCSI target layer must deliver the commands to the SCSI target layer in the order specified by CmdSN. The CmdSN ceases to be significant once the target receives the command. The CmdSN can also be used as a mechanism for command flow control over a session. iSCSI PDUs that have a task association carry the CmdSN. A task is defined as a unit of work to be performed by the initiator and target either a command or group of linked commands. An initiator task tag identifies the task for the life of the task.</P>
+<H4><A NAME="xtocid269110"> Response/Status Numbering and Acknowledging</A></H4>
+<P> Responses in transit from the target to the initiator are numbered by iSCSI and the number is carried by the iSCSI PDU as the Status Sequence Number (StatSN). Status numbering is on a per connection basis and is used to enable missing status detection and recovery in the presence of transient or permanent communication errors. An Expected Status Sequence Number (ExpStatSN) is maintained by the initiator to acknowledge status. A target may discard all the state information maintained for recovery after the status delivery is acknowledged through the ExpStatSN. A difference between StatSN and ExpStatSN may indicate a failed connection.</P>
+<H4><A NAME="xtocid269111"> PDU Template, Header, and Op-codes </A></H4>
+<P> <B>This section is subject to change do to standards activity.</B></P>
+<P> All iSCSI PDUs begin with one or more header segments followed by zero or one data segment. The header segment group may be preceded by a header-digest (CRC). Data segments may be followed by a data-digest.</P>
+<P> The first segment is the Basic Header Segment (BHS) a fixed-length 44-byte header segment. An Additional Header Segments (AHS) may follow the BHS. Each header segment is preceded by a 4-byte Next-Qualifier (What's Next WN). The WN field indicates what the next segment is. When there is only a BHS (with no data or digests) the net size of the iSCSI PDU is 48&nbsp;bytes.</P>
+<P> <B>Overall structure of a PDU template is as follows 
+<TABLE BORDER="1" cellpadding="10">
+<TR VALIGN=TOP><TH ALIGN=LEFT ALIGN=Center><B>Byte</B>
+</TH><TH ALIGN=LEFT ALIGN=Center><B>0</B>
+</TH><TH ALIGN=LEFT ALIGN=Center><B>1</B>
+</TH><TH ALIGN=LEFT ALIGN=Center><B>2</B>
+</TH><TH ALIGN=LEFT ALIGN=Center><B>3</B>
+</TH></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>0</B>
+</TD><TD ALIGN=LEFT><P> &nbsp;WN</P>
+</TD><TD COLSPAN=3 ROWSPAN=1><P> &nbsp;WN specific fields</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>4</B>
+</TD><TD COLSPAN=4 ROWSPAN=3><P> &nbsp;BHS</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>+</B>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>44</B>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>48</B>
+</TD><TD ALIGN=LEFT><P> &nbsp;WN</P>
+</TD><TD COLSPAN=3 ROWSPAN=1><P> &nbsp;WN specific fields</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>52</B>
+</TD><TD COLSPAN=4 ROWSPAN=3><P> &nbsp;AHS</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>+</B>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>92</B>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>m</B>
+</TD><TD COLSPAN=4 ROWSPAN=1><P> &nbsp;Header-Digest (optional)</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>n</B>
+</TD><TD COLSPAN=4 ROWSPAN=2><P> &nbsp;Data Segment (optional)</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>+</B>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>m</B>
+</TD><TD COLSPAN=4 ROWSPAN=1><P> &nbsp;Data-Digest (optional)</P>
+</TD></TR>
+</TABLE>
+<TABLE cellpadding="10">
+<TR><TD>
+</TABLE>
+</B>
+<P> <B>Basic Header Segment (BHS) for SCSI (Initiator) Command 
+<TABLE BORDER="1" cellpadding="10">
+<TR VALIGN=TOP><TH ALIGN=LEFT ALIGN=Center><B>Byte</B>
+</TH><TH ALIGN=LEFT ALIGN=Center><B>0</B>
+</TH><TH ALIGN=LEFT ALIGN=Center><B>1</B>
+</TH><TH ALIGN=LEFT ALIGN=Center><B>2</B>
+</TH><TH ALIGN=LEFT ALIGN=Center><B>3</B>
+</TH></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>0</B>
+</TD><TD ALIGN=LEFT><P> &nbsp;Opcode</P>
+</TD><TD COLSPAN=2 ROWSPAN=1><P> &nbsp;Opcode&#151;specific fields</P>
+</TD><TD ALIGN=LEFT><P> &nbsp;Reserved</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>4</B>
+</TD><TD COLSPAN=4 ROWSPAN=2><P> &nbsp;Logical Unit Number (LUN)</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>8</B>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>12</B>
+</TD><TD ALIGN=LEFT><P> &nbsp;Initiator Task Tag</P>
+</TD><TD ALIGN=LEFT><P> &nbsp;</P>
+</TD><TD ALIGN=LEFT><P> &nbsp;</P>
+</TD><TD ALIGN=LEFT><P> &nbsp;</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>16</B>
+</TD><TD COLSPAN=4 ROWSPAN=1><P> &nbsp;Expected Data Transfer Length</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>20</B>
+</TD><TD ALIGN=LEFT><P> &nbsp;CmdSN</P>
+</TD><TD ALIGN=LEFT><P> &nbsp;</P>
+</TD><TD ALIGN=LEFT><P> &nbsp;</P>
+</TD><TD ALIGN=LEFT><P> &nbsp;</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>24</B>
+</TD><TD COLSPAN=4 ROWSPAN=1><P> &nbsp;ExpStatSN or EndDataSN</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>28</B>
+</TD><TD COLSPAN=4 ROWSPAN=3><P> &nbsp;SCSI Command Descriptor Block (CDB)</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>+</B>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>44</B>
+</TD></TR>
+</TABLE>
+<TABLE cellpadding="10">
+<TR><TD>
+</TABLE>
+</B>
+<P> <B>Basic Header Segment (BHS) for SCSI (Target) Response 
+<TABLE BORDER="1" cellpadding="10">
+<TR VALIGN=TOP><TH ALIGN=LEFT ALIGN=Center><B>Byte</B>
+</TH><TH ALIGN=LEFT ALIGN=Center><B>0</B>
+</TH><TH ALIGN=LEFT ALIGN=Center><B>1</B>
+</TH><TH ALIGN=LEFT ALIGN=Center><B>2</B>
+</TH><TH ALIGN=LEFT ALIGN=Center><B>3</B>
+</TH></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>0</B>
+</TD><TD ALIGN=LEFT><P> &nbsp;Opcode</P>
+</TD><TD COLSPAN=2 ROWSPAN=1><P> &nbsp;Opcode&#151;specific fields</P>
+</TD><TD ALIGN=LEFT><P> &nbsp;Reserved (0)</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>4</B>
+</TD><TD COLSPAN=4 ROWSPAN=2><P> &nbsp;Reserved (0)</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>8</B>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>12</B>
+</TD><TD COLSPAN=4 ROWSPAN=1><P> &nbsp;Initiator Task Tag</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>16</B>
+</TD><TD COLSPAN=4 ROWSPAN=1><P> &nbsp;Basic Residual Count</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>20</B>
+</TD><TD ALIGN=LEFT><P> &nbsp;StatSN</P>
+</TD><TD ALIGN=LEFT><P> </P>
+</TD><TD ALIGN=LEFT><P> </P>
+</TD><TD ALIGN=LEFT><P> </P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>24</B>
+</TD><TD ALIGN=LEFT><P> &nbsp;ExpCmdSN</P>
+</TD><TD ALIGN=LEFT><P> </P>
+</TD><TD ALIGN=LEFT><P> </P>
+</TD><TD ALIGN=LEFT><P> </P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>28</B>
+</TD><TD ALIGN=LEFT><P> &nbsp;MaxCmdSN</P>
+</TD><TD ALIGN=LEFT><P> </P>
+</TD><TD ALIGN=LEFT><P> </P>
+</TD><TD ALIGN=LEFT><P> </P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>32</B>
+</TD><TD COLSPAN=2 ROWSPAN=1><P> &nbsp;EndDataSN or Reserved (0)</P>
+</TD><TD COLSPAN=2 ROWSPAN=1><P> </P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>36</B>
+</TD><TD COLSPAN=2 ROWSPAN=1><P> &nbsp;R2TEndDataSN or Reserved (0)</P>
+</TD><TD COLSPAN=2 ROWSPAN=1><P> </P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>40</B>
+</TD><TD COLSPAN=4 ROWSPAN=1><P> &nbsp;Bidi-Read Residual Count</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>44</B>
+</TD><TD COLSPAN=4 ROWSPAN=1><P> &nbsp;Digests if any</P>
+</TD></TR>
+<TR VALIGN=TOP><TD ALIGN=LEFT ALIGN=Center><B>48</B>
+</TD><TD COLSPAN=4 ROWSPAN=1><P> &nbsp;Response Data or Sense Data (optional)</P>
+</TD></TR>
+</TABLE>
+<TABLE cellpadding="10">
+<TR><TD>
+</TABLE>
+</B>
+<P> <B>iSCSI Commands and Responses</B></P>
+<P> iSCSI sends SCSI commands, data and status over its TCP connections encapsulated in iSCSI Protocol Data Units (PDU). There are several types of iSCSI PDUs, they are identified by individual operation codes (Op-codes). Op-codes are divided into two categories: initiator op-codes and target op-codes also called responses. Some PDUs transport SCSI commands, data, and status and others are used for iSCSI control. </P>
+<P> Valid initiator Op-codes (Commands) that support SCSI functions include:</P>
+<DL><DL><DT><DD>0x01 SCSI Command (encapsulates an SCSI Command Descriptor Block)<BR>
+<DT><DD>0x02 SCSI Task Management Command<BR>
+<DT><DD>0x05 SCSI Data (for WRITE operations)<BR>
+</DL>
+</DL><P> Valid initiator Op-codes (Commands) that support iSCSI functions include:</P>
+<DL><DL><DT><DD>0x00 NOP-Out (from initiator to target)<BR>
+<DT><DD>0x03 Login Command<BR>
+<DT><DD>0x04 Text Command<BR>
+<DT><DD>0x06 Logout Command<BR>
+<DT><DD>0x10 SACK Request (optional)<BR>
+</DL>
+</DL><P> Valid target Op-codes (Responses) that support SCSI functions include:</P>
+<DL><DL><DT><DD>0x41 SCSI Response (contains SCSI status and possible sense information)<BR>
+<DT><DD>0x42 SCSI Task Management Response<BR>
+<DT><DD>0x45 SCSI Data (for READ operations)<BR>
+<DT><DD>0x50 Ready To Transfer (R2T)<BR>
+</DL>
+</DL><P> Valid initiator Op-codes (Responses) that support iSCSI functions include:</P>
+<DL><DL><DT><DD>0x40 NOP-In (from target to initiator)<BR>
+<DT><DD>0x43 Login Response<BR>
+<DT><DD>0x44 Text Response<BR>
+<DT><DD>0x46 Logout Response<BR>
+<DT><DD>0x51 Asynchronous Message<BR>
+<DT><DD>0x6F Reject<BR>
+</DL>
+</DL><P> <B>0x01 SCSI Command </B></P>
+<P> This PDU encapsulates SCSI Command Descriptor Blocks (CDB). This PDU may contain all the data that is associated with the SCSI command. The header portion of this PDU contains the following control information. </P>
+<UL><P><LI><EM>Initiator Task Tag</EM> is related to a (SAM-2) task and is valid for the life of the tag.</P>
+<P><LI><EM>Expected Data Transfer Length</EM> is the number of bytes of data to be transferred during the current SCSI operation.</P>
+<P><LI><EM>Command Sequence Number (CmdSN)</EM> is an assigned number that enables ordered delivery of PDUs across multiple TCP connections in a single session.</P>
+<P><LI><EM>Expected Status Sequence Number (ExpStatSN)</EM> is an assigned number that is used to detect missing status.</P>
+</UL>
+<P> <B>0x41 SCSI (Command) Response</B></P>
+<P> This PDU is used to report the SCSI status of the SCSI Command. The header portion of this PDU contains the following control information. </P>
+<UL><P><LI><EM>Status/Response</EM>, the Status field is used to report the (SAM-2) SCSI status of the command. The Response field is used to report a SAM type Service Response.</P>
+<P><LI><EM>Sense or Response Data</EM>, if the SCSI command fails this data will contain sense data for the failed command.</P>
+</UL>
+<P> <B>0x05 SCSI Data</B></P>
+<P> This PDU is used to transfer data from the initiator to the target (write) or from the target to the initiator (read). The PDU&nbsp;specifies the length of the data payload, the Target Transfer Tag, provided by the receiver for this data transfer, and a&nbsp;buffer offset. </P>
+<UL><P><LI><EM>Final (F) Bit</EM>, for output (write) data this bit is 1 for the last PDU of unsolicited data or the last PDU of a sequence answering an R2T. For input (read) data this bit is 1 for the last input PDU associated with the command.</P>
+<P><LI><EM>Data Sequence Number (DataSN)</EM>, for input (read) data PDUs the DataSN is the data PDU number within the data transfer for the command identified by the Initiator Task Tag. For output (write) data PDUs the DataSN is the data PDU number within the current output sequence identified by the Initiator Task Tag or by the Target Task Tag and LUN for R2T data.</P>
+<P><LI><EM>Buffer Offset</EM>, field contains the offset of this PDU data payload data against the complete data transfer.</P>
+</UL>
+<P> <B>0x02 SCSI Task Management</B></P>
+<P> This PDU provides an initiator with a way to explicitly control the execution of one or more of the following tasks.</P>
+<OL>
+<P>1. Abort task&#151;aborts the task identified by the referenced Task Tag field.</P>
+<P>2. Abort Task Set&#151;abort all Tasks issued by this initiator on the Logical Unit.</P>
+<P>3. Clear ACA&#151;clears the Auto Contingent Allegiance.</P>
+<P>4. Clear Task Set&#151;aborts all Tasks, from all initiators, for the Logical Unit.</P>
+<P>5. Logical Unit Reset&#151;</P>
+<P>6. Target Warm Reset&#151;</P>
+<P>7. Target Cold Reset&#151;</P>
+</OL>
+<P> For all of these functions, the SCSI Task Management Response is returned using the initiator Task Tag to identify the operation of which it is responding.</P>
+<UL><P><LI><EM>Referenced Task Tag</EM>, the initiator Task Tag of the task to be aborted.</P>
+</UL>
+<P> <B>0x42 SCSI Task Management Response</B></P>
+<P> This PDU provides a response back to the initiator upon completion of the SCSI Task Management Command. The responses may include the following values.</P>
+<OL>
+<P>1. 0&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Function Complete</P>
+<P>2. 1&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Task was not in task set</P>
+<P>3. 255&nbsp;&nbsp;&nbsp;Function Rejected</P>
+</OL>
+<UL><P><LI><EM>Referenced Task Tag</EM>, initiator Task Tag of a task not found.</P>
+</UL>
+<P> <B>0x50 Ready to Transfer (R2T)</B></P>
+<P> When an initiator issues an SCSI Command with a CDB that requires data to be sent from the initiator to the target (write), the target issues an R2T PDU to request the data blocks it requires. The target may send several R2T PDUs and thus have a number of data transfers pending.</P>
+<UL><P><LI><EM>Target Transfer Tag</EM>, is a tag assigned to each R2T request sent to the initiator by the target. The transfer tag is used by the target to identify data PDUs it receives.</P>
+</UL>
+<P> <B>0x04 Text Command</B></P>
+<P> The Text Command permits the initiator to inform a target of its capabilities or to request special operations.</P>
+<UL><P><LI><EM>Text</EM>, The initiator sends the target a set of key=value or key=list pairs encoded in UTF-8 Unicode. Character strings are represented as plain text. Numeric and binary values are represented using either decimal numbers or hexadecimal notation. </P>
+</UL>
+<P> <B>0x44 Text Response</B></P>
+<P> The Text Response message contains the target's response to the initiator's Text Command. The format of the Text Response matches that of the Text Command.</P>
+<UL><P><LI><EM>Text Response</EM>, field contains responses in the same format as the Text Command.</P>
+</UL>
+<P> <B>0x03 Login Command</B></P>
+<P> The Login Command PDU is used after a TCP connection has been established between an initiator and target. It is used to authenticate the parties, negotiate the session's parameters, open security associations, and mark connections as belonging to a session.</P>
+<UL><P><LI><EM>Version-max</EM>, maximum iSCSI standard version number supported.</P>
+<P><LI><EM>Version-min</EM>, is the minimum iSCSI standard version number supported.</P>
+<P><LI><EM>Connection Identifier (CID)</EM>, is a unique ID for this connection within the session.</P>
+<P><LI><EM>Initiator Session-Identifier</EM>, is an initiator defined ID that must be the same for all connections within a session.</P>
+<P><LI><EM>Login Parameters</EM>, may be provided by the initiator to enable the target to determine if the initiator may use the targets resources and the initial text parameters for security exchange. Some typical keys used are as follows:
+<UL><P>
+<LI><EM>MaxConnections&#151;Lo</EM>, is the maximum number of connections requested/acceptable that are negotiated by the initiator and target.
+<P>
+<LI><EM>UseR2T=&lt;yes/no&gt;</EM>, is used to turn off the use of R2T, thus allowing the initiator to send data to a target without the target having to send an R2T to the initiator. The default is that R2T is required, unless both the initiator and target send this key pair specifying UseR2T:no.</P>
+<P>
+<LI><EM>DataPDU Length</EM>, is the maximum data payload in 512 byte units, negotiated by the initiator and target, for command or data PDUs.</P>
+<P>
+<LI><EM>Vendor Specific Key Format</EM>, is a key defined for use as vendor-specific purposes, these keys start with X-. To identify the vendor it is suggested the reverse DNS-name is used as a prefix to the key proper.</P>
+</UL></UL>
+<P> The Login process enables negotiation of digests for end-to-end data integrity, using cyclic checksums, enabling integrity checks beyond those provided by link layers. </P>
+<P> The authentication exchange authenticates the initiator and target to each other. Authentication methods including Kerberos V5, Secure Remote Password (SRP), or proprietary methods can be negotiated. </P>
+<P> <B>0x43 Login Response</B></P>
+<P> The Login Response PDU indicates the progress and/or end of the login phase. After security is established, the login response is authenticated.</P>
+<UL><P><LI><EM>Version-active/lowest</EM>, is the version supported by both the initiator and target. If the target does not support a version in the range identified by the initiator, the target rejects the login and identifies the lowest version supported.</P>
+<P><LI><EM>Status-Class</EM>, the status returned in a Login Response indicates the status of the login request. Status classes are as follows:</P>
+</UL>
+<OL>
+<P>1. Success&#151;indicates the iSCSI target accepted the request.</P>
+<P>2. Redirection&#151;indicates further action must be taken by the initiator to complete the request.</P>
+<P>3. Initiator Error&#151;indicates the initiator likely caused the error.</P>
+<P>4. Target Error&#151;indicates the target is incapable of fulfilling the request.</P>
+</OL>
+<P> <B>0x06 Logout Command</B></P>
+<P> The Logout Command PDU is used to perform a controlled closing of a connection. An initiator may use a Logout Command to remove a connection from a session or to close an entire session.</P>
+<UL><P><LI><EM>Connection ID (CID)</EM>, the CID is the connect identifier of the connection to be closed, including closing the TCP stream.</P>
+</UL>
+<P> <B>0x46 Logout Response</B></P>
+<P> The Logout Response is issued by the target to indicate that the cleanup operation for a failed connection is complete. </P>
+<P> <B>0x00 NOP-Out</B></P>
+<P> The NOP-Out with the p bit set acts as a "ping command" and used to verify that a connection is still active and operational. </P>
+<UL><P><LI><EM>P (Ping) Bit</EM>, when set requests a NOP-In response.</P>
+<P><LI><EM>Ping Data</EM>, is reflected in the Ping response. The length is limited by the negotiated parameters.</P>
+</UL>
+<P> <B>0x40 NOP-In</B></P>
+<P> The NOP-In is the response to a NOP-Out when the P bit is set. The target must respond with a NOP-In with the same Initiator Task Tag that was provided in the NOP-Out Command. And should duplicate as much of the ping data as allowed by configurable target parameters. </P>
+<P> <B>0x51 Asynchronous Message</B></P>
+<P> An asynchronous Message may be sent from the target to the initiator without corresponding to a particular command. The target specifies the status for the event and sense data. Some Asynchronous Messages are related to iSCSI others are related to SCSI. Disabling SCSI Messages in a mode page will have no effect on iSCSI Asynchronous Messages.</P>
+<UL><P><LI><EM>iSCSI Event</EM>, are codes returned for iSCSI Asynchronous Messages.</P>
+</UL>
+<OL>
+<P>1. Target is being reset.</P>
+<P>2. Target requests Logout.</P>
+<P>3. Target indicates it will/has dropped the connection.</P>
+</OL>
+<P> </P>
+<UL><P><LI><EM>SCSI Event, are codes returned for SCSI Asynchronous Messages.</EM></P>
+</UL>
+<OL>
+<P>1. An error condition was encountered after command completion.</P>
+<P>2. A newly initialized device is available to this initiator.</P>
+<P>3. Some other type of unit attention condition has occurred.</P>
+<P>4. An asynchronous event has occurred.</P>
+</OL>
+<P> <B>0x6F Reject</B></P>
+<P> If a target receives an iSCSI message with a format error (e.g., inconsistent fields, reserved fields not 0, non-existent LUN, etc.) or a digest error (e.g., invalid payload or header). The target issues a Reject and returns the header of the message in error as the data of the response.</P>
+<UL><P><LI>Reject Reason codes</P>
+</UL>
+<OL>
+<P>1. 1&#151;Format error</P>
+<P>2. 2&#151;Header Digest Error</P>
+<P>3. 3&#151;Payload Digest Error</P>
+<P>4. 4&#151;Data-SACK Reject</P>
+<P>5. 5&#151;Command Retry Reject</P>
+<P>6. 15&#151;Full Feature Phase Command before login</P>
+</OL>
+<H2><A NAME="xtocid269112"> iSCSI Implementation</A></H2>
+ <P> The Cisco SN 5420 Storage Router release 1.0 is the first product to implement the iSCSI protocol, compliant with the Internet Draft standard dated July 10, 2000. The SN 5420 makes storage systems accessible from anywhere, via IP networks, using the iSCSI protocol regardless of the operating system. Block level access, using iSCSI protocol, is transparent to the application and does not require additional software layers for IP network intelligence. Any application capable of accessing storage using SCSI protocols becomes an IP application that can pass through the SN 5420 Storage Router to Fibre Channel or SCSI attached storage devices.</P>
+<P> The Storage Router is a combination of a host driver software and external hardware (SN 5420). The iSCSI drivers are platform specific and are loaded on the application servers. Drivers for Unix, Linux, NT, and Windows 2000 operating systems will be supported.</P>
+<P> The iSCSI driver is installed and configured as one of the device drivers available to the operating system. The iSCSI driver is configured with the IP address(s) of one or more of the SN 5420's SCSI Router Service instances. When the iSCSI driver is started it queries the SN 5420s for iSCSI targets and Logical Unit Numbers (LUNs) available on the SN 5420. The host creates an entry in its device table for each of the target/LUN combinations that it is allowed access to based on an Access List on the SN 5420.</P>
+<P> When the host/application wishes to communicate with one of the SCSI target/LUNs, the SCSI driver generates a CDB and forwards it to the iSCSI driver, which encapsulates it in an iSCSI PDU and forwards it to the TCP/IP layers. The TCP/IP layer&nbsp;encapsulates the iSCSI PDU in a TCP packet and then an IP datagram. The packet/datagram are forwarded to and encapsulated in a physical layer frame, Gigabit Ethernet, and transmitted over the network. The reverse process occurs at the&nbsp;SN 5420 and the SCSI CDB is forwarded to the addressed device (target/LUN) via a Fibre Channel or Parallel SCSI (future) interface. <BR><BR><IMG ALIGN=TOP SRC="imdpm_w0.gif" width="269" height="169"><BR>  
+</P>
+<H3><A NAME="xtocid269113"> SN 5420 iSCSI Address Mapping</A></H3>
+<P> The Cisco SN 5420 is manually configured to enable address mapping from logical targets or target and LUN addresses to physical storage device addresses discovered from fibre channel connections. The logical target address is referred to as the "iSCSI Target" address. </P>
+<P> The first step is to configure the SCSI Router Service instances on the SN 5420. The SCSI router services form two associations; one is to the SN 5420 server interface (Gigabit Ethernet) to which the host data server(s) iSCSI configuration will point, and the other is the device interface (Fibre Channel or SCSI) to which the data storage device(s) are attached.</P>
+<P> The `iSCSI Target' logical (arbitrary) address is associated with an iSCSI Routing Service and mapped to the physical storage addresses. The physical storage addresses may be Fibre Channel Loop ID, World Wide Port Name (WWPN) and/or World Wide Node Name (WWNN) or SCSI target and LUN. </P>
+<P> A full mapped path is then created by associating a named Access List (host data server IP addresses) with a named SCSI Router Service instance that directs the request to a named iSCSI Target. </P>
+<P> iSCSI Host Drivers provide varied approaches to interfacing to the varied operating systems. The following description of address mapping for Windows NT provides the general concepts used by other host drivers.</P>
+<P> The iSCSI driver, for Windows NT, emulates a locally attached SCSI interface to the NT operating system. The iSCSI driver provides NT with SCSI inquiry data responses, as would a standard SCSI driver. The iSCSI driver is manually installed and configured to point to the IP address(s) of the SN 5420 iSCSI Router Server instances that map to the logical iSCSI Target addresses that the host should see as local storage. The NT host then displays the devices in Disk Administrator as if&nbsp;they were locally attached. Now they can be partitioned, committed, and assigned drive letters and formatted. Upon a reboot, the iSCSI driver assigns the previously assigned NT drive letters by using configuration information retrieved from the NT registry and associates the drive letters to the "iSCSI Target" addresses after iSCSI login to the SN 5420 Router Service instance.</P>
+&nbsp;
+</BODY>
+</HTML>

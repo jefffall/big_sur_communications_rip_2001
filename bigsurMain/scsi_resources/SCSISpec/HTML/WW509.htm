@@ -1,0 +1,51 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base target="main"><title>SCSI-2 Spec - Table 170</title></head><body><h1>Table 170</h1><pre>
++====================-===========================================================+ 
+|EER  PER  DTE  DCR  |  Description                                              | 
+|--------------------+-----------------------------------------------------------| 
+| 0    0    0    0   |  The full number of retries (specified in the read, write | 
+|                    |  or verify retry count field) and error correction are    | 
+|                    |  attempted to recover the data (EER and DCR set to 0).  A | 
+|                    |  CHECK CONDITION is not reported at the completion of the | 
+|                    |  command for recovered errors (PER set to 0).  The command| 
+|                    |  terminates with CHECK CONDITION status before the        | 
+|                    |  transfer count is exhausted only if an unrecoverable     | 
+|                    |  error is detected.  If an unrecoverable data error       | 
+|                    |  occurred, the data in the block with the unrecoverable   | 
+|                    |  error may or may not be transferred to the initiator     | 
+|                    |  depending on the setting of the transfer block (TB) bit  | 
+|                    |  (read operation only).                                   | 
+|                    |                                                           | 
+| 0    0    0    1   |  Error correction is disabled (DCR set to one) so only the| 
+|                    |  full number of retries (specified in the read, write or  | 
+|                    |  verify retry count field) are attempted to recover the   | 
+|                    |  data (EER set to 0).  A CHECK CONDITION is not reported  | 
+|                    |  at the completion of the command for recoverable errors  | 
+|                    |  (PER set to 0).  The command terminates with CHECK       | 
+|                    |  CONDITION status before the transfer count is exhausted  | 
+|                    |  only if an unrecoverable error is detected.  If an       | 
+|                    |  unrecoverable data error occurred, the data in the block | 
+|                    |  with the unrecoverable error may or may not be           | 
+|                    |  transferred to the initiator depending on the setting of | 
+|                    |  the transfer block (TB) bit (read operation only).       | 
+|                    |                                                           | 
+| 0    0    1    0   |  Invalid mode (PER must be set to one if DTE is set to    | 
+|                    |  one).  1)                                                | 
+|                    |                                                           | 
+| 0    0    1    1   |  Invalid mode (PER must be set to one if DTE is set to    | 
+|                    |  one).  1)                                                | 
+|                    |                                                           | 
+| 0    1    0    0   |  The full number of retries (specified in the read, write | 
+|                    |  or verify retry count field) and error correction are    | 
+|                    |  attempted to recover the data (EER and DCR set to 0).    | 
+|                    |  The command terminates with CHECK CONDITION status before| 
+|                    |  the transfer count is exhausted only if an unrecoverable | 
+|                    |  error is detected.  If an unrecoverable data error       | 
+|                    |  occurred, the data in the block with the unrecoverable   | 
+|                    |  error may or may not be transferred to the initiator     | 
+|                    |  depending on the setting of the transfer block (TB) bit  | 
+|                    |  (read operation only).  A CHECK CONDITION with a sense   | 
+|                    |  key of RECOVERED ERROR is reported at the completion of  | 
+|                    |  the command for any recoverable error that occurs (PER   | 
+|                    |  set to 1).  The information field in the sense data shall| 
+|                    |  contain the logical block address of the last recovered  | 
+|                    |  error which occurred during the transfer.                |</pre></body></html>

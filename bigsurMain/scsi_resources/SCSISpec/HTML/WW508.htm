@@ -1,0 +1,37 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base target="main"><title>SCSI-2 Spec - Table 169</title></head><body><h1>Table 169</h1><pre>
++====================-===========================================================+ 
+|EER  PER  DTE  DCR  |  Description                                              | 
+|--------------------+-----------------------------------------------------------| 
+| 1    -    -    -   |  An enable early recovery (EER) bit of one indicates that | 
+|                    |  the target shall use of the most expedient form of error | 
+|                    |  recovery first.  This bit only applies to data error     | 
+|                    |  recovery and it does not affect positioning retries and  | 
+|                    |  the message system error recovery procedures.            | 
+|                    |                                                           | 
+| 0    -    -    -   |  An EER bit of zero indicates that the target shall use an| 
+|                    |  error recovery procedure that minimizes the risk of mis- | 
+|                    |  detection or mis-correction.                             | 
+|                    |                                                           | 
+| -    1    -    -   |  A post error (PER) bit of one indicates that the target  | 
+|                    |  shall report recovered errors.                           | 
+|                    |                                                           | 
+| -    0    -    -   |  A PER bit of zero indicates that the target shall not    | 
+|                    |  report recovered errors.  Error recovery procedures shall| 
+|                    |  be performed within the limits established by the error  | 
+|                    |  recovery parameters.                                     | 
+|                    |                                                           | 
+| -    -    1    -   |  A disable transfer on error (DTE) bit of one indicates   | 
+|                    |  that the target shall terminate the data phase upon      | 
+|                    |  detection of a recovered error.                          | 
+|                    |                                                           | 
+| -    -    0    -   |  A DTE bit of zero indicates that the target shall not    | 
+|                    |  terminate the data phase upon detection of a recovered   | 
+|                    |  error.                                                   | 
+|                    |                                                           | 
+| -    -    -    1   |  A disable correction (DCR) bit of one indicates that     | 
+|                    |  error correction codes shall not be used for data error  | 
+|                    |  recovery.                                                | 
+|                    |                                                           | 
+| -    -    -    0   |  A DCR bit of zero allows the use of error correction     | 
+|                    |  codes for data error recovery.                           | 
++================================================================================+</pre></body></html>

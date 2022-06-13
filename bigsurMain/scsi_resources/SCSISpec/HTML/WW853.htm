@@ -1,0 +1,24 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base><title>SCSI-2 Spec - Table 46</title></head><body><h1>Table 46</h1><pre>+=========-===================================================================+  
+|Qualifier|  Description                                                      | 
+|---------+-------------------------------------------------------------------| 
+|   000b  |  The specified peripheral device type is currently connected to   | 
+|         |  this logical unit.  If the target cannot determine whether or    | 
+|         |  not a physical device is currently connected, it shall also use  | 
+|         |  this peripheral qualifier when returning the INQUIRY data.       | 
+|         |  This peripheral qualifier does not mean that the device is ready | 
+|         |  for access by the initiator.                                     | 
+|         |                                                                   | 
+|   001b  |  The target is capable of supporting the specified peripheral     | 
+|         |  device type on this logical unit;  however, the physical device  | 
+|         |  is not currently connected to this logical unit.                 | 
+|         |                                                                   | 
+|   010b  |  Reserved                                                         | 
+|         |                                                                   | 
+|   011b  |  The target is not capable of supporting a physical device on     | 
+|         |  this logical unit. For this peripheral qualifier the peripheral  | 
+|         |  device type shall be set to 1Fh to provide compatibility with    | 
+|         |  previous versions of SCSI.  All other peripheral device type     | 
+|         |  values are reserved for this peripheral qualifier.               | 
+|         |                                                                   | 
+|   1XXb  |  Vendor-specific                                                  | 
++=============================================================================+ </pre></body></html>

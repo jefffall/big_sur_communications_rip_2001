@@ -1,0 +1,50 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base><title>SCSI-2 Spec - Table 112</title></head><body><h1>Table 112</h1><pre>+=======-======-========-========-======-=====================================+ 
+|       |      | Defect | Defect |      |                                     | 
+|       |      |  list  |  list  |      |                                     | 
+|FmtData|CmpLst| format | length | Type |  Comments                           | 
+|-------+------+--------+--------+------+-------------------------------------| 
+|   0   |   0  |  000b  |   N/A  |   M  |  Vendor-specific                    | 
+|-----------------------------------------------------------------------------| 
+|                                 BLOCK FORMAT                                | 
+|-----------------------------------------------------------------------------| 
+|   1   |   0  |  000b  |  Zero  |   M  | See notes (1) and (3)               | 
+|   1   |   1  |  000b  |  Zero  |   M  | See notes (1) and (4)               | 
+|   1   |   0  |  000b  |   &gt;0   |   O  | See notes (2) and (3)               | 
+|   1   |   1  |  000b  |   &gt;0   |   O  | See notes (2) and (4)               | 
+|-----------------------------------------------------------------------------| 
+|                          BYTES FROM INDEX FORMAT                            | 
+|-----------------------------------------------------------------------------| 
+|   1   |   0  |  100b  |  Zero  |   O  | See notes (1) and (3)               | 
+|   1   |   1  |  100b  |  Zero  |   O  | See notes (1) and (4)               | 
+|   1   |   0  |  100b  |   &gt;0   |   O  | See notes (2) and (3)               | 
+|   1   |   1  |  100b  |   &gt;0   |   O  | See notes (2) and (4)               | 
+|-----------------------------------------------------------------------------| 
+|                           PHYSICAL SECTOR FORMAT                            | 
+|-----------------------------------------------------------------------------| 
+|   1   |   0  |  101b  |  Zero  |   O  | See notes (1) and (3)               | 
+|   1   |   1  |  101b  |  Zero  |   O  | See notes (1) and (4)               | 
+|   1   |   0  |  101b  |   &gt;0   |   O  | See notes (2) and (3)               | 
+|   1   |   1  |  101b  |   &gt;0   |   O  | See notes (2) and (4)               | 
+|-----------------------------------------------------------------------------| 
+|                           VENDOR-SPECIFIC FORMAT                            | 
+|-----------------------------------------------------------------------------| 
+|   1   |   0  |  110b  |        |      |                                     | 
+|   1   |   1  |  110b  |        |      |                                     | 
+|-----------------------------------------------------------------------------| 
+|  All remaining codes are reserved.                                          | 
+|-----------------------------------------------------------------------------| 
+|  Key:  M = Command implementation is mandatory.                             | 
+|        O = Command implementation is optional.                              | 
+|-----------------------------------------------------------------------------| 
+|  NOTES                                                                      | 
+|    1  No Dlist is transferred to the target during the DATA OUT phase.      | 
+|    2  A Dlist is transferred to the target during the DATA OUT phase.       | 
+|       Add the Dlist defects to the new Glist.                               | 
+|    3  Use the existing Glist as a defect source.  Add existing Glist        | 
+|       defects to the new Glist.                                             | 
+|    4  Discard the existing Glist. Do not add existing Glist defects to      | 
+|       the new Glist.                                                        | 
+|    5  All the options described in this table cause a new Glist to be       | 
+|       created during execution of the FORMAT UNIT command as described in   | 
+|       the text.                                                             | 
++=============================================================================+</pre></body></html>

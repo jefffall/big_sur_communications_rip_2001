@@ -1,0 +1,673 @@
+<HTML> 
+<HEAD> 
+   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1"> 
+   <META NAME="Author" CONTENT="Mike Kovatch"> 
+   <META NAME="GENERATOR" CONTENT="Mozilla/4.03 [en] (Win95; U) [Netscape]"> 
+   <META NAME="description" CONTENT="A brief look at Fibre Channel technology; 
+   Fibre Channel structure (layers FC-0, FC-1, FC-2, service classes, FC-3, FC-4); 
+   frame structure, and physical layer mediums."> 
+   <META NAME="keywords" CONTENT="fibre channel, Fibre Channel, fiber, channel, 
+   network, technology, high-speed, protocol, serial, network, fabric, Fabric, 
+   N_port, F_port, NL_port, FL_port, LCF, link control facility, point-to-point, 
+   arbitrated loop, cross point, fabric switch, topology, transport mechanism, 
+   service class, communication, frame-switch, protocol mapping, FC-AL, FC-EL, 
+   FCA, FCSI, fibre channel association, fibre channel systems initiative"> 
+   <TITLE>Fibre Channel</TITLE> 
+</HEAD> 
+<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000EE" VLINK="#FF0800" ALINK="#551A8B"> 
+ 
+<CENTER><TABLE COLS=1 WIDTH="90%" > 
+<TR> 
+<TD> 
+<FONT SIZE=+3>Fibre Channel</FONT> 
+<HR>Written by&nbsp;&nbsp;Mike Kovatch, EG&amp;G Services,<BR> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Dahlgren, VA, January 1998.<BR> 
+<HR> 
+<BR> 
+<P> 
+<B><FONT SIZE=4>Background</FONT></B> 
+<P> 
+The committee charged with developing Fibre Channel technology 
+was established within the American National Standards Institute 
+(ANSI) in 1989. The original goal was to establish a connectivity 
+technology with a serial interface and carried over fiber optic 
+lines. Unlike other technologies, Fibre Channel was being developed 
+as a standard long before the first products were manufactured. 
+<P> 
+To assist in ensuring the interoperability among products and 
+to kick-start the market for Fibre Channel technology, three of 
+the biggest players -- IBM, Hewlett-Packard Co., and Sun Microsystems 
+Inc. -- formed what came to be known as the Fibre Channel Systems 
+Initiative (FCSI) in 1991. From the beginning, FCSI was designed 
+to be a temporary organization. Its duties were later handed over 
+to the larger Fibre Channel Association in 1995. 
+<P> 
+One of the goals of FCSI was to develop a half-dozen &quot;profiles&quot; 
+of the technology for different applications. The profiles were 
+more specific versions of the ANSI standard. The goal of the profiles 
+was to ensure the highest possible level of interoperability among 
+Fibre Channel products.  
+<P> 
+Fibre Channel was accepted as an ANSI standard in 1994.  Fibre 
+Channel was first publicly demonstrated at the NetWorld+Interop 
+trade show in Atlanta in September 1995.<BR> 
+<P> 
+<B><FONT SIZE=4>What is Fibre Channel?</FONT></B> 
+<P> 
+Data communication generally takes place on channels or networks. 
+ A channel provides a direct or switched point-to-point connection 
+between the communicating devices. A channel is typically hardware 
+intensive and transports data at the high speed with low overhead. 
+In contrast, a network is an aggregation of distributed nodes 
+(like workstations, file servers, or peripherals) with its own 
+protocol that supports interaction among these nodes. A network 
+has a relatively high overhead since it is software intensive 
+and, consequently, slower than a channel. Networks can handle 
+a more extensive range of tasks than channels as they operate 
+in an environment of unanticipated connections, while channels 
+operate amongst only a few devices with predefined addresses. 
+Fibre Channel attempts to combine the best of these two methods 
+of communication into a new I/O interface that meets the needs 
+of both channel and network users. 
+<P> 
+Fibre Channel is a general name for the integrated set of standards 
+being developed by ANSI (see Table 1).  Fibre Channel's purpose 
+is to provide a means for the high-speed transfer of data in a 
+serial link between supercomputers, mainframes, workstations, 
+desktop computers, storage devices, displays, and other peripherals. 
+ The Fibre Channel protocol does not have its own command set; 
+ it simply manages the data transfer between nodes and thus interoperates 
+with existing upper-level protocols.<BR> 
+<BR> 
+<CENTER> 
+<TABLE BORDERCOLOR=#000000 BORDER=1> 
+<TR><TD WIDTH=420><B><FONT SIZE=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ANSI X3T11 Fibre Channel Standards and Draft Standards</FONT></B> 
+</TD></TR> 
+<TR><TD WIDTH=420><FONT SIZE=2>&nbsp;&nbsp;FC Physical (FC-PH) </FONT> 
+<BR> 
+<FONT SIZE=2>&nbsp;&nbsp;FC Reference Card </FONT> 
+<BR> 
+<FONT SIZE=2>&nbsp;&nbsp;FC-PH-2 </FONT> 
+<BR> 
+<FONT SIZE=2>&nbsp;&nbsp;FC-PH-3 </FONT> 
+<BR> 
+<FONT SIZE=2>&nbsp;&nbsp;FC Arbitrated Loop (FC-AL) </FONT> 
+<BR> 
+<FONT SIZE=2>&nbsp;&nbsp;FC Protocol for SCSI (FCP) </FONT> 
+<BR> 
+<FONT SIZE=2>&nbsp;&nbsp;FC Protocol for 802.2LE (FC-LE) </FONT> 
+<BR> 
+<FONT SIZE=2>&nbsp;&nbsp;FC Protocol for HIPPI (FC-FP) </FONT> 
+<BR> 
+<FONT SIZE=2>&nbsp;&nbsp;FC Protocol for SBCON </FONT> 
+<BR> 
+<FONT SIZE=2>&nbsp;&nbsp;FC Generic Services (FC-GS)</FONT> 
+</TD></TR> 
+<TR><TD WIDTH=420><B><FONT SIZE=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Profiles</FONT></B></TD> 
+</TR> 
+<TR><TD WIDTH=420><FONT SIZE=2>&nbsp;&nbsp;FCSI Profiles </FONT> 
+<BR> 
+<FONT SIZE=2>&nbsp;&nbsp;FCSI Profile Structure, FCSI-001 </FONT> 
+<BR> 
+<FONT SIZE=2>&nbsp;&nbsp;FCSI Common FC-PH Feature Sets, FCSI-101 </FONT> 
+<BR> 
+<FONT SIZE=2>&nbsp;&nbsp;FCSI SCSI Profile, FCSI-201 </FONT> 
+<BR> 
+<FONT SIZE=2>&nbsp;&nbsp;FCSI IP Profile, FCSI-202 </FONT> 
+<BR> 
+<FONT SIZE=2>&nbsp;&nbsp;Gigabit Link Module Specification, FCSI-301 </FONT> 
+<BR> 
+<FONT SIZE=2>&nbsp;&nbsp;Loop Profiles </FONT> 
+<BR> 
+<FONT SIZE=2>&nbsp;&nbsp;Private Loop Direct Attach Document </FONT> 
+<BR> 
+<FONT SIZE=2>&nbsp;&nbsp;Public Loop Profile, FC-PLP</FONT> 
+</TD></TR> 
+<TR><TD WIDTH=420><B><FONT SIZE=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Other Fibre Channel Specifications and Documents</FONT></B> 
+</TD></TR> 
+<TR><TD WIDTH=420><FONT SIZE=2>&nbsp;&nbsp;N-Port-to-F Port Interoperability </FONT> 
+<BR> 
+<FONT SIZE=2>&nbsp;&nbsp;10-Bit Interface Specification </FONT> 
+<BR> 
+<FONT SIZE=2>&nbsp;&nbsp;FC MIBs </FONT> 
+<BR> 
+<FONT SIZE=2>&nbsp;&nbsp;Fibre Channel Optical Converter Proposed Specification</FONT> 
+</TD></TR> 
+</TABLE> 
+</CENTER> 
+<P> 
+<FONT SIZE=2> </FONT> 
+<P> 
+<CENTER><FONT SIZE=2> <B>Table 1.  Fibre Channel Standards</B></FONT></CENTER> 
+<P> 
+<FONT SIZE=2> <BR> 
+</FONT> 
+<P> 
+A Fibre Channel installation has a minimum of one link between 
+two nodes.  The data flows between hardware entities called N_ports, 
+generally part of the termination card which contains hardware 
+and software support for the Fibre Channel protocol.  Each node 
+must have at least one N_port, and usually has two; either may 
+serve as transmitter, receiver, or both.  An N_port is assigned 
+a unique address (the N_port Identifier), and also contains a 
+Link Control Facility (LCF), that handles the logical and physical 
+control of the link at the firmware level. 
+<P> 
+Fibre Channel allows for an active intelligent interconnection 
+scheme, called a Fabric, to connect devices. Everything between 
+the ports on Fibre Channel is called the Fabric.  The Fabric is 
+most often a switch or series of switches  that takes the responsibility 
+for routing.  Ports on the Fabric are called F_ports.  All a Fibre 
+Channel node has to do is to manage a simple point-to-point connection 
+between itself (N_port) and the Fabric (F_port).  NL_port and 
+FL_port refer to an N_port and F_port, respectively, that can 
+support arbitrated loop functions in addition to basic point-to-point 
+functions. 
+<P> 
+The Fibre Channel system relies on ports logging in with each 
+other and the Fabric; so the Fabric can be a circuit switch, an 
+active hub, or a loop.   Fibre Channel allows for three different 
+topologies: 
+<OL> 
+<LI><B>POINT-TO-POINT</B> 
+<UL> 
+<LI>Simplest topology 
+<LI>Utilizes bidirectional links that interconnect the N_ports 
+of a pair of nodes 
+<LI>Non-blocking 
+<LI>Underutilizes of the bandwidth of the communications link 
+<BR> 
+</UL> 
+<LI><B>ARBITRATED LOOP</B> 
+<UL> 
+<LI>Is basically the simplest form of  a Fabric topology. 
+<LI>Has shared bandwidth, distributed topology. 
+<LI>Interconnects NL_ports/FL_ports at the nodes/Fabric using 
+unidirectional links. 
+<LI>Only one active L_port-L_port connection, so blocking is possible. 
+<LI>A fairness algorithm ensures that no L_port is blocked from 
+accessing the loop. 
+<LI>Should any link in the loop fail, communication between all 
+L_ports is terminated. 
+<LI>Does not need a switched Fabric, so less expensive than cross-point. 
+<BR> 
+</UL> 
+<LI><B>CROSS-POINT (OR FABRIC SWITCHED)</B> 
+<UL> 
+<LI>Links provide a bidirectional connection between a node (N_port) 
+and the Fabric (F_port). 
+<LI>Can be configured to be non-blocking by providing multiple 
+paths between any two F_ports. 
+<LI>Uses a Destination_Identifier (D_ID), embedded in the frame 
+header, to route the frame through the Fabric to the desired destination 
+N_port. 
+<LI>Provides the highest performance and connectivity of the three 
+topologies. 
+<LI>Provides efficient sharing of available bandwidth. 
+<LI>Connectivity is guaranteed without congestion. 
+<LI>Adding stations to a Fabric does not reduce the point-to-point 
+channel bandwidth. 
+<LI>Generic Fabric requirements are defined in the FC-FG standard. 
+<LI>Switch Fabric characteristics are defined in the FC-SW standard. 
+</UL> 
+</OL> 
+<P> 
+The topology of the Fibre Channel network is transparent to the 
+attached devices.  The Fibre Channel ports involved in a given 
+link negotiate the means and nature of the connection or transmission. 
+ All topologies are fully interoperable. Fibre Channel switch 
+ports (also known as fabric ports or F_ports) can provide individual 
+end-stations (N_ports) or loops access to the overall Fibre Channel 
+network.  
+<P> 
+All point-to-point and arbitrated loop topologies require that 
+all nodes use the same data rate at all times. In a Fibre Channel 
+switch topology, however, dynamic rate conversion is possible. 
+For example, in the switched topology, a 266-Mbaud unit could 
+connect to a 1.062-Gbaud unit. The two ports involved in the connection 
+simply negotiate the lowest available data rate for information 
+transport while each link maintains its own line rate. 
+<P> 
+If traditional networking components, such as switches and hubs, 
+are added to the storage infrastructure, then multiple servers 
+can be connected with multiple storage devices.   Fibre Channel's 
+flexibility allows for the introduction of a much more modular 
+building block type of architecture, that can be tuned more toward 
+specific applications.<FONT SIZE=2> <BR> 
+</FONT> 
+<P> 
+<B><FONT SIZE=4>Fibre Channel Structure:<BR> 
+<BR> 
+</FONT></B>Fibre Channel is structured as a set of hierarchical 
+functions, similar to the ISO OSI Reference Model.  There are 
+five layers, pictured in Figure 1. 
+<P> 
+<CENTER><IMG SRC=".\ov2.gif" HEIGHT=282 WIDTH=472></CENTER> 
+<P> 
+<CENTER><B>Figure 1.  Fibre Channel Structure<BR> 
+</B></CENTER> 
+<P> 
+The three bottom layers of the Fibre Channel stack (FC-0 through 
+FC-2) form what is known as the Fibre Channel physical standard 
+(FC-PH). This defines all the physical transmission characteristics 
+of Fibre Channel. The remaining layers (FC-3 and FC-4) handle 
+interfaces with other network protocols and applications. 
+<P> 
+Unlike Local Area Network (LAN) technologies such as Ethernet 
+and token ring, Fibre Channel keeps the various functional layers 
+of the stack physically separate. This enables vendors to build 
+products from discrete functional components-such as chip sets 
+and bus interfaces-that handle specific portions of the protocol 
+stack. It also allows them to implement some stack functions in 
+hardware and others in software or firmware. <BR> 
+<BR> 
+<P> 
+<B>FC-0 Layer:  Physical Layer</B> 
+<P> 
+FC-0 defines the basic physical link, including the fibre, connectors, 
+and optical/electrical parameters for a variety of data rates. 
+Fibre Channel offers a basic rate of 133 Mbaud, the most commonly 
+used speed of 266 Mbaud, as well as 531 Mbaud and 1.062 Gbaud. 
+ It is important to note that these signaling rates include the 
+overhead involved in establishing and maintaining connections. 
+The actual data throughput is somewhat lower: 100 Mbit/s for 133 
+Mbaud, 200 Mbit/s for 266 Mbaud, 400 Mbit/s for 531 Mbaud, and 
+800 Mbit/s for 1.062 Gbaud.  
+<P> 
+Data rates are expected to go well beyond today's 1.062-Gbaud 
+ceiling. In most cases, including switched environments, users 
+will be able to upgrade simply by swapping in an adapter card. 
+Specifications for 2.134 and 4.268 Gbaud are already in place. 
+<P> 
+<B>FC-1 Layer:  Transmission Encode/Decode Layer</B> 
+<P> 
+FC-1 defines the transmission protocol including serial encoding 
+and decoding rules, special characters, timing recovery, and error 
+control. The information transmitted over a fibre is encoded 8 
+bits at a time into a 10-bit Transmission Character (8B/10B transmission 
+coding scheme licensed from IBM). The two extra bits are used 
+for error detection and correction, known as disparity control. 
+The 8B/10B scheme supplies sufficient error detection and correction 
+to permit use of low-cost transceivers, as well as timing recovery 
+methods to reduce the risk of radio frequency interference and 
+ensure balanced, synchronized transmissions. 
+<P> 
+<B>FC-2 Layer:  Framing and Signaling Layer</B> 
+<P> 
+The FC-2 layer performs the basic signaling and framing functions 
+and defines the transport mechanism for data from the upper layers 
+of the stack (see Figure 2).  
+<P> 
+FC-2 frames and sequences data from the upper layers for transmission 
+via the FC-0 layer. It also accepts transmissions from the FC-0 
+layer and reframes and resequences them for use by the upper layers. 
+Fibre Channel frame sizes can vary and must be negotiated by the 
+transmitter/receiver pair for each connection. Frame sizes typically 
+range from 36 bytes to 2 kB, but may be larger in some cases. 
+<BR> 
+<P> 
+<CENTER><IMG SRC="ov4.gif" HEIGHT=200 WIDTH=460></CENTER> 
+<P> 
+<CENTER><B>Figure 2.  Frame Structure</B> </CENTER> 
+<TABLE> 
+<TR><TD WIDTH=638><I><FONT SIZE=2>The amount of overhead required to transmit a frame remains constant regardless of frame size. This makes Fibre Channel very efficient for high volume data transfers, such as storage reads and writes or TCP/IP file exchanges.</FONT></I> 
+</TD></TR> 
+</TABLE> 
+<P> 
+FC-2 signaling defines the connection between at least two Fibre 
+Channel node ports (or N_ports). One of these must act as the 
+originator of outbound traffic, and at least one other must act 
+as a responder, receiving inbound traffic and sending traffic 
+back. Connections between N_ports are full duplex.  The FC-2 layer 
+also provides essential traffic management functions, including 
+flow control, link management, buffer memory management, as well 
+as error detection and correction. 
+<P> 
+Finally, FC-2 supplies additional flow control and error correction 
+mechanisms. For flow control, it employs a sliding window scheme 
+similar to that of TCP/IP.  Flow control functionality varies 
+somewhat according to the class of service defined. Error detection 
+is performed using a 32-bit CRC (Cyclic Redundancy Check). A Link 
+Control Facility (LCF) manages the Fibre Channel connection and 
+maintains the information needed to recover links in the event 
+of failure.  
+<H3><A NAME="_Toc410717796">Service Classes</A> </H3> 
+<P> 
+FC-2 also defines four classes of service, a unique feature of 
+Fibre Channel that allows it to meet a variety of communications 
+needs.  The user selects a service class based on the characteristics 
+of their application, such as packet length and transmission duration, 
+and allocates the services by the Fabric login protocol.  The 
+four classes are as follows: 
+<P> 
+<EM>Class 1</EM>&nbsp;--    Hard-wired or circuit-switched connections; 
+dedicated, uninterruptible links, like telephone connections. 
+<UL> 
+<LI>Connection is retained and guaranteed by the Fabric. 
+<LI>Guarantees the maximum bandwidth between two N_ports 
+<LI>Frames are delivered to the destination Port in the same order 
+as they are transmitted 
+<LI>Best for sustained, high throughput transactions 
+<LI>Designed for time-critical, non-bursty, dedicated connections, 
+such as those between two supercomputers.   
+</UL> 
+<P> 
+<EM>Class 2</EM>&nbsp;--    Connectionless; frame-switched transmission; 
+guarantees delivery; confirms receipt of traffic.  
+<UL> 
+<LI>Functions are performed on the data frame rather than on a 
+connection. 
+<LI>No dedicated connection is established between N_ports. 
+<LI>Each frame is sent to its destination over any available route. 
+<LI>There is no guarantee of the order of the delivery of frames. 
+<LI>When congestion occurs, the frame is retransmitted until it 
+successfully reaches its destination.  
+<LI>When Class 2 signaling blocks a frame, the transmitting N_port 
+receives a busy frame. This allows retransmission to be performed 
+immediately, rather than forcing the station to wait, as is the 
+case with TCP/IP and other protocols.  
+</UL> 
+<P> 
+<EM>Class 3</EM>&nbsp;--   One-to-many connectionless, frame-switched 
+service.  
+<UL> 
+<LI>Is similar to Class 2 service but has no delivery guarantee 
+or confirmation mechanism. 
+<LI>Is faster than Class 2 because there is no wait for confirmation. 
+<LI>If a transmission does not arrive at its destination, Class 
+3 service does not retransmit.  
+<LI>This service is most often used for real-time broadcasts that 
+cannot wait for acknowledgment but are not sufficiently time-critical 
+to warrant Class 1 service.  
+<LI>Is also used for applications that can tolerate lost packets. 
+</UL> 
+<P> 
+<EM>Intermix</EM>&nbsp;--  An option of Class 1 service, in which 
+Class 1 Frames are guaranteed a special amount of bandwidth, but 
+Class 2 and Class 3 Frames are multiplexed onto the channel when 
+the Class 1 connection is idle.<BR> 
+<P> 
+<B>FC-3 Layer:  Advanced Features</B> 
+<P> 
+The FC-3 layer defines special service features including:  
+<UL> 
+<LI>Striping -  Used to multiply bandwidth using multiple N_ports 
+in parallel to transmit a single information unit across multiple 
+links.  
+<LI>Hunt groups -  Provides the ability for more than one port 
+to respond to the same alias address. This improves efficiency 
+by decreasing the chance of reaching a busy N_port.  
+<LI>Multicast -  delivers a single transmission to multiple destination 
+ports. This includes sending to all N_ports on a Fabric (broadcast) 
+or to only a subset of the N_ports on a Fabric. <BR> 
+</UL> 
+<P> 
+<B>FC-4 Layer:  Protocol Mapping</B> 
+<P> 
+This layer specifies the mapping rules for several legacy upper-layer 
+protocols. FC-4 allows Fibre Channel to carry data from other 
+networking protocols and applications.  Fibre Channel can concurrently 
+transport both network and channel information over the same physical 
+interface.  The following network and channel protocols are currently 
+specified or proposed as FC-4:  
+<UL> 
+<LI>Small Computer System Interface (SCSI)  
+<LI>Intelligent Peripheral Interface (IPI)  
+<LI>High Performance Parallel Interface (HIPPI) Framing Protocol 
+<LI>Internet Protocol (IP)  
+<LI>ATM Adaptation Layer for computer data (AAL5)  
+<LI>Link Encapsulation (FC-LE)  
+<LI>Single Byte Command Code Set Mapping (SBCCS)  
+<LI>IEEE 802.2  
+</UL> 
+<P> 
+<P> 
+<B>Physical Layer Mediums:</B> 
+<P> 
+Fibre Channel provides physical layer specifications for copper 
+wire, coaxial wire, multi-mode fiber, and single-mode fiber.  
+All physical layer mediums support the same maximum transfer rate 
+of 1 Gbps.  The only restriction is the distance that each medium 
+can be run over.<BR> 
+<BR> 
+ 
+<TABLE BORDERCOLOR=#000000 BORDER=1> 
+<TR> 
+<TD COLSPAN=7 WIDTH=763><CENTER><B>9-Micrometer Single Mode Fiber</B></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=264><CENTER><B>Speed (MBps)</B></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><B>Distance</B></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><B>Rate (Mbaud)</B></CENTER></TD> 
+<TD WIDTH=180><CENTER><B>Laser Type</B></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>100</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 10 km</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>1062.5</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>Longwave</FONT></CENTER> 
+</TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>50</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 10 km</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>531.2</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>Longwave</FONT></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>25</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 10 km</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>265.6</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>Longwave</FONT></CENTER></TD> 
+</TR> 
+<TR> 
+<TD COLSPAN=7 WIDTH=763><CENTER><B>50-Micrometer Multi-mode Fiber</B></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><B>Speed (MBps)</B></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><B>Distance</B></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><B>Rate (Mbaud)</B></CENTER></TD> 
+<TD WIDTH=180><CENTER><B>Laser Type</B></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>100</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 0.5 km</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>1062.5</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>Shortwave</FONT></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>50</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 1.5 km</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>531.2</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>Shortwave</FONT></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>25</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 2 km</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>265.6</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>Shortwave</FONT></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>25</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 2 km</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>265.6</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>Longwave LED</FONT></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>12.5</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 10 km</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>132.8</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>Longwave LED</FONT></CENTER></TD> 
+</TR> 
+<TR> 
+<TD COLSPAN=7 WIDTH=763><CENTER><B>50-Micrometer Multi-mode Fiber</B></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><B>Speed (MBps)</B></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><B>Distance</B></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><B>Rate (Mbaud)</B></CENTER></TD> 
+<TD WIDTH=180><CENTER><B>Laser Type</B></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>100</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 175 m</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>1062.5</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>Shortwave</FONT></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>50</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 350 m</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>531.2</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>Shortwave</FONT></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>25</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 700 m</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>265.6</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>Shortwave</FONT></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>25</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 1.5 km</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>265.6</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>Longwave LED</FONT></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>12.5</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 1.5 km</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>132.8</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>Longwave LED</FONT></CENTER></TD> 
+</TR> 
+<TR> 
+<TD COLSPAN=7 WIDTH=763><CENTER><B>Video Coaxial</B></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><B>Speed (MBps)</B></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><B>Distance</B></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><B>Rate (Mbaud)</B></CENTER></TD> 
+<TD WIDTH=180><CENTER><B>Laser Type</B></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>100</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 25 m</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>1062.5</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>ECL</FONT></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>50</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 50 m</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>531.2</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>ECL</FONT></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>25</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 75 m</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>265.6</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>ECL</FONT></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>12.5</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 100 m</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>132.8</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>ECL</FONT></CENTER></TD> 
+</TR> 
+<TR> 
+<TD COLSPAN=7 WIDTH=763><CENTER><B>Minature Coaxial</B></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><B>Speed (MBps)</B></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><B>Distance</B></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><B>Rate (Mbaud)</B></CENTER></TD> 
+<TD WIDTH=180><CENTER><B>Laser Type</B></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>100</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 10 m</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>1062.5</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>ECL</FONT></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>50</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 15 m</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>531.2</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>ECL</FONT></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>25</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 25 m</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>265.6</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>ECL</FONT></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>12.5</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 35 m</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>132.8</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>ECL</FONT></CENTER></TD> 
+</TR> 
+<TR> 
+<TD COLSPAN=7 WIDTH=763><CENTER><B>Shielded Twisted Pair (Copper)</B></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><B>Speed (MBps)</B></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><B>Distance</B></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><B>Rate (Mbaud)</B></CENTER></TD> 
+<TD WIDTH=180><CENTER><B>Laser Type</B></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>25</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 50 m</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>265.6</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>ECL</FONT></CENTER></TD> 
+</TR> 
+<TR> 
+<TD WIDTH=200><CENTER><FONT SIZE=2>12.5</FONT></CENTER></TD> 
+<TD COLSPAN=3 WIDTH=203><CENTER><FONT SIZE=2>up to 100 m</FONT></CENTER></TD> 
+<TD COLSPAN=2 WIDTH=180><CENTER><FONT SIZE=2>132.8</FONT></CENTER></TD> 
+<TD WIDTH=180><CENTER><FONT SIZE=2>ECL</FONT></CENTER></TD> 
+</TR> 
+</TABLE> 
+<P> 
+<CENTER><B>Table 2.  Fibre Channel Physical Layer Mediums<BR> 
+</B></CENTER> 
+<P> 
+<B><FONT SIZE=4>FC-AL and FC-EL:</FONT></B> 
+<P> 
+The next issue will take a more in-depth look at FC-AL, the most 
+popular industry application of Fibre Channel, and FC-EL, a proposed 
+standard that is slated to combine the best features of FC-AL 
+and its biggest competitor, IBM's Serial Storage Architecture 
+(SSA).<BR> 
+<BR><HR WIDTH=75%> 
+<P>If anyone has any information that they would like to share, or any 
+questions or comments regarding this article, please contact us via e-mail 
+at: <A HREF="mailto:b321lab@nswc.navy.mil">the 
+B321 lab</A><BR><BR> 
+<HR WIDTH=50%> 
+</TD> 
+</TR> 
+</TABLE></CENTER> 
+<BR><CENTER> 
+This page has had 11606 hits since February 5, 1998 
+<BR><br> 
+<a href="../byauthor.html#kovatch">Other Articles By This Author</a><br>  
+<BR> 
+<a href="te_feb98.shtml#i15">Back to Feb98 Index</a><br> 
+<a href="../techexpl.shtml#i0">Back to TE2000 Home Page</a><br> 
+<a href="../index.html">Back to B321 Home Page</a><br> 
+<a href="http://www.nswc.navy.mil/dahl.htm>Back to NSWCDD Home Page</a><br> 
+<a href="http://www.navsea.navy.mil/">Back to NAVSEA Home Page</a><br> 
+&nbsp; 
+<P> 
+<HR WIDTH=75%> 
+<CENTER> 
+<B>This information resided on a DoD interest computer; now on a BigSur Server.<BR> 
+Important <A HREF="../warning.html">conditions, restrictions, and disclaimers</A> apply! 
+<BR><BR> 
+Approved for public release; distribution is unlimited.  
+</B> 
+</CENTER> 
+</CENTER> 
+</BODY> 
+</HTML> 

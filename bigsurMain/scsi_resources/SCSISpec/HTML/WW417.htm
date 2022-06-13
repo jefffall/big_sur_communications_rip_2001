@@ -1,0 +1,97 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><title>SCSI-2 Spec - Write-once devices</title></head><body><a name=13><h1>13 Write-once devices</h1><a name=13.1><h2>13.1 Model for write-once devices</h2>
+The model for the write-once device is a variation on the optical memory model. Most of the aspects of a write-once device are similar to optical memory devices. The differences are summarized in this clause. <a name=13.1.1><h3>13.1.1 Logical blocks</h3>
+Data may be written to a logical block only once. A subsequent write to a logical block already written may or may not be corrupted, depending on the implementation. Write-once physical media is non- volatile. <p>The updating of blocks (see <a href="WW418.htm">16.1</a>) is discouraged. SCSI write-once devices are intended to be archival in nature. Data at a logical block address is not expected to change once it is written. The update commands are not defined for this device type. Devices are not precluded from implementing the update function by this standard, though devices that require the update function should use the optical memory device type. <p>Devices may be able to determine the state of a logical block prior to access. These devices can determine whether a block is blank or written. This is useful in detecting previously written blocks, and preventing a destructive overwrite. This is also useful in finding blank areas for later writing. The MEDIUM SCAN command can be used to find blank and written areas prior to WRITE and READ access. <a name=13.1.2><h3>13.1.2 Initialization</h3>
+The FORMAT UNIT command is not defined for write-once devices. Write- once media is shipped pre-formatted by the manufacturer and is ready for use when mounted. <a name=13.1.3><h3>13.1.3 Physical medium defects</h3>
+The raw defect rate is typically higher for optical medium than for magnetic medium. Data is usually recovered through the use of sophisticated error correction algorithms. The level of error correction used for data recovery is often can be selected. However, many write-once devices have a minimum level that is always used and cannot be de-selected through the error recovery mode parameter. Control of the error correction algorithms and level of correction is vendor-specific. <p>Defect management on write-once devices is usually vendor-specific. However, there are standards for some types of write-once media that specify defect management techniques. These standards, where they exist, may supersede the implementation requirements pertaining to error and defect reporting in this International Standard. <a name=13.1.4><h3>13.1.4 Error reporting</h3>
+If any of the following conditions occur during the execution of a command the target shall return CHECK CONDITION status. The appropriate sense key and additional sense code should be set. The following list illustrates some error conditions and the applicable sense keys. The list does not provide an exhaustive enumeration of all conditions that may cause the CHECK CONDITION status. <pre><b> Condition       Sense Key</b>
+ Invalid logical block address           ILLEGAL REQUEST  
+
+ Unsupported option requested            ILLEGAL REQUEST  
+
+ Target reset or medium change 
+ since last command from 
+ this initiator                          UNIT ATTENTION  
+
+ Self diagnostic failed                  HARDWARE ERROR  
+
+ Unrecovered read error                  MEDIUM ERROR HARDWARE ERROR  
+
+ Recovered read error                    RECOVERED ERROR  
+
+ Overrun or other error that 
+ might be resolved by 
+ repeating the command                   ABORTED command  
+
+ Attempt to write on write 
+ protected medium                        DATA PROTECT  
+
+ Attempt to read a blank or 
+ previously unwritten block              BLANK CHECK  
+
+ Attempt to write a previously 
+ written block and blank 
+ checking is enabled                     BLANK CHECK </pre><br>
+In the case of an invalid logical block address, the sense data information field shall be set to the logical block address of the first invalid address. <p>In the case of an attempt to read a blank or previously unwritten block, the sense data information field shall be set to the logical block address of the first blank block encountered. The data read up to that block shall be transferred. <p>In the case of an attempt to write a previously written block and blank checking is enabled, the sense information field shall be set to the logical block address of the first non-blank block encountered. <a name=13.2><h2>13.2 Commands for write-once devices</h2>
+The commands for write-once devices shall be as shown in <a href="WW446.htm" target="figures">table 235</a>. <p><a name=tab235><h4>Table 235 - Commands for write-once devices</h4><pre>
++=====================================-============-======-============+ 
+|  Command name                       | Operation  | Type |  Subclause | 
+|                                     |   code     |      |            | 
+|-------------------------------------+------------+------+------------| 
+| CHANGE DEFINITION                   |    40h     |   O  |   <a href="WW377.htm">8.2.1</a>    | 
+| COMPARE                             |    39h     |   O  |   <a href="WW377.htm">8.2.2</a>    | 
+| COPY                                |    18h     |   O  |   <a href="WW377.htm">8.2.3</a>    | 
+| COPY AND VERIFY                     |    3Ah     |   O  |   <a href="WW377.htm">8.2.4</a>    | 
+| INQUIRY                             |    12h     |   M  |   <a href="WW377.htm">8.2.5</a>    | 
+| LOCK UNLOCK CACHE                   |    36h     |   O  |   <a href="WW416.htm">9.2.2</a>    | 
+| LOG SELECT                          |    4Ch     |   O  |   <a href="WW377.htm">8.2.6</a>    | 
+| LOG SENSE                           |    4Dh     |   O  |   <a href="WW377.htm">8.2.7</a>    | 
+| MEDIUM SCAN                         |    38h     |   O  |  <a href="WW418.htm">16.2.3</a>    | 
+| MODE SELECT(6)                      |    15h     |   O  |   <a href="WW377.htm">8.2.8</a>    | 
+| MODE SELECT(10)                     |    55h     |   O  |   <a href="WW377.htm">8.2.9</a>    | 
+| MODE SENSE(6)                       |    1Ah     |   O  |   <a href="WW377.htm">8.2.10</a>   | 
+| MODE SENSE(10)                      |    5Ah     |   O  |   <a href="WW377.htm">8.2.11</a>   | 
+| PRE-FETCH                           |    34h     |   O  |   <a href="WW416.htm">9.2.3</a>    | 
+| PREVENT ALLOW MEDIUM REMOVAL        |    1Eh     |   O  |   <a href="WW416.htm">9.2.4</a>    | 
+| READ(6)                             |    08h     |   O  |   <a href="WW416.htm">9.2.5</a>    | 
+| READ(10)                            |    28h     |   M  |   <a href="WW416.htm">9.2.6</a>    | 
+| READ(12)                            |    A8h     |   O  |  <a href="WW418.htm">16.2.4</a>    | 
+| READ BUFFER                         |    3Ch     |   O  |   <a href="WW377.htm">8.2.12</a>   | 
+| READ CAPACITY                       |    25h     |   M  |   <a href="WW416.htm">9.2.7</a>    | 
+| READ LONG                           |    3Eh     |   O  |   <a href="WW416.htm">9.2.9</a>    | 
+| REASSIGN BLOCKS                     |    07h     |   O  |   <a href="WW416.htm">9.2.10</a>   | 
+| RECEIVE DIAGNOSTIC RESULTS          |    1Ch     |   O  |   <a href="WW377.htm">8.2.13</a>   | 
+| RELEASE                             |    17h     |   M  |   <a href="WW416.htm">9.2.11</a>   | 
+| REQUEST SENSE                       |    03h     |   M  |   <a href="WW377.htm">8.2.14</a>   | 
+| RESERVE                             |    16h     |   M  |   <a href="WW416.htm">9.2.12</a>   | 
+| REZERO UNIT                         |    01h     |   O  |   <a href="WW416.htm">9.2.13</a>   | 
+| SEARCH DATA EQUAL(10)               |    31h     |   O  |   <a href="WW416.htm">9.2.14.1</a> | 
+| SEARCH DATA EQUAL(12)               |    B1h     |   O  |  <a href="WW418.htm">16.2.8</a>    | 
+| SEARCH DATA HIGH(10)                |    30h     |   O  |   <a href="WW416.htm">9.2.14.2</a> | 
+| SEARCH DATA HIGH(12)                |    B0h     |   O  |  <a href="WW418.htm">16.2.8</a>    | 
+| SEARCH DATA LOW(10)                 |    32h     |   O  |   <a href="WW416.htm">9.2.14.3</a> | 
+| SEARCH DATA LOW(12)                 |    B2h     |   O  |  <a href="WW418.htm">16.2.8</a>    | 
+| SEEK(6)                             |    0Bh     |   O  |   <a href="WW416.htm">9.2.15</a>   | 
+| SEEK(10)                            |    2Bh     |   O  |   <a href="WW416.htm">9.2.15</a>   | 
+| SEND DIAGNOSTIC                     |    1Dh     |   M  |   <a href="WW377.htm">8.2.15</a>   | 
+| SET LIMITS(10)                      |    33h     |   O  |   <a href="WW416.htm">9.2.16</a>   | 
+| SET LIMITS(12)                      |    B3h     |   O  |  <a href="WW418.htm">16.2.9</a>    | 
+| START STOP UNIT                     |    1Bh     |   O  |   <a href="WW416.htm">9.2.17</a>   | 
+| SYNCHRONIZE CACHE                   |    35h     |   O  |   <a href="WW416.htm">9.2.18</a>   | 
+| TEST UNIT READY                     |    00h     |   M  |   <a href="WW377.htm">8.2.16</a>   | 
+| VERIFY(10)                          |    2Fh     |   O  |  <a href="WW418.htm">16.2.11</a>   | 
+| VERIFY(12)                          |    AFh     |   O  |  <a href="WW418.htm">16.2.12</a>   | 
+| WRITE(6)                            |    0Ah     |   O  |   <a href="WW416.htm">9.2.20</a>   | 
+| WRITE(10)                           |    2Ah     |   M  |   <a href="WW416.htm">9.2.21</a>   | 
+| WRITE(12)                           |    AAh     |   O  |  <a href="WW418.htm">16.2.14</a>   | 
+| WRITE AND VERIFY(10)                |    2Eh     |   O  |   <a href="WW416.htm">9.2.22</a>   |  
+| WRITE AND VERIFY(12)                |    AEh     |   O  |  <a href="WW418.htm">16.2.16</a>   | 
+| WRITE BUFFER                        |    3Bh     |   O  |   <a href="WW377.htm">8.2.17</a>   | 
+| WRITE LONG                          |    3Fh     |   O  |   <a href="WW416.htm">9.2.23</a>   | 
+|----------------------------------------------------------------------| 
+|Key:  M = command implementation is mandatory.                        | 
+|      O = command implementation is optional.                         | 
++======================================================================+</pre>
+
+The following command codes are vendor-specific: 02h, 05h, 06h, 09h, 0Ch, 0Dh, 0Eh, 0Fh, 10h, 11h, 13h, 14h, 19h, 20h, 21h, 22h, 23h, 24h, 26h, 27h, 29h, and C0h through FFh. All remaining command codes for write-once devices are reserved for future standardization. <a name=13.3><h2>13.3 Parameters for write-once devices</h2>
+Refer to the parameters for optical memory devices (see <a href="WW418.htm">16.3</a>). <a name=13.4><h2>13.4 Definitions specific to write-once devices</h2>
+See <a href="WW418.htm">16.4</a>. </body></html>

@@ -1,0 +1,428 @@
+<html><head><meta content="(PICS 1.0 " l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label" http://www.classify.org/safesurf/"><link href="mailto:garyb@scitexdv.com" rev=made><title>SCSI-2 Spec - Commands for printer devices</title></head><body><a name=11><h1>11 Commands for printer devices</h1><a name=11.1><h2>11.1 Model for printer devices</h2>
+This command set includes capability for the printer-controlling device, that is an SCSI target to be is functionally separate from the physical printer device (see <a href="WW652.gif" target="figures">figure 27</a>) as well as integrated with it. The physical printer device is connected to the SCSI target via one of several common device-level interfaces. There may be more than one physical printer device attached to the printer controlling device. In such a case, each physical printer device is assigned a separate logical unit number, beginning with zero. The printer-controlling device, printer device-level interface, and the physical printer device are referred to collectively as the printer device. <p><a name=fig27><a href="WW652.gif" target="figures"><img src="WWR16.gif"><br>
+Figure 27 - SCSI printer model</a><p>Specific control mechanisms are defined in mode pages for two industry- standard interfaces known as the line printer interface (e.g. the Data Products interface or equivalent) and the EIA RS-232C interface. These mode pages are used to control optional features of these interfaces. No mode page was defined for the popular industry-standard parallel interface because the options requiring controls are embedded in the data. <p>The printer-controlling device may be integrated within the printer device; it is not required to use one of the industry-standard interfaces referenced above. <p>The printer device commands are structured on the assumption that specific printer control codes may be embedded in the data transferred by the FORMAT, PRINT, and SLEW AND PRINT commands. The transparent control codes may take the form of escape code sequences. commands for the operation of the target function and some printer controls, which are not convenient to handle in a transparent way, are specified in <a href="WW651.htm">11.2.</a> <p>This International Standard does not specify which character set is used by the printer device; nor does it specify the meaning of the escape code sequences that may be used. <a name=11.2><h2>11.2 Commands for printer devices</h2>
+The commands for printer devices shall be as shown in <a href="WW653.htm" target="figures">table 205</a>. <p><a name=tab205><h4>Table 205 - Commands for printer devices</h4><pre>
++=====================================-============-======-============+ 
+|  Command name                       | Operation  | Type |  Subclause | 
+|                                     |   code     |      |            | 
+|-------------------------------------+------------+------+------------| 
+| CHANGE DEFINITION                   |    40h     |   O  |   <a href="WW377.htm">8.2.1</a>    | 
+| COMPARE                             |    39h     |   O  |   <a href="WW377.htm">8.2.2</a>    | 
+| COPY                                |    18h     |   O  |   <a href="WW377.htm">8.2.3</a>    | 
+| COPY AND VERIFY                     |    3Ah     |   O  |   <a href="WW377.htm">8.2.4</a>    | 
+| FORMAT                              |    04h     |   O  |  <a href="WW651.htm">11.2.1</a>    | 
+| INQUIRY                             |    12h     |   M  |   <a href="WW377.htm">8.2.5</a>    | 
+| LOG SELECT                          |    4Ch     |   O  |   <a href="WW377.htm">8.2.6</a>    | 
+| LOG SENSE                           |    4Dh     |   O  |   <a href="WW377.htm">8.2.7</a>    | 
+| MODE SELECT(6)                      |    15h     |   O  |   <a href="WW377.htm">8.2.8</a>    | 
+| MODE SELECT(10)                     |    55h     |   O  |   <a href="WW377.htm">8.2.9</a>    | 
+| MODE SENSE(6)                       |    1Ah     |   O  |   <a href="WW377.htm">8.2.10</a>   | 
+| MODE SENSE(10)                      |    5Ah     |   O  |   <a href="WW377.htm">8.2.11</a>   | 
+| PRINT                               |    0Ah     |   M  |  <a href="WW651.htm">11.2.2</a>    | 
+| READ BUFFER                         |    3Ch     |   O  |   <a href="WW377.htm">8.2.12</a>   | 
+| RECEIVE DIAGNOSTIC RESULTS          |    1Ch     |   O  |   <a href="WW377.htm">8.2.13</a>   | 
+| RECOVER BUFFERED DATA               |    14h     |   O  |  <a href="WW651.htm">11.2.3</a>    | 
+| RELEASE UNIT                        |    17h     |   M  |  <a href="WW405.htm">10.2.9</a>    | 
+| REQUEST SENSE                       |    03h     |   M  |   <a href="WW377.htm">8.2.14</a>   | 
+| RESERVE UNIT                        |    16h     |   M  |  <a href="WW405.htm">10.2.10</a>   | 
+| SEND DIAGNOSTIC                     |    1Dh     |   M  |   <a href="WW377.htm">8.2.15</a>   | 
+| SLEW AND PRINT                      |    0Bh     |   O  |  <a href="WW651.htm">11.2.4</a>    | 
+| STOP PRINT                          |    1Bh     |   O  |  <a href="WW651.htm">11.2.5</a>    | 
+| SYNCHRONIZE BUFFER                  |    10h     |   O  |  <a href="WW651.htm">11.2.6</a>    | 
+| TEST UNIT READY                     |    00h     |   M  |   <a href="WW377.htm">8.2.16</a>   | 
+| WRITE BUFFER                        |    3Bh     |   O  |   <a href="WW377.htm">8.2.17</a>   | 
+|----------------------------------------------------------------------| 
+|Key:  M = command implementation is mandatory.                        | 
+|      O = command implementation is optional.                         | 
++======================================================================+</pre>
+
+The following operation codes are vendor-specific: 01h, 02h, 05h, 06h, 07h, 08h, 09h, 0Ch, 0Dh, 0Eh, 0Fh, 11h, 13h, 19h, and C0h through FFh. All remaining operation codes for printer devices are reserved for future standardization. <a name=11.2.1><h3>11.2.1 FORMAT command</h3>
+The FORMAT command (see <a href="WW654.htm" target="figures">table 206</a>) provides a means for the initiator to specify forms or fonts to printers that support programmable forms or fonts. The format information is peripheral-device specific. <p><a name=tab206><h4>Table 206 - FORMAT command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (04h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |         Reserved         | Format type     | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                           Transfer length                             | 
+|-----+---                                                                 ---| 
+| 4   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Control                                     | 
++=============================================================================+</pre>
+
+The format type field specifies the type of format information to be transferred from the initiator to the target. This field is defined in <a href="WW655.htm" target="figures">table 207</a>. <p><a name=tab207><h4>Table 207 - Format type</h4><pre>
++========-===================+ 
+|  Code  |  Format type      | 
+|--------+-------------------| 
+|   00b  |  Set form         | 
+|   01b  |  Set font         | 
+|   10b  |  Vendor-specific  | 
+|   11b  |  Reserved         | 
++============================+</pre>
+
+The transfer length specifies the length in bytes of format information that shall be transferred during the DATA OUT phase. A transfer length of zero indicates that no format information shall be transferred. This condition shall not be considered as error. <a name=11.2.2><h3>11.2.2 PRINT command</h3>
+The PRINT command (see <a href="WW656.htm" target="figures">table 208</a>) transfers the specified number of bytes from the initiator to the target to be printed. <p><a name=tab208><h4>Table 208 - PRINT command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (0Ah)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |                  Reserved                  | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                           Transfer length                             | 
+|-----+---                                                                 ---| 
+| 4   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Control                                     | 
++=============================================================================+</pre>
+
+The transfer length specifies the length in bytes of data that shall be transferred during the DATA OUT phase. A transfer length of zero indicates that no data shall be transferred. This condition shall not be considered as error. <a name=11.2.3><h3>11.2.3 RECOVER BUFFERED DATA command</h3>
+The RECOVER BUFFERED DATA command (see <a href="WW657.htm" target="figures">table 209</a>) returns to the initiator data that was transferred to the target, but not yet printed. <p><a name=tab209><h4>Table 209 - RECOVER BUFFERED DATA command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (14h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |                  Reserved                  | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 3   |                           Transfer length                             | 
+|-----+---                                                                 ---| 
+| 4   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Control                                     | 
++=============================================================================+</pre>
+
+This command is normally used only to recover from error or exception conditions that make it impossible to print the buffered data. The order in which data are transferred from the target to the initiator is the same as when the data were previously transferred using the PRINT command or SLEW AND PRINT command. Data transferred by this command are deleted from the target data buffer. One or more RECOVER BUFFERED DATA commands may be used to return the buffered data that is not printed. <p>If an attempt is made to recover more data than is contained in the buffer, the command shall be terminated with CHECK CONDITION status and the sense key shall be set to NO SENSE. In addition, the EOM, valid, and ILI bits shall be set to one. The information bytes shall be set to the difference (residue) between the transfer length and the actual number of bytes returned. <p>The transfer length specifies the maximum length in bytes of data that shall be transferred during the DATA IN phase. A transfer length of zero indicates that no data shall be transferred. This condition shall not be considered as error. <a name=11.2.4><h3>11.2.4 SLEW AND PRINT command</h3>
+The SLEW AND PRINT command (see <a href="WW658.htm" target="figures">table 210</a>) transfers the specified number of bytes from the initiator to the target to be printed. This command is provided for printer devices that do not support forms control information embedded within the print data. <p><a name=tab210><h4>Table 210 - SLEW AND PRINT command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (0Bh)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |                  Reserved         | Channel| 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Slew value                                  | 
+|-----+-----------------------------------------------------------------------| 
+| 3   | (MSB)                                                                 | 
+|-----+---                        Transfer length                          ---| 
+| 4   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Control                                     | 
++=============================================================================+</pre>
+
+The transfer length specifies the length in bytes of data that shall be transferred during the DATA OUT phase. A transfer length of zero indicates that no data shall be transferred. This condition shall not be considered as error. <p>If the channel bit is zero, the slew value specifies the number of lines the form shall be advanced before printing. A value of 255 indicates that the form shall be advanced to the first line of the next form before printing. If the channel bit is one, the slew value specifies the forms control channel number to which the form shall be advanced prior to printing the data. If implemented, the printer options page in the MODE SELECT command provides additional control over the usage of the slew value field. <p>If the channel bit is one, and the channel option is not implemented, the command shall be terminated with CHECK CONDITION status and the sense key shall be set to ILLEGAL REQUEST. <a name=11.2.5><h3>11.2.5 STOP PRINT command</h3>
+The STOP PRINT command (see <a href="WW659.htm" target="figures">table 211</a>) requests that the target halt printing on buffered devices in an orderly fashion. <p><a name=tab211><h4>Table 211 - STOP PRINT command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (1Bh)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |                  Reserved         | Retain | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Vendor-specific                             | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Control                                     | 
++=============================================================================+</pre>
+
+A retain bit of zero requests that the target data buffer be discarded; otherwise, the data not printed shall be retained. The data not printed may be recovered using the RECOVER BUFFERED DATA command, if implemented by the target. A subsequent SYNCHRONIZE BUFFER command, PRINT command, or SLEW AND PRINT command shall cause the remaining data not already printed to be printed, followed by the data transferred by the subsequent command, if any. The point at which printing is suspended by this command is vendor-specific. <a name=11.2.6><h3>11.2.6 SYNCHRONIZE BUFFER command</h3>
+The SYNCHRONIZE BUFFER command (see <a href="WW660.htm" target="figures">table 212</a>) provides a means for an initiator to ensure that the data have been printed successfully prior to releasing the peripheral device. This is useful for applications that handle any error or exception conditions (e.g. end-of-medium) prior to termination of the application. <p><a name=tab212><h4>Table 212 - SYNCHRONIZE BUFFER command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (10h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |                  Reserved                  | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Control                                     | 
++=============================================================================+</pre>
+
+When all buffered data are actually printed, the command shall be terminated with a GOOD status. If it is not possible to finish printing all of the buffered data (due to an error or exception condition on the peripheral device), then this command shall be terminated with a CHECK CONDITION status and the appropriate sense key. <p>The printer options page in the MODE SELECT command, if implemented, provides additional control over termination sequences when using this command. <a name=11.3><h2>11.3 Parameters for printer devices</h2><a name=11.3.1><h3>11.3.1 Diagnostic parameters</h3>
+This subclause defines the descriptors and pages for diagnostic parameters used with printer devices. <p>The diagnostic page codes for printer devices are defined in <a href="WW661.htm" target="figures">table 213</a>. <p><a name=tab213><h4>Table 213 - Diagnostic page codes</h4><pre>
++=============-==================================================-============+ 
+|  Page code  |  Description                                     |  Subclause | 
+|-------------+--------------------------------------------------+------------| 
+|     00h     |  Supported diagnostic pages                      |  <a href="WW377.htm">8.3.1.1</a>   | 
+|  01h - 3Fh  |  Reserved (for all device type pages)            |            | 
+|  40h - 7Fh  |  Reserved                                        |            | 
+|  80h - FFh  |  Vendor-specific pages                           |            | 
++=============================================================================+</pre><a name=11.3.2><h3>11.3.2 Log parameters</h3>
+This subclause defines the descriptors and pages for log parameters used with printer devices. <p>The log page codes for printer devices are defined in <a href="WW662.htm" target="figures">table 214</a>. <p><a name=tab214><h4>Table 214 - Log page codes</h4><pre>
++=============-==================================================-============+ 
+|  Page code  |  Description                                     |  Subclause | 
+|-------------+--------------------------------------------------+------------| 
+|     01h     |  Buffer over-run/under-run page                  |  <a href="WW377.htm">8.3.2.1</a>   | 
+|     07h     |  Last n error events page                        |  <a href="WW377.htm">8.3.2.3</a>   | 
+|     06h     |  Non-medium error page                           |  <a href="WW377.htm">8.3.2.4</a>   | 
+|     00h     |  Supported log pages                             |  <a href="WW377.htm">8.3.2.5</a>   | 
+|  02h - 05h  |  Reserved                                        |            | 
+|  08h - 2Fh  |  Reserved                                        |            | 
+|     3Fh     |  Reserved                                        |            | 
+|  30h - 3Eh  |  Vendor-specific pages                           |            | 
++=============================================================================+</pre><a name=11.3.3><h3>11.3.3 Mode parameters</h3>
+This subclause defines the descriptors and pages for mode parameters used with printer devices. <p>The mode parameter list, including the mode parameter header and mode block descriptor, are described in <a href="WW377.htm">8.3.3.</a> <p>The medium-type code field is contained in the mode parameter header (see <a href="WW377.htm">8.3.3</a>). This field is reserved for printer devices. <p>The device-specific parameter field is contained in the mode parameter header (see <a href="WW377.htm">8.3.3</a>). <a href="WW663.htm" target="figures">Table 215</a> defines the device-specific parameter used for printer devices. <p><a name=tab215><h4>Table 215 - Printer device-specific parameter</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|=====+========+==========================+===================================| 
+|     |   WP   |      Buffered mode       |            Reserved               | 
++=============================================================================+</pre>
+
+When using the MODE SELECT command, a buffered mode of zero indicates that the target shall not report a GOOD status on PRINT commands or SLEW AND PRINT commands until the data are actually printed. A buffered mode of one indicates that the target may report a GOOD status on PRINT commands or SLEW AND PRINT commands as soon as the data have been transferred to the SCSI device buffer. The data from one or more commands may be buffered prior to printing. Buffered modes of 2h through 7h are reserved. <p>When using the MODE SENSE command, the buffered mode field returns the current value of this parameter. <p>The density code field is contained in the mode parameter block descriptor (see <a href="WW591.htm" target="figures">table 93</a>). This field is reserved for printer devices. <p>The mode page codes for printer devices are shown in <a href="WW664.htm" target="figures">table 216</a>. <p><a name=tab216><h4>Table 216 - Mode page codes</h4><pre>
++=============-==================================================-============+ 
+|  Page code  |  Description                                     |  Subclause | 
+|-------------+--------------------------------------------------+------------| 
+|     0Ah     |  Control mode page                               |  <a href="WW377.htm">8.3.3.1</a>   | 
+|     02h     |  Disconnect-reconnect page                       |  <a href="WW377.htm">8.3.3.2</a>   | 
+|     03h     |  Parallel printer interface page                 | <a href="WW651.htm">11.3.3.1</a>   | 
+|     09h     |  Peripheral device page                          |  <a href="WW377.htm">8.3.3.3</a>   | 
+|     05h     |  Printer options page                            | <a href="WW651.htm">11.3.3.2</a>   | 
+|     04h     |  Serial printer interface page                   | <a href="WW651.htm">11.3.3.3</a>   | 
+|     01h     |  Reserved                                        |            | 
+|  06h - 08h  |  Reserved                                        |            | 
+|  0Bh - 1Fh  |  Reserved                                        |            | 
+|     00h     |  Vendor-specific (does not require page format)  |            | 
+|  20h - 3Eh  |  Vendor-specific (page format required)          |            | 
+|     3Fh     |  Return all pages                                |            | 
+|             |     (valid only for the MODE SENSE command)      |            | 
++=============================================================================+</pre><a name=11.3.3.1><h4>11.3.3.1 Parallel printer interface page</h4><p>The parallel printer interface page (see <a href="WW665.htm" target="figures">table 217</a>) is intended to support printer devices that use the industry-standard line printer interface. <p><a name=tab217><h4>Table 217 - Parallel printer interface</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+========+========+=====================================================| 
+| 0   |   PS   |Reserved|            Page code (03h)                          | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                           Parameter length (03h)                      | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |  Parity select  |  PIPC  |Reserved|  VCBP  |  VCBS  |  VES   | Autofd | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
++=============================================================================+</pre>
+
+The parameters savable (PS) bit is only used with the MODE SENSE command. This bit is reserved with the MODE SELECT command. A PS bit of one indicates that the target is capable of saving the page in a non-volatile, vendor-specific location. <p>The parity select field specifies parity generation on the printer interface is defined in <a href="WW666.htm" target="figures">table 218</a>. <p><a name=tab218><h4>Table 218 - Parity select</h4><pre>
++========-========================+ 
+|  Code  |  Parity select         | 
+|--------+------------------------| 
+|   00b  |  No parity generation  | 
+|   01b  |  Even parity           | 
+|   10b  |  Odd parity            | 
+|   11b  |  Reserved              | 
++=================================+</pre>
+
+A paper instruction parity check (PIPC) bit of one indicates that the printer interface Paper Instruction signal is included in parity generation on the printer interface by the target. A PIPC bit of zero indicates that the Paper Instruction signal is not included in parity generation on the printer interface by the target. <p><blockquote><b>NOTES</b><br><b>164</b> The format of the vertical forms unit (VFU) control byte is specified by the VCBP, VCBS, and VES bits. The VFU control byte is not part of this standard; however, a discussion of it is included here for a better understanding. This VFU control byte (see table below) includes a control bit (C) to select whether to slew over a number of lines or to skip to a vertical forms unit (VFU) channel number. This bit may be located in two different bit positions and may have either polarity. <p><b>165</b> The number of lines to slew over may be coded as an unsigned four-bit number (NNNN) or an unsigned six-bit number (EENNNN). The upper two bits of the six-bit number (EE) may be positioned contiguously with the lower four bits (NNNN) or they may be separated from the lower four bits by the control bit (C). Furthermore, the upper two bits may or may not be supported. <p><b>166</b> The VFU channel to select is specified by an unsigned four-bit number (NNNN) in the VFU control byte. 167 Pictorially, the control byte is shown in <a href="WW667.htm" target="figures">table 219</a>. </blockquote><p><a name=tab219><h4>Table 219 - VFU control byte</h4><pre>
++=======================-==============================================+ 
+|   VFU control byte    |  Description                                 | 
+|-----------------------|                                              | 
+| Bits 7 6 5 4 3 2 1 0  |                                              | 
+|-----------------------+----------------------------------------------| 
+|      0 E E C N N N N  |  Advance (EE)NNNN lines   (C = line skip)    | 
+|      0 0 0 C N N N N  |  Skip to VFU channel NNNN (C = VFU channel)  | 
+|      0 C E E N N N N  |  Advance (EE)NNNN lines   (C = line skip)    | 
+|      0 C 0 0 N N N N  |  Skip to VFU channel NNNN (C = VFU channel)  | 
+|----------------------------------------------------------------------| 
+| Key:  C = VFU control bit                                            | 
++======================================================================+ </pre>
+
+A VFU control bit polarity (VCBP) bit of one indicates that the VFU control bit (C) is true for a VFU channel command and false for a line skip command. A VCBP bit of zero indicates the opposite polarity. <p>A VFU control bit select (VCBS) bit of one indicates that the control bit (C) is in bit position 6 and the EE bits are in bit positions 5 and 4. A VCBS bit of zero indicates that the control bit (C) is in bit position 4 and the EE bits are in bit positions 6 and 5. <p>A VFU extended skip (VES) bit of one indicates that the EE bits are supported for line skip operations. A VES bit of zero indicates that the EE bits are not supported. <p>For MODE SELECT, an automatic line feed (Autofd) bit of one specifies that the target assert the printer interface Auto Line Feed signal. An Autofd bit of zero specifies that the target negate the printer interface Auto Line Feed signal. For MODE SENSE, the target shall return the current value of this bit. <p><a name=11.3.3.2><h4>11.3.3.2 Printer options page</h4><p>The printer options page (see <a href="WW668.htm" target="figures">table 220</a>) supports control and reporting of various target functions and features. <p><a name=tab220><h4>Table 220 - Printer options</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+========+========+=====================================================| 
+| 0   |   PS   |Reserved|            Page code (05h)                          | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                           Parameter length (0Ah)                      | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |  EVFU  |                  Font identification                         | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |     Reserved    |    Slew mode    |    Reserved     |  SCTE  |  AFC   | 
+|-----+-----------------------------------------------------------------------| 
+| 4   | (MSB)                                                                 | 
+|-----+---                        Maximum line length                      ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           EVFU format start character                 | 
+|-----+-----------------------------------------------------------------------| 
+| 7   |                           EVFU format stop character                  | 
+|-----+-----------------------------------------------------------------------| 
+| 8   |  Line slew options                |  Form slew options                | 
+|-----+-----------------------------------+-----------------------------------| 
+| 9   |  Data termination options         |         Reserved                  | 
+|-----+-----------------------------------------------------------------------| 
+| 10  |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 11  |                           Reserved                                    | 
++=============================================================================+</pre>
+
+The parameters savable (PS) bit is only used with the MODE SENSE command. This bit is reserved with the MODE SELECT command. A PS bit of one indicates that the target is capable of saving the page in a non-volatile vendor-specific location. <p>An electronic vertical forms unit (EVFU) bit of one indicates that a tape or electronic vertical forms unit is present in the printer device. An EVFU bit of zero indicates that the electronic vertical forms unit should not be used or that the unit is not present in the printer device. <p>For the MODE SELECT command, the font identification field specifies which font is to be used. For the MODE SENSE command, this field identifies the currently selected font. The font identification codes are defined <a href="WW669.htm" target="figures">table 221</a>. <p><a name=tab221><h4>Table 221 - Font identification</h4><pre>
++=============-========================+ 
+|    Code     |  Font identification   | 
+|-------------+------------------------| 
+|     00h     |  Default font          | 
+|  01h - 3Fh  |  Reserved              | 
+|  40h - 7Fh  |  Vendor-specific font  | 
++======================================+</pre>
+
+For the MODE SELECT command, the slew mode field controls the target's behavior when a SLEW AND PRINT command is received with a channel bit of zero (see <a href="WW651.htm">11.2.4</a>). For the MODE SENSE command, this field reports the current slew mode. This slew mode is defined in <a href="WW670.htm" target="figures">table 222</a>. <p><a name=tab222><h4>Table 222 - Slew mode</h4><pre>
++========-====================================================================+ 
+|  Code  |  Slew mode                                                         | 
+|--------+--------------------------------------------------------------------| 
+|   00b  |  SLEW AND PRINT commands with a channel bit of zero are supported  | 
+|        |  without any required setup.                                       | 
+|        |                                                                    | 
+|   01b  |  SLEW AND PRINT commands with a channel bit of zero are only       | 
+|        |  accepted after the initiator issues a FORMAT command with a format| 
+|        |  type of set form (to initialize the electronic vertical forms     | 
+|        |  unit).                                                            | 
+|        |                                                                    | 
+|   10b  |  SLEW AND PRINT commands with a channel bit of zero are always     | 
+|        |  accepted.  The target shall use the electronic vertical forms unit| 
+|        |  if it has previously been initialized or it shall initialize the  | 
+|        |  electronic vertical forms unit for line skipping by sending the   | 
+|        |  EVFU start format character immediately followed by the EVFU stop | 
+|        |  format character (both are defined below) prior to executing the  | 
+|        |  SLEW AND PRINT command.                                           | 
+|        |                                                                    | 
+|   11b  |  Reserved                                                          | 
++=============================================================================+</pre>
+
+For the MODE SELECT command, a step count truncate enable (SCTE) bit of one indicates that the target shall assume the printer truncates slew values in SLEW AND PRINT commands, so that the data prints on the first line of the next form. A SCTE bit of zero indicates that the target shall assume the printer continues to slew over forms boundaries in SLEW AND PRINT commands if the slew value exceeds the number of remaining lines on the current form. The target shall return the current value of this field in the MODE SENSE data. <p>An ASCII forms control (AFC) bit of one indicates that the printer supports ASCII forms control characters. An AFC bit of zero indicates that the printer does not support ASCII forms control characters. <p>The maximum line length field specifies the maximum transfer length (maximum number of bytes per line) to be accepted in the SLEW AND PRINT command. A value of 0000h in MODE SELECT specifies that the target shall use its default value. In any case, the target shall report its actual value in the MODE SENSE data (not 0000h). <p>The EVFU format start character field specifies the character code to be used by the target to start the initialization of the electronic vertical forms unit, if slew mode option 10b is selected. <p>The EVFU format stop character field specifies the character code to be used by the target to stop the initialization of the electronic vertical forms unit, if slew mode option 10b is selected. <p>The line slew options field specifies the implementation of the line slew (using ASCII forms control characters) in the SLEW AND PRINT command. Code values in this field are defined in <a href="WW671.htm" target="figures">table 223</a>. <p><a name=tab223><h4>Table 223 - Line slew</h4><pre>
++=========-===================================================================+ 
+|   Code  |  Line slew option                                                 | 
+|---------+-------------------------------------------------------------------| 
+|    0h   |  Not implemented.  (SLEW AND PRINT commands cause CHECK CONDITION | 
+|         |  status with ILLEGAL REQUEST sense key.)                          | 
+|         |                                                                   | 
+|    1h   |  The target shall insert an ASCII carriage return character (0Dh) | 
+|         |  for each line to slew over.                                      | 
+|         |                                                                   | 
+|    2h   |  The target shall insert an ASCII line feed character (0Ah) for   | 
+|         |  each line to slew over.                                          | 
+|         |                                                                   | 
+|    3h   |  The target shall insert an ASCII carriage return character (0Dh) | 
+|         |  and line feed character (0Ah) for each line to slew over.        | 
+|         |                                                                   | 
+| 4h - 7h |  Reserved                                                         | 
+|         |                                                                   | 
+| 8h - Fh |  Vendor-specific                                                  | 
++=============================================================================+</pre>
+
+The form slew options field specifies the implementation of form slewing in the SLEW AND PRINT command. Code values in this field are defined in <a href="WW672.htm" target="figures">table 224</a>. <p><a name=tab224><h4>Table 224 - Form slew</h4><pre>
++=========-===================================================================+ 
+|   Code  |  Form slew option                                                 | 
+|---------+-------------------------------------------------------------------| 
+|    0h   |  Not implemented.  (SLEW AND PRINT commands cause CHECK CONDITION | 
+|         |  status with ILLEGAL REQUEST sense key.)                          | 
+|         |                                                                   | 
+|    1h   |  The target shall insert an ASCII form feed character (0Ch) to    | 
+|         |  move to the beginning of the next form.                          | 
+|         |                                                                   | 
+|    2h   |  The target shall insert an ASCII carriage return character (0Dh) | 
+|         |  and form feed character (0Ch) to move to the beginning of the    | 
+|         |  next form.                                                       | 
+|         |                                                                   | 
+| 3h - 7h |  Reserved                                                         | 
+|         |                                                                   | 
+| 8h - Fh |  Vendor-specific                                                  | 
++=============================================================================+</pre>
+
+The data termination options field specifies the termination sequence to be issued to the printer device when a SYNCHRONIZE BUFFER command is received. Code values for this field are defined in <a href="WW673.htm" target="figures">table 225</a>. <p><a name=tab225><h4>Table 225 - Data termination option</h4><pre>
++=========-===================================================================+ 
+|   Code  |  Line slew option                                                 | 
+|---------+-------------------------------------------------------------------| 
+|    0h   |  Selects the target default implementation (MODE SELECT).         | 
+|         |                                                                   | 
+|    1h   |  No termination sequence.  (The target sends any remaining data   | 
+|         |  in its buffer to the printer device with no termination sequence | 
+|         |                                                                   | 
+|    2h   |  The target shall print any buffered data followed by an ASCII    | 
+|         |  carriage return character (0Dh).                                 | 
+|         |                                                                   | 
+|    3h   |  The target shall print any buffered data followed by an ASCII    | 
+|         |  line feed character (0Ah).                                       | 
+|         |                                                                   | 
+|    4h   |  The target shall print any buffered data followed by an ASCII    | 
+|         |  carriage return, line feed character sequence (0Dh, 0Ah).        | 
+|         |                                                                   | 
+|    5h   |  The target shall send any buffered data followed by an ASCII     | 
+|         |  form feed character (0Ch).                                       | 
+|         |                                                                   | 
+|    6h   |  The target shall print any buffered data followed by an ASCII    | 
+|         |  carriage return, form feed character sequence (0Dh, 0Ch).        | 
+|         |                                                                   | 
+|    7h   |  The target shall issue a zero line slew command to the printer   | 
+|         |  device.                                                          | 
+|         |                                                                   | 
+| 8h - Bh |  Reserved                                                         | 
+|         |                                                                   | 
+| Ch - Fh |  Vendor-specific                                                  | 
++=============================================================================+</pre><a name=11.3.3.3><h4>11.3.3.3 Serial printer interface page</h4><p>The serial printer interface page (see <a href="WW674.htm" target="figures">table 226</a>) is intended to support printer devices that use the industry-standard serial interface usually referred to as EIA RS-232C. <p><a name=tab226><h4>Table 226 - Serial printer interface</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+========+========+=====================================================| 
+| 0   |   PS   |Reserved|            Page code (04h)                          | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                           Parameter length (06h)                      | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |     Reserved    |         Stop bit length                             | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |     Parity selection     |Reserved|        Bits per character         | 
+|-----+-----------------------------------+-----------------------------------| 
+| 4   |  RTS   |  CTS   |     Reserved    |        Pacing protocol            | 
+|-----+-----------------------------------------------------------------------| 
+| 5   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 6   |                           Baud rate                                   | 
+|-----+---                                                                 ---| 
+| 7   |                                                                 (LSB) | 
++=============================================================================+</pre>
+
+The parameters savable (PS) bit is only used with the MODE SENSE command. This bit is reserved with the MODE SELECT command. A PS bit of one indicates that the target is capable of saving the page in a non-volatile vendor-specific location. <p>The stop bit length field specifies the length of the stop bit(s) in units of 1/16 bit. The target may round this field as described in <a href="WW376.htm">7.5.4.</a> A stop bit length of zero in the MODE SELECT command indicates that the target shall use its default value. <p>The parity selection field specifies parity generation and checking as defined in <a href="WW675.htm" target="figures">table 227</a>. <p><a name=tab227><h4>Table 227 - Parity selection</h4><pre>
++========-===================+ 
+|  Code  |  Parity selection | 
+|--------+-------------------| 
+|  000b  |  None             | 
+|  001b  |  Mark             | 
+|  010b  |  Space            | 
+|  011b  |  Odd              | 
+|  100b  |  Even             | 
+|  101b  |  Reserved         | 
+|  110b  |  Reserved         | 
+|  111b  |  Reserved         | 
++============================+</pre>
+
+The bits per character field specifies the number of bits in each character. A value of zero in the MODE SELECT command indicates that the target shall use its default character size. <p>For the MODE SELECT command, a request to send (RTS) bit of one specifies that the target shall insure the Request to Send (RTS) signal in the serial interface follows the line state of the Data Terminal Ready (DTR) signal in the serial interface. A RTS bit of zero specifies that the target shall set the Request to Send (RTS) signal to high whenever the target power is on. For the MODE SENSE command, the target shall report the current value of this field. <p>For the MODE SELECT command, a clear to send (CTS) bit of one specifies that the target shall delay data transmission to the printer device until the printer device asserts the Clear to Send (CTS) signal in the serial interface. A CTS bit of zero indicates that the target shall ignore the Clear to Send signal. For the MODE SENSE command, the target shall report the current value of this field. <p>The code values for the pacing protocol field are defined in <a href="WW676.htm" target="figures">table 228</a>. <p><a name=tab228><h4>Table 228 - Pacing protocol</h4><pre>
++=========-==================+ 
+|   Code  |  Pacing protocol | 
+|---------+------------------| 
+|    0h   |  None            | 
+|    1h   |  XON/XOFF        | 
+|    2h   |  ETX/ACK         | 
+|    3h   |  DTR             | 
+| 4h - 7h |  Reserved        | 
+| 8h - Fh |  Vendor-specific | 
++============================+</pre>
+
+The baud rate field specifies the baud rate in bits per second. The target may round this value as described in <a href="WW376.htm">7.5.4.</a> A baud rate of zero in the MODE SELECT command specifies that the target shall use its default baud rate. </body></html>

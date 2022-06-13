@@ -1,0 +1,44 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base><title>SCSI-2 Spec - Table 6</title></head><body><h1>Table 6</h1><pre>+==============-=====================================-========================+ 
+|  Bus phase   |         A cable signals             |     B cable signals    | 
+|              |-------------------------------------+------------------------| 
+|              |      |      | C/D, |      |         |      |      | DB(31-8) | 
+|              |      |      | I/O, |      |         |      |      |  DB(P1)  | 
+|              |      |      | MSG, | ACK, | DB(7-0) |      |      |  DB(P2)  | 
+|              | BSY  | SEL  | REQ  | ATN  |  DB(P)  | REQB | ACKB |  DB(P3)  | 
+|--------------+------+------+------+------+---------+------+------+----------| 
+|  BUS FREE    | None | None | None | None |   None  | None | None |    None  | 
+|  ARBITRATION | All  | Win  | None | None |   S ID  | None | None |    None  | 
+|  SELECTION   | I&amp;T  | Init | None | Init |   Init  | None | None |    None  | 
+|  RESELECTION | I&amp;T  | Targ | Targ | Init |   Targ  | None | None |    None  | 
+|  COMMAND     | Targ | None | Targ | Init |   Init  | None | None |    None  | 
+|  DATA IN     | Targ | None | Targ | Init |   Targ  | Targ | Init |    Targ  | 
+|  DATA OUT    | Targ | None | Targ | Init |   Init  | Targ | Init |    Init  | 
+|  STATUS      | Targ | None | Targ | Init |   Targ  | None | None |    None  | 
+|  MESSAGE IN  | Targ | None | Targ | Init |   Targ  | None | None |    None  | 
+|  MESSAGE OUT | Targ | None | Targ | Init |   Init  | None | None |    None  | 
+|-----------------------------------------------------------------------------| 
+|                                                                             | 
+|All:    The signal shall be driven by all SCSI devices that are actively     | 
+|        arbitrating.                                                         | 
+|                                                                             | 
+|S ID:   A unique data bit (the SCSI ID) shall be driven by each SCSI device  | 
+|        that is actively arbitrating; the other seven data bits shall be     | 
+|        released (i.e., not driven) by this SCSI device.  The parity bit     | 
+|        (DB(P)) may be released or driven to the true state, but shall never | 
+|        be driven to the false state during this phase.                      | 
+|                                                                             | 
+|I&amp;T:    The signal shall be driven by the initiator, target, or both, as     | 
+|        specified in the SELECTION phase and RESELECTION phase.              | 
+|                                                                             | 
+|Init:   If driven, this signal shall be driven only by the active initiator. | 
+|                                                                             | 
+|None:   The signal shall be released; that is, not be driven by any SCSI     | 
+|        device.  The bias circuitry of the bus terminators pulls the signal  | 
+|        to the false state.                                                  | 
+|                                                                             | 
+|Win:    The signal shall be driven by the one SCSI device that wins          | 
+|        arbitration.                                                         | 
+|                                                                             | 
+|Targ:   If the signal is driven, it shall be driven only by the active       | 
+|        target.                                                              | 
++=============================================================================+ </pre></body></html>

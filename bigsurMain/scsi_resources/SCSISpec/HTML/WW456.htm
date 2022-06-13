@@ -1,0 +1,19 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base target="main"><title>SCSI-2 Spec - Table 117</title></head><body><h1>Table 117</h1><pre>
++=============-===============================================================+ 
+| IP modifier |   Description                                                 | 
+|-------------+---------------------------------------------------------------| 
+|     00b     |   No header. The target shall not modify the initialization   | 
+|             |   pattern.                                                    | 
+|     01b     |   The target shall overwrite the initialization pattern to    | 
+|             |   write the logical block address in the first four bytes of  | 
+|             |   the logical block.  The logical block address shall be      | 
+|             |   written with the most significant byte first.               | 
+|     10b     |   The target shall overwrite the initialization pattern to    | 
+|             |   write the logical block address in the first four bytes of  | 
+|             |   each physical block contained within the logical block.  The| 
+|             |   The lowest numbered logical block or part thereof that      | 
+|             |   occurs within the physical block is used.  The logical block| 
+|             |   address shall be written with the most significant byte     | 
+|             |   first.                                                      | 
+|     11b     |   Reserved.                                                   | 
++=============================================================================+</pre></body></html>

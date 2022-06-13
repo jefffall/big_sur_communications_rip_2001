@@ -1,0 +1,20 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base><title>SCSI-2 Spec - Table 118</title></head><body><h1>Table 118</h1><pre>+==============-==================================================+ 
+|Initialization|  Description                                     | 
+| pattern type |                                                  | 
+|--------------+--------------------------------------------------| 
+|     00h      |  Use default pattern. (note 1)                   | 
+|     01h      |  Repeat the initialization pattern as            | 
+|              |  required to fill the logical block. (note 2)    | 
+|  02h - 7Fh   |  Reserved                                        | 
+|  80h - FFh   |  Vendor-specific                                 | 
+|-----------------------------------------------------------------| 
+|  Notes                                                          | 
+|  1)  If the initialization pattern length is not zero the target| 
+|  shall terminate the command with CHECK CONDITION status.  The  | 
+|  sense key shall be set to ILLEGAL REQUEST and the additional   | 
+|  sense code to INVALID FIELD IN PARAMETER LIST.                 | 
+|  2)  If the initialization pattern length is zero the target    | 
+|  shall terminate the command with CHECK CONDITION status.  The  | 
+|  sense key shall be set to ILLEGAL REQUEST and the additional   | 
+|  sense code to INVALID FIELD IN PARAMETER LIST.                 | 
++=================================================================+</pre></body></html>

@@ -1,0 +1,17 @@
+<html><head><meta content="(PICS 1.0 "http://www.classify.org/safesurf/" l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label"><link href="mailto:garyb@scitexdv.com" rev=made><base><title>SCSI-2 Spec - Table 224</title></head><body><h1>Table 224</h1><pre>+=========-===================================================================+ 
+|   Code  |  Form slew option                                                 | 
+|---------+-------------------------------------------------------------------| 
+|    0h   |  Not implemented.  (SLEW AND PRINT commands cause CHECK CONDITION | 
+|         |  status with ILLEGAL REQUEST sense key.)                          | 
+|         |                                                                   | 
+|    1h   |  The target shall insert an ASCII form feed character (0Ch) to    | 
+|         |  move to the beginning of the next form.                          | 
+|         |                                                                   | 
+|    2h   |  The target shall insert an ASCII carriage return character (0Dh) | 
+|         |  and form feed character (0Ch) to move to the beginning of the    | 
+|         |  next form.                                                       | 
+|         |                                                                   | 
+| 3h - 7h |  Reserved                                                         | 
+|         |                                                                   | 
+| 8h - Fh |  Vendor-specific                                                  | 
++=============================================================================+</pre></body></html>

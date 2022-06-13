@@ -1,0 +1,388 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<TITLE>Fibre Channel for Linux</TITLE>
+<META NAME="Keywords" CONTENT="">
+<!-- BEGIN metadata 
+<ORIGINALFILENAME>/tmp/ar2686/scratch.html</ORIGINALFILENAME>
+<TITLE>Fibre Channel for Linux</TITLE>
+<AUTHOR>Erling Nygaard</AUTHOR>
+<EMAIL>nygaard@sistina.com</EMAIL>
+<DATE>21-March-2001</DATE>
+<SERIES>linux_review</SERIES>
+<TEASER>Although not yet perfected, Fibre Channel for Linux is worth a
+look for anyone considering storage options.</TEASER>
+<KEYWORDS></KEYWORDS>
+<POSTER>heather</POSTER>
+END metadata -->
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#000065" VLINK="#000065" ALINK="#800080">
+<!-- BEGIN yahoo bar --><!-- END banner ad -->
+
+<TABLE WIDTH="100%" CELLSPACING="0" CELLPADDING="0" BORDER="0">
+<TR>
+<TH BGCOLOR="#000066" ALIGN="center">
+	<FONT FACE="arial,helvetica" SIZE="+1" COLOR="white">
+	LINUX REVIEW
+	</FONT>
+	</TH>
+</TR>
+</TABLE>
+<CENTER>
+<H1>Fibre Channel for Linux</H1>
+21-March-2001
+</CENTER>
+<P>
+Data communication has traditionally been divided into two quite
+   distinct worlds, the network world and the channel world. The channel
+world usually deals with well-structured, closed and fixed environments.
+   Usually there is one host system and several attached devices, like a
+   master-slave setup. Communication is usually restricted to occur only
+   between the master and one of the attached devices. This means control over the communication is simpler and more of the resources
+   can be used for actual data-transport. The bandwidth is often high and
+   latency low on such buses. However, the architecture is inflexible. 
+The basic SCSI bus with just one host computer is an example of
+   such a channel environment.
+   <P>
+   In the network world, the picture is quite different. Here the environment is
+   unstructured, open and behaves much more unpredictably. All devices
+   can talk to any other device at any time. One consequence of this is
+   that more control is needed to correctly handle connections, access
+   permissions, route information and other aspects of correct behavior.
+   The result is that channels are often characterized by high throughput
+   and low overhead, while networks tend to have low throughput and
+   high overhead. However, networks are much more flexible, more scalable
+   and run for longer distances than channels. Fibre Channel (FC)
+   attempts to combine the best of these two worlds. The work on the
+   Fibre Channel standard started in 1988 as an extension of work on the
+   Intelligent Peripheral Interface--Level 3 (IPI-3). Fibre Channel is
+   today an open standard as defined by ANSI (American National Standards
+   Institute) and OSI (Open Systems Interconnect).
+   <P>
+   Some of the goals of the Fibre Channels standard are to provide
+support for existing protocols, flexible topologies, high bandwidth and
+long distances.
+<P>
+One of the features of Fibre Channel is the use of existing,
+   well-established protocols for data transmission. These are called
+   upper layer protocols in Fibre Channel. FC does not impose any new
+   format for data, hence all existing applications can continue to use
+   standard protocols. Fibre Channel just becomes the transport layer for
+   these protocols. Hence, there is no need to rewrite any applications in
+   order to take advantage of Fibre Channel. Both SCSI and IP are among
+   the protocols Fibre Channel supports. Of course, vendors can choose
+   what protocols to actually implement in a product; usually only a few
+   upper layer protocols are implemented in a product.
+   <P>
+ Fibre Channel offers three different topologies that can be combined
+   to fit any needed configuration. The simplest topology is a
+   point-to-point connection between two nodes. A node in FC is any
+   device attached to a FC network; both computers and storage devices
+   are nodes. A more advanced topology is available by using an
+   Arbitrated Loop. This configuration allows up to 126 devices to share
+   one loop. Finally, Fibre Channel switches are available that can form
+   fabrics with thousands of nodes. In addition, Fibre Channel is
+   hot-swappable, meaning new nodes can be added to or removed from a
+   topology without powering all other nodes down.
+   <P>
+  Concerning bandwidth, the Fibre Channel equipment currently available supports 1 Gbps
+   (100 MBps data transfer). Two Gbps equipment is under
+   development, and announcements have been made that some equipment will
+   be available in 2001.
+   <P>
+  With the right equipment, a single Fibre Channel link can run up to 10
+   km without the need for repeaters. Single-mode optical fibre and 1,300
+   nm lasers are needed for this. With multi-mode fibre, distances up to
+   500 meters are supported, and electrical cabling is available up to 13
+   meters. It is important to make sure that all cables meet the
+   specifications for FC-cables.
+   <p>
+<h3>Fibre Channel Topologies</h3>
+<P>
+   Four topologies are available in Fibre Channel: Point-to-Point,
+Fabrics, Arbitrated Loops and Fabrics with Arbitrated Loops.
+   <P>
+   Point-to-point represents the simplest Fibre Channel topology. It provides a
+   dedicated 100MB connection between two nodes, be it two host
+   machines, one host machine and one storage device, or one host and a
+   switch. This kind of topology may be useful for connecting two
+   machines that are physically separated by some distance and are in
+   need of a dedicated high-bandwidth connection.
+   <P>
+The topology created by using one or more switches is called a fabric.
+Switches were listed together with Point-To-Point part of the original FC
+   specifications. The switch would provide point-to-point connections
+   between itself and the connected nodes, thus allowing communication
+   between all the nodes. Large topologies can then be created. 
+   <P>
+  Arbitrated Loops were actually added on to the original
+   FC-specifications. A topology that would combine some of the features
+   of Point-To-Point with some of the features from Fabrics was needed.
+   One of the main arguments against pure fabric is the price per
+   fabric-port, which gets very high when each fabric-port is connected to just
+   one node. Although this offers each device full connection to the
+   fabric, most nodes do not constantly need the full bandwidth of Fibre
+   Channel. The Arbitrated Loop offers (as the name suggests) a shared
+   loop topology. The loop can contain up to 126 nodes and one
+   fabric-port with all the nodes arbitrating for usage of the loop.
+   <P>
+   A FC loop physically connects the outgoing connectors to the incoming
+   connector of the next node. At any given
+   time, only one port can be sending frames. Before a port can transmit
+   any data, it has to win an arbitration for the loop. Since several or
+   all of the nodes might be arbitrating for usage of the loop at the
+   same time, performance will degenerate as more nodes are added. A loop
+   with 127 active ports is likely to not operate with the performance
+   one would like.
+   <P>
+  By combining the Fabric and the Arbitrated Loop, very large and
+   flexible networks can be created. A port on the switch can be
+   connected to an Arbitrated Loop. Every device on this loop now has
+   access to the other devices on the loop as well as every device that
+   is connected to the switch. A loop connected to a fabric is known as a
+   Public Loop.
+   <P>
+<h3>Why use Fibre Channel under Linux?</h3>
+<P>
+   Obviously, Fibre Channel offers features that other standards do not.
+   Unfortunately, Fibre Channel equipment is still somewhat expensive, so
+   one has to look at the advantages before justifying an investment in
+   Fibre Channel equipment.
+   <P>
+   Since Fibre Channel supports IP, it can be used to replace a LAN.
+   However, given the current price of Fibre Channel, this is not a likely use.
+   FC is more likely to be used as a SCSI network.
+   <P>
+   The simplest use of Fibre Channel is to replace external SCSI-attached
+   storage units on a single server. This involves one HBA, some
+   FC-storage units and perhaps an FC hub for making the cabling simpler.
+   There are several advantages for using FC here. Having several
+   external SCSI units often leads to cable mess. SCSI cables have limits
+   for how long they can run are usually thick and impractical, and
+   your equipment will most likely require different
+   connectors and cables. 
+<p>
+SCSI often involves messing with jumpers or
+   microswitches to set IDs and getting the termination right is often
+   a problem. With Fibre Channel, many of these problems are avoided.
+   First of all, since FC uses serial instead of parallel cables, the
+   cables can run longer and are easier to manage than standard SCSI
+   cables. You can also use a hub to make cabling management even easier.
+   Almost all Fibre Channel storage units use a standardized DB-9 style
+   connector, and you just have to put a standard terminator on the last
+   storage unit. There is no need to set any unit IDs, the Fibre Channel
+   devices will negotiate this during the initialization phase.
+   <p>
+   The main advantage of Fibre Channel is to have several computers share
+   the same storage device. This is to a certain degree possible with a
+   regular SCSI bus is but not done too often. Trying to connect more than
+   two computers may not be easy, involving problems like setting
+   host-IDs and termination problems when a computer is powered on or
+   off. Using Fibre Channel to connect several computers to the same
+   storage devices is trivial. However, this raises some new and
+   challenging questions. If the shared devices contain shared files,
+   system problems may occur. Although Fibre Channel allows several
+   computers to share devices and file systems, it offers no way to
+   prevent these computers from stepping on each other toes. If computers are
+   allowed to access shared file systems for reads and writes, there will
+   be chaos as both data and meta-data are manipulated independently by
+   several computers. There are some basic ways to get around this:
+<p>
+<ul>
+     <il>Share the device but not the file systems on the device. Each
+       computer has its own partition and file system on the shared
+       device. There is no file system sharing between computers.<p>
+     <il>Have all computers mount the storage device read-only. Even
+       having one writer will not work with any of the standard file
+       systems. The read-only machines will assume the data remains
+       unchanged and will not check for changes in the file system in a
+       consistent way. Any new data may not be detected unless you reboot
+       the machines. An umount-mount may not be enough, since data might
+       still be cached on both the writing machine (the data has not been
+       written to disk) and the reading machine(s) (data from the file
+       system is still in memory).<p>
+     <il>Use a shared filesystem. Such filesystems are designed to
+       allow several computers access to shared devices and include
+       methods for keeping the filesystem correct. One such filesystem
+       is the Global File System, at <a href="http://www.globalfilesystem.org/" target="_blank">www.globalfilesystem.org</a>.
+ </ul>
+<P>      
+   Being able to share storage devices among computers opens up many new
+   possibilities. For environments like web-servers you can have several
+   servers pushing out the data but get away with maintaining one
+   copy of the actual data. Environments that deal with huge data-sets
+   that need to be manipulated by several processes also gain from
+   shared storage. One example would be digital moviehouses, where several
+   artists may work with the data. Instead of moving the data from
+   computer to computer, shared storage provides a better solution.
+   <P>
+   But Fibre Channel can be useful even if you do not want shared
+   storage. An FC network can be configured so that only a given computer
+   can access a given set of storage devices. However, all the storage
+   devices can now be in a central location. This makes maintenance and
+   backup much easier.
+   <p>
+   <h2>HBAs Supported Under Linux</h2>
+   <p>                                    
+   Currently, several FC HBAs have support under Linux.
+<p>   
+1. <b>Emulex</b><br>
+   Emulex has several Fibre Channel cards. Currently, the LightPulse
+   family is supported under Linux. This includes the LightPulse 7000,
+   LightPulse 8000, LightPulse 850, LightPulse 9000 and LightPulse 950.
+   <P>
+   Emulex have released a driver for their Fibre Channel cards. This
+   driver is available at the Emulex FTP server: <a href="ftp://ftp.emulex.com/pub/fibrechannel/drivers/all_other_lp_models/linux"
+target="_blank">ftp://ftp.emulex.com/pub/fibrechannel/drivers/all_other_lp_models/linux</a>.
+   <P>
+   This release includes drivers for both IP and SCSI. In addition, there
+   is a diagnostic utility included. There are also several documents
+   explaining in great detail how to get the driver installed. This
+   release only supports x386 platform machines.
+   <P>
+   After downloading the tarfile (and the MS-Word file) and extracting the files, you will have several directories. Printing out and
+   reading the documentation is strongly recommended. This gives good,
+   detailed information about how to get the drivers configured and
+   operational. There is a section for how to set up the configuration
+   file needed for both the IP driver and the
+   SCSI common driver. Note that some of the common code is in the SCSI
+   driver, so in order to use the IP driver, the SCSI common driver needs
+   to be loaded.
+   <p>
+   There are also detailed instructions for how to set up a Fibre Channel
+   disk to be used as a bootdisk. However, since there is no means to map
+   a disk to a specific sd device, this probably should not be done in a
+   large FC environment where the number of disks currently available may
+   change.
+   <P>
+2. <b>Qlogic</b><br>
+Qlogic has produced two Fibre Channel cards that have Linux drivers,
+   the Qlogic 2100 and the Qlogic 2200. Both cards support SCSI and the
+   2200 has support for IP, although there is currently no Linux driver
+   that supports IP. Both cards support Arbitrated Loop topologies and
+   the 2200 card also supports fabric topologies. With some FC switches,
+   the 2100 card can also be configured for fabric configuration.
+   <p>
+   There are three different drivers available for the Qlogic cards:
+<ul>
+     <il>University of New Hampshire released the first Linux driver for
+       the Qlogic card. This driver now comes with the standard kernels
+       and can be configured using standard kernel configuration tools.
+       The latest version and related information is available at
+       <a href="http://www.iol.unh.edu/consortiums/" target="_blank">http://www.iol.unh.edu/consortiums/</a>. This driver has been tested
+       and found to work on both Intel and Alpha-boxes.<p>
+     <il>Qlogic released their own driver. It's available at the Qlogic home page, at 
+<a href="http://www.qlogic.com/"
+target="_blank">http://www.qlogic.com</a>, under
+       "Driver Download". This driver is for Intel machines only.<p>
+     <il>Feral Software released is a cross-platform BSD/Linux driver.
+       This driver works on both Intel and Alpha platforms.
+       </ul>
+<p>
+3. <b>Interphase</b><br>
+   Interface offers support for the 5526 card. This card is build around the HP
+   Tachyon Fibre Channel Protocol engine and supports both SCSI
+   and IP. It also support all the Fibre Channel topologies,
+   Point-to-Point, Arbitrated Loops and Fabrics.
+   <P>
+   One driver for this card is available with the standard Linux kernel,
+and it supports both IP and SCSI. Since the driver is part of the
+   standard kernel, it may easily be used by including it when compiling
+   the kernel. The latest version of this driver can also be found at the
+   University of New Hampshire InterOperability Labs home page,
+   <a href="http://www.iol.unh.edu/consortiums/" target="_blank">http://www.iol.unh.edu/consortiums/</a>. In addition, 
+Interphase has written
+   their own Linux driver for this card. This driver is available both as
+   binary and as source code at <a href="http://www.iphase.com/linux/"
+target="_blank">http://www.iphase.com/linux/</a>.
+   <P>
+4. <b>JNI</b><br>
+  The FCE 6410 and 3210 are FC HBAs produced by JNI. The FCE 6410 is a
+   64-bit PCI 33MHz card; the FCE 3210 is a 32-bit PCI 33MHz card. Both
+   cards support Point-to-Point, Arbitrated Loop and Fabric topologies.
+   JNI has written its own driver for this card. Unfortunately, this
+   driver is only available in binary format for Red Hat kernel releases.
+   Binaries for the 2.2.12 and the 2.2.5 kernels are available on the JNI
+   web page, <a href="http://www.jni.com/Drivers/"
+target="_blank">http://www.jni.com/Drivers/</a>.
+   <p>
+<h3>Issues with Fibre Channel</h3>
+<P>
+   Unfortunately, Fibre Channel is not yet 100% stable under Linux.
+   Although drivers have greatly improved, stability
+   issues still exist. There are also issues related to the SCSI layers in
+   Linux. One problem relates to connecting new computers to a FC network
+   where I/O is taking place. When a new computer connects to the FC
+   network, the computers that are already connected and doing I/O are
+   likely to experience SCSI problems. Some of the drivers will recover
+   from this, other will potentially bring the SCSI layers into a
+   downward spiral.
+   <P>
+   Some of these problems are related to how the drivers and SCSI layers
+   handle devices that are temporarily not available. Devices can become
+   temporarily not available when new nodes are brought online. This can
+   trigger error handling and may abort a device's ongoing I/O. How to
+   correctly handle a device that becomes unavailable might be tricky,
+   since one does not know if the device will come back soon or if it is
+   permanently gone.
+   <P>
+   Another interesting issue is the naming space for storage devices. As
+   on a regular SCSI bus, devices are given names like
+   /dev/sda and /dev/sdb, depending on the order in which the devices are found. On
+   a single SCSI bus this does not create any problems since the
+   configuration of the bus does not change often. On a Fibre Channel
+   network this is not so. Given the potential size of a FC network, both
+   the number and discovery order of devices is likely to change. This
+   means that the device previously known as /dev/sdw might be
+   dev/sdbc the next time you reboot the machine or install the FC
+   driver. This, of course, quickly leads to confusion and chaos.
+   <P>
+   One solution for this issue is to use some sort of logical volume manager
+   (LVM). These usually write an identification label on each of the
+   storage devices; hence, the SCSI identification becomes irrelevant.
+   If the storage devices are to be shared between computers, one has to
+   make sure that the LVM can actually handle this. One simple LVM that
+   allows multiple machines is the pool driver used by the Global File
+   System.
+   <P>
+   Another solution to the identification problem is to use the world
+   wide number (wwn) that each Fibre Channel device has. This is a 64-bit
+   number assigned by the manufacturer, used to identify the
+   device uniquely. Some FC-drives let you specify, either on the command line or
+   in a configuration file, a mapping between the wwn and the
+   /dev/sd entries. 
+   <p>
+   Another issue is the hot addition and removal of storage devices. Fibre
+   Channel devices are designed for being connected and disconnected
+   without powering down. However, getting this to work involves much
+   more than just making electrical connectors that can handle this
+swapping.
+   Fibre Channel defines mechanisms for letting attached devices know of
+   the presence of a new device. For an Arbitrated Loop this involves a
+   procedure that may remind some a bit of a SCSI bus reset. In the case of a
+   switched topology, a computer can tell the switch to be informed
+   whenever a new device is attached somewhere in the topology. The
+   problem lies in reliably informing the kernel about the fact that a
+   new device is available or that a device that used to be available no
+longer is.
+   <P>
+   Despite these problems, FC is quickly becoming more stable under Linux.
+   And with all the advantages FC offers, anyone who deals with storage
+   under Linux should at least seriously consider Fibre Channel.
+   <P>
+<h3>Resources</h3>
+<P>
+<ul>   
+  	<il>Fibre Channel Industry Association, <a href="http://www.fibrechannel.com" target="_blank">http://www.fibrechannel.com</a><br>
+     	<il>ANSI T11 Standards Committee, <a href="http://www.11.org"
+target="_blank">http://www.11.org</a><br>
+     	<il>Storage Networking Industry Association, <a href="http://www.snia.org" target="_blank">http://www.snia.org</a><br>
+     	<il>Fibre Channel Arbitrated Loop Community, <a href="http://www.fcloop.org" target="_blank">http://www.fcloop.org</a><br>
+     	<il>Fibre Channel Consortium, University of New Hampshire's
+       Interoperability Lab, <a href="http://www.iol.unh.edu/consortiums/fc/" target="_blank">http://www.iol.unh.edu/consortiums/fc</a><br>
+     	<il>The Global File System, <a href="http://www.globalfilesystem.org" target="_blank">http://www.globalfilesystem.org</a><br>
+     	<il>University of Minnesota Fibre Channel Group, <a href="http://www.borg.umn.edu/fc" target="_blank">http://www.borg.umn.edu/fc</a><br>
+</ul>       
+
+</BODY>
+</HTML>

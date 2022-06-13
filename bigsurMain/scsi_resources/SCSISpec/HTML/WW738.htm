@@ -1,0 +1,760 @@
+<html><head><meta content="(PICS 1.0 " l r (SS~~000 1 Class/00 100))" http-equiv="PICS-Label" http://www.classify.org/safesurf/"><link href="mailto:garyb@scitexdv.com" rev=made><title>SCSI-2 Spec - Medium-changer devices</title></head><body><a name=17><h1>17 Medium-changer devices</h1><a name=17.1><h2>17.1 Medium-changer device model</h2>
+Medium changer devices mechanize the movement of media to and from primary devices (such as disk or tape drives) and other locations within the range of the medium changer. The medium changer command set is based on a physical model of this functionality. <p>This command set supports varied physical implementations of the medium changer function. Most of these variations are hidden from the initiator by the high level of function provided by the MOVE MEDIUM and EXCHANGE MEDIUM commands and by the generalized nature of the element addressing scheme. However, initiators may need to be aware of the capabilities of the particular medium changer device. These characteristics and capabilities are conveyed via MODE SENSE pages. <a name=17.1.1><h3>17.1.1 Medium-changer elements</h3>
+The medium-changer command set uses as its address space the set of physical locations and mechanisms within the scope of a medium changer device. The term element is used throughout this clause to refer to one member of the medium changer address space. Each element is a discrete physical entity that may hold zero or one physical unit of media - one disk cartridge, one spool of tape, etc. Element addresses do not extend across multiple physical units of media. Likewise, element addresses are independent of any logical partitioning that the primary device may support within a physical unit of media. <p>A medium changer is viewed as a set of addressable elements, each of which may contain a unit of media or be used to move a unit of media. Each medium changer element has a unique 16 bit element address. Each element is an instance of one of four classes or element types. <p><ul><li>a) MEDIUM TRANSPORT ELEMENT <li>b) STORAGE ELEMENT <li>c) IMPORT EXPORT ELEMENT <li>d) DATA TRANSFER ELEMENT </ul><p>Units of media (cartridges, cassettes, caddies, etc.) are referred to only indirectly by this device model. Units of media can be moved to or from any of the elements of the medium changer device. The presence of media at the various elements in a medium changer can be sensed. In order to ensure exclusive access to a unit of media, the element where the unit of media is located (the element address) must be reserved. <p>Elements of the medium transport, import export and (rarely) data transport types may not provide independent storage for medium. The capabilities of a particular medium changer in this respect can be sensed via the device capabilities page of the mode sense data. The following hypothetical medium changer implementation illustrates one case of an element not providing independent storage for medium. Consider a medium changer which has a carousel style storage for medium. The import export function could be provided by a port which allows operator access to one of the storage elements. In such a device, the MOVE ELEMENT command from storage element to import export element would rotate the carousel to align the addressed storage element to the import export position. In this case the import export element does not provide independent storage but rather access to one of the storage elements. <p><a name=17.1.1.1><h4>17.1.1.1 Medium transport elements</h4><p>Medium transport elements address the functions of the medium changer device that perform the movement of units of media. Where a medium transport element can serve (even temporarily) as a storage location for medium, the location of each unit of media must have a separate element address. <p>In larger medium changer devices, the medium movement functions may be performed by multiple independent robotics subsystems. Each of these may have a number of medium transport element addresses. The element addresses within each subsystem shall be contiguous. Any of the element addresses within a subsystem may be used interchangeably in the medium transport element address field of MOVE MEDIUM and EXCHANGE MEDIUM commands. An initiator may determine the capabilities of the medium movement facilities of a medium changer device via the transport geometry MODE SENSE page, see <a href="WW738.htm">17.3.3.3</a>. <p>Element address zero is reserved for use in the medium transport element address field of MOVE MEDIUM and EXCHANGE MEDIUM commands to direct the medium changer to use a default or medium changer selected medium transport element. <p>In some implementations, medium transport elements may be source and/or destination addresses in MOVE MEDIUM and EXCHANGE MEDIUM commands. They may or may not provide independent storage of a unit of media. See the device capabilities MODE SENSE page, see <a href="WW738.htm">17.3.3</a>. <p><a name=17.1.1.2><h4>17.1.1.2 Storage elements</h4><p>Storage elements are locations of units of media while not in some other element type. Medium in storage elements is available for access by medium transport elements. <p>Storage elements may be source and/or destination addresses in MOVE MEDIUM and EXCHANGE MEDIUM commands. <p><a name=17.1.1.3><h4>17.1.1.3 Import export elements</h4><p>Import export elements are locations of units of media which are being inserted into or withdrawn from the medium changer device. Medium in these elements is accessible by both medium transport elements, by the operator, or by another independent medium changer device. <p>Import export elements may be source and/or destination addresses in MOVE MEDIUM and EXCHANGE MEDIUM commands. They may or may not provide independent storage of a unit of media, see the device capabilities MODE SENSE page, see <a href="WW738.htm">17.3.3</a>. <p>Particular import export elements may be capable of either import actions, export actions, both or neither (if an element is not present). <p><a name=17.1.1.4><h4>17.1.1.4 Data transfer element</h4><p>Data transfer elements are locations of the primary devices which are capable of reading or writing the medium. Data transfer elements may also be viewed as medium changer element addresses of units of media loaded in or available for loading in or removal from primary devices such as disk or tape drives. Note that the medium changer function specified in this clause does not control the primary device. That is the responsibility of the system. <p>Data transfer elements may be source and/or destination addresses in MOVE MEDIUM and EXCHANGE MEDIUM commands. They may or may not provide independent storage of a unit of media, see the device capabilities MODE SENSE page, see <a href="WW738.htm">17.3.3</a>. <a name=17.1.2><h3>17.1.2 SCSI addressing of medium changer devices</h3>
+Medium changer devices respond to a SCSI ID / LUN address different from those used by the data transfer element devices. If the data transfer elements served by the medium changer device are SCSI devices, they may be addressed though the same SCSI ID as the changer device but with a different logical unit number or through a different SCSI ID. There is no requirement that communication with the data transfer elements be done with the same SCSI bus as the medium changer device or by an SCSI interface at all. This command set does not support addressing both the changer and the data transfer elements with the same SCSI ID / LUN because the device at a particular SCSI ID / LUN address must have a single peripheral device type. <p>The READ ELEMENT STATUS response page for data transfer elements provides the SCSI ID / LUN address of the primary devices serviced by a medium changer device if known to the medium changer device. <a name=17.1.3><h3>17.1.3 Data access operations using a medium changer device</h3>
+The medium changer device moves units of media among the several elements accessible to it. It is able to report the full/empty status of any of these elements. Data transfer elements represent the interface between the medium changer device and some primary device such as a removable media optical disk drive or tape drive. <p>In order to access data on a unit of media currently located in a medium changer storage element, a system will have to issue commands to both the medium changer device and to the primary device. The commands to the medium changer may include MOVE MEDIUM or EXCHANGE MEDIUM plus READ ELEMENT STATUS commands. The commands to the primary device may include TEST UNIT READY, INQUIRY, START STOP and LOAD UNLOAD commands in addition to READ and WRITE commands. <a name=17.1.4><h3>17.1.4 Element status maintenance requirements</h3>
+If the medium changer device chooses to implement the READ ELEMENT STATUS command, the medium changer device must be capable of reporting the various data (i.e. full, error, etc.) required by each page type. The medium changer may maintain this information at all times or regenerate it in response to the READ ELEMENT STATUS command. The INITIALIZE ELEMENT STATUS command can be used to force regeneration of this information. <a name=17.1.5><h3>17.1.5 Volume tags</h3>
+The read element status descriptor format for all element types includes two sets of fields that contain volume tag information. These optional fields are used to report media identification information that the medium changer has acquired either by reading an external label (e.g. bar code labels), by a SEND VOLUME TAG command or by other means which may be vendor unique. The same volume tag information shall be available to all initiators whether assigned by that initiator, by some other initiator or by the media changer itself. <p>Volume tag information provides a means to confirm the identity of a unit of media that resides in a medium changer element. This command set does not define any direct addressing of units of media based on these fields. However, commands are defined that provide translation between volume tag information and the element address where that unit of media currently resides. <p>The medium changer command set definition does not impose the requirement that volume tag information be unique over the units of media within the scope of the changer device. <p>The following commands support the optional volume tag functionality: <ul><li>a) SEND VOLUME TAG - either as a translation request or to associate a volume tag with the unit of media currently residing at an element address. <li>b) REQUEST VOLUME ELEMENT ADDRESS - return the element address currently associated with the volume tag information transferred with the last send volume tag command. <li>c) READ ELEMENT STATUS - optionally reports volume tag information for all element types. <li>d) MOVE MEDIUM and EXCHANGE MEDIUM commands - if volume tags are implemented, these commands must retain the association between volume tag information and units of media as they are moved from element to element. </ul><p><a name=17.1.5.1><h4>17.1.5.1 Volume tag format</h4><p>Volume tag information consists of a volume identifier field of 32 bytes plus a volume sequence number field of 2 bytes. The volume identifier shall consist of a left justified sequence of ASCII characters. Unused positions shall be blank (20h) filled. In order for the SEND VOLUME TAG translate with template to work the characters '*' and'?' (2Ah and 3Fh) must not appear in volume identification data and there must be no blanks (20h) within the significant part of the volume identifier. If volume tag information for a particular element is undefined, the volume identifier field shall be zero. <p>The volume sequence number is a 2 byte integer field. If the volume sequence number is not used this field shall be zero. The volume tag contents are independent of the volume identification information recorded on the media. <p><blockquote><b>NOTE 199</b> For compatibility with the volume identifier defined by volume and file structure standards, it is recommended that the characters in the significant non-blank portion of the volume identifier field be restricted to the set: '0'..'9', 'A'..'Z', and '_' (30h .. 39h, 41h .. 5Ah, 5Fh). Specific systems may have differing requirements that may take precedence over this recommendation. </blockquote><p>Table 326 defines the fields within the 36 byte primary and alternate volume tag information fields found in READ ELEMENT STATUS descriptors and in the data format for the SEND VOLUME TAG command. <p><a name=tab326><h4>Table 326 - Volume tag information format</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                                                                       | 
+|- - -+---                   Volume identification field                   ---| 
+| 31  |                                                                       | 
+|-----+-----------------------------------------------------------------------| 
+| 32  |                                                                       | 
+|- - -+---                            Reserved                             ---| 
+| 33  |                                                                       | 
+|-----+-----------------------------------------------------------------------| 
+| 34  | (MSB)                                                                 | 
+|-----+---                     Volume sequence number                      ---| 
+| 35  |                                                                 (LSB) | 
++=============================================================================+</pre><a name=17.1.5.2><h4>17.1.5.2 Primary and alternate volume tag information</h4><p>Element status descriptors as reported by the READ ELEMENT STATUS command define a primary volume tag and an alternate volume tag. Alternate volume tag information provides a means for a system to use different volume identification information for each side of double sided media. In such a system, the primary volume tag information refers to the logical medium accessible via a MOVE MEDIUM command without the invert bit set. The alternate volume tag information refers to the other side of the media, i.e. the side that would be accessed via a MOVE MEDIUM command with the invert bit set. <a name=17.2><h2>17.2 Commands for medium changer devices</h2>
+The commands for medium changer devices shall be as shown in <a href="WW739.htm" target="figures">table 327</a>. <p><a name=tab327><h4>Table 327 - Commands for medium changer devices</h4><pre>
++=====================================-============-======-============+ 
+|  Command name                       | Operation  | Type |  Subclause | 
+|                                     |   code     |      |            | 
+|-------------------------------------+------------+------+------------| 
+| CHANGE DEFINITION                   |    40h     |   O  |   <a href="WW377.htm">8.2.1</a>    | 
+| EXCHANGE MEDIUM                     |    A6h     |   O  |  <a href="WW738.htm">17.2.1</a>    | 
+| INITIALIZE ELEMENT STATUS           |    07h     |   O  |  <a href="WW738.htm">17.2.2</a>    | 
+| INQUIRY                             |    12h     |   M  |   <a href="WW377.htm">8.2.5</a>    | 
+| LOG SELECT                          |    4Ch     |   O  |   <a href="WW377.htm">8.2.6</a>    | 
+| LOG SENSE                           |    4Dh     |   O  |   <a href="WW377.htm">8.2.7</a>    | 
+| MODE SELECT(6)                      |    15h     |   O  |   <a href="WW377.htm">8.2.8</a>    | 
+| MODE SELECT(10)                     |    55h     |   O  |   <a href="WW377.htm">8.2.9</a>    | 
+| MODE SENSE(6)                       |    1Ah     |   O  |   <a href="WW377.htm">8.2.10</a>   | 
+| MODE SENSE(10)                      |    5Ah     |   O  |   <a href="WW377.htm">8.2.11</a>   | 
+| MOVE MEDIUM                         |    A5h     |   M  |  <a href="WW738.htm">17.2.3</a>    | 
+| POSITION TO ELEMENT                 |    2Bh     |   O  |  <a href="WW738.htm">17.2.4</a>    | 
+| PREVENT ALLOW MEDIUM REMOVAL        |    1Eh     |   O  |   <a href="WW416.htm">9.2.4</a>    | 
+| READ BUFFER                         |    3Ch     |   O  |   <a href="WW377.htm">8.2.12</a>   | 
+| READ ELEMENT STATUS                 |    B8h     |   O  |  <a href="WW738.htm">17.2.5</a>    | 
+| RECEIVE DIAGNOSTIC RESULTS          |    1Ch     |   O  |   <a href="WW377.htm">8.2.13</a>   | 
+| RELEASE                             |    17h     |   O  |  <a href="WW738.htm">17.2.6</a>    | 
+| REQUEST VOLUME ELEMENT ADDRESS      |    B5h     |   O  |  <a href="WW738.htm">17.2.7</a>    | 
+| REQUEST SENSE                       |    03h     |   M  |   <a href="WW377.htm">8.2.14</a>   | 
+| RESERVE                             |    16h     |   O  |  <a href="WW738.htm">17.2.8</a>    | 
+| REZERO UNIT                         |    01h     |   O  |   <a href="WW416.htm">9.2.13</a>   | 
+| SEND DIAGNOSTIC                     |    1Dh     |   M  |   <a href="WW377.htm">8.2.15</a>   | 
+| SEND VOLUME TAG                     |    B6h     |   O  |  <a href="WW738.htm">17.2.9</a>    | 
+| TEST UNIT READY                     |    00h     |   M  |   <a href="WW377.htm">8.2.16</a>   | 
+| WRITE BUFFER                        |    3Bh     |   O  |   <a href="WW377.htm">8.2.17</a>   | 
+|----------------------------------------------------------------------| 
+|Key:  M = command implementation is mandatory.                        | 
+|      O = command implementation is optional.                         | 
++======================================================================+</pre>
+
+Operation codes 0Ch, and C0h through FFh are vendor-specific. All other operation codes are reserved. <a name=17.2.1><h3>17.2.1 EXCHANGE MEDIUM command</h3>
+The EXCHANGE MEDIUM command (see <a href="WW740.htm" target="figures">table 328</a>) provides a means to exchange the medium in the source element, with the medium located at a destination element. <p><a name=tab328><h4>Table 328 - EXCHANGE MEDIUM command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (A6h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |                  Reserved                  | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                        Transport element address                ---| 
+| 3   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 4   | (MSB)                                                                 | 
+|-----+---                        Source address                           ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   | (MSB)                                                                 | 
+|-----+---                        First destination address                ---| 
+| 7   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 8   | (MSB)                                                                 | 
+|-----+---                        Second destination address               ---| 
+| 9   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 10  |                           Reserved                  |  Inv2  |  Inv1  | 
+|-----+-----------------------------------------------------------------------| 
+| 11  |                           Control                                     | 
++=============================================================================+</pre><blockquote><b>NOTE 200</b> Support of this command requires that the device have the capability of handling two units of media at the same time or that it emulate this capability. </blockquote><p>The medium in the source element is moved to the first destination element and the medium that previously occupied the first destination element is moved to the second destination element. The second destination element may or may not be the same element as the source element. In the case of a simple exchange, the source element and the second destination element are the same. <p>If this command is received and the source element is empty or the first destination element is empty, or the second destination element (if different from the source element) is full, or the second destination element (if the same as the source element) is empty, the target shall return CHECK CONDITION status and set the sense key to ILLEGAL REQUEST. <p>The transport element address specifies the medium transport element that is to be used in executing this command. The default transport element address of zero may be used if this functionality is supported by the medium changer device. If the transport element address specified has not been assigned or has been assigned to an element other than a medium transport element, the target shall return CHECK CONDITION status and the set the sense key to ILLEGAL REQUEST. <p>The source address, the first destination address, and the second destination address may represent a storage element, an import export element, a data transfer element, or a medium transport element. If the address specified has not been assigned to a specific element of the medium changer, the target shall return CHECK CONDITION status and set the sense key to ILLEGAL REQUEST. <p>The device capabilities page (see <a href="WW738.htm">17.3.3</a>.) provides a matrix which defines the supported source element type and first destination element type combinations for EXCHANGE MEDIUM commands when the source element type is the same as second destination element type. <p>An Inv1 bit of one specifies that the medium shall be inverted prior to depositing the medium into the first destination element. <p>An Inv2 bit of one specifies that the medium shall be inverted prior to depositing the medium into the second destination element. <p>If the medium changer does not support medium rotation for handling double sided media, the Inv1 and Inv2 bits should be set to zero. If either of these bits is non-zero, a target which is not capable of medium rotation shall return CHECK CONDITION status and set the sense key to ILLEGAL REQUEST. <a name=17.2.2><h3>17.2.2 INITIALIZE ELEMENT STATUS command</h3>
+The INITIALIZE ELEMENT STATUS command (see <a href="WW741.htm" target="figures">table 329</a>) will cause the medium changer to check all elements for medium and any other status relevant to that element. The intent of this command is to enable the initiator to get a quick response from a following READ ELEMENT STATUS command. It may be useful to issue this command after a power failure, or if medium has been changed by an operator, or if configurations have been changed. <p><a name=tab329><h4>Table 329 - INITIALIZE ELEMENT STATUS command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (07h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |                Reserved                    | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Control                                     | 
++=============================================================================+</pre><a name=17.2.3><h3>17.2.3 MOVE MEDIUM command</h3>
+The MOVE MEDIUM command (see <a href="WW742.htm" target="figures">table 330</a>) requests that the target move a unit of media from a source element to a destination element. <p><a name=tab330><h4>Table 330 - MOVE MEDIUM command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (A5h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |             Reserved                       | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                        Transport element address                ---| 
+| 3   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 4   | (MSB)                                                                 | 
+|-----+---                        Source address                           ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   | (MSB)                                                                 | 
+|-----+---                        Destination address                      ---| 
+| 7   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 8   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 10  |                           Reserved                           | Invert | 
+|-----+-----------------------------------------------------------------------| 
+| 11  |                           Control                                     | 
++=============================================================================+</pre>
+
+The source address specifies the location that the medium is taken from, and the destination address specifies the location that the medium is moved to. <p>If this command is received and the source element is empty or the destination element (if different from the source element) is full, the target shall return CHECK CONDITION status and set the sense key to ILLEGAL REQUEST. <p>The transport element address specifies the medium transport element that is to be used in executing this command. The default medium transport element address of zero may be used if this functionality is supported by the medium changer device. If the address specified has not been assigned or has been assigned to an element other than a medium transport element, the target shall return CHECK CONDITION status and the set the sense key to ILLEGAL REQUEST. <p>The source address and the destination address may represent a storage element, an import export element, a data transfer element, or a medium transport element. If the address specified has not been assigned to a specific element of the medium changer, the target shall return CHECK CONDITION status and set the sense key to ILLEGAL REQUEST. <p>The device capabilities MODE SENSE page provides a matrix with the supported source element or destination element combinations for the MOVE MEDIUM command. See <a href="WW738.htm">17.3.3</a>. <p>An invert bit of one specifies that the medium shall be inverted or rotated prior to depositing the medium into the destination element. If the medium changer does not support medium rotation for handling double sided media, the invert bit should be set to zero. If this bit is non- zero, a target that is not capable of medium rotation shall return CHECK CONDITION status and set the sense key to ILLEGAL REQUEST. <a name=17.2.4><h3>17.2.4 POSITION TO ELEMENT command</h3>
+The POSITION TO ELEMENT command (see <a href="WW743.htm" target="figures">table 331</a>) will position the transport element specified in front of the destination element specified. <p><a name=tab331><h4>Table 331 - POSITION TO ELEMENT command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (2Bh)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |                Reserved                    | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                        Transport element address                ---| 
+| 3   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 4   | (MSB)                                                                 | 
+|-----+---                        Destination element address              ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 7   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 8   |                           Reserved                           | Invert | 
+|-----+-----------------------------------------------------------------------| 
+| 9   |                           Control                                     | 
++=============================================================================+</pre><blockquote><b>NOTE 201</b> In this context, in front of is defined to mean positioned so that no further motion of the medium transport element is necessary to execute an appropriate MOVE MEDIUM command between the two elements. </blockquote><p>An invert bit value of one requests that the transport element be inverted or rotated before positioning in front of the destination element. A value of zero requests that the orientation be unchanged before positioning in front of the destination element. <a name=17.2.5><h3>17.2.5 READ ELEMENT STATUS command</h3>
+The READ ELEMENT STATUS command (see <a href="WW744.htm" target="figures">table 332</a>) requests that the target report the status of its internal elements to the initiator. <p><a name=tab332><h4>Table 332 - READ ELEMENT STATUS command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (B8h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      | VolTag |        Element type code          | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                        Starting element address                 ---| 
+| 3   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 4   | (MSB)                                                                 | 
+|-----+---                        Number of elements                       ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 7   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 8   |                           Allocation length                           | 
+|-----+---                                                                 ---| 
+| 9   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+|10   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+|11   |                           Control                                     | 
++=============================================================================+</pre>
+
+A volume tag (VolTag) bit of one indicates that the target shall report volume tag information if this feature is supported. A value of zero indicates that volume tag information shall not be reported. If the volume tag feature is not supported this field shall be treated as reserved. <p>The element type code field specifies the particular element type(s) selected for reporting by this command. A value of zero specifies that status for all element types shall be reported. The element type codes are defined in <a href="WW745.htm" target="figures">table 333</a>. <p><a name=tab333><h4>Table 333 - Element type code</h4><pre>
++=============-===================================================+ 
+|    Code     |  Description                                      | 
+|-------------+---------------------------------------------------| 
+|      0h     |  All element types reported, (valid in CDB only)  | 
+|      1h     |  Medium transport element                         | 
+|      2h     |  Storage element                                  | 
+|      3h     |  Import export element                            | 
+|      4h     |  Data transfer element                            | 
+|   5h - Fh   |  Reserved                                         | 
++=================================================================+</pre>
+
+The starting element address specifies the minimum element address to report. Only elements with an element type code permitted by the element type code specification, and an element address greater than or equal to the starting element address shall be reported. Element descriptor blocks are not generated for undefined element addresses. <p>The number of elements specifies the maximum number of element descriptors to be created by the target for this command. The value specified by this field is not the range of element addresses to be considered for reporting but rather the number of defined elements to report. If the allocation length is not sufficient to transfer all the element descriptors, the target shall transfer all those descriptors that can be completely transferred and this shall not be considered an error. <p><a name=17.2.5.1><h4>17.2.5.1 Element status data</h4><p>The data returned by the READ ELEMENT STATUS command is defined in <a href="WW746.htm" target="figures">table 334</a> and <a href="WW738.htm">17.2.5.3</a> through <a href="WW738.htm">17.2.5.6</a>. Element status data consists of an eight-byte header, (see <a href="WW746.htm" target="figures">table 334</a>) followed by one or more element status pages. <p><a name=tab334><h4>Table 334 - Element status data</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   | (MSB)                                                                 | 
+|-----+---                  First element address reported                 ---| 
+| 1   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                    Number of elements available                 ---| 
+| 3   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                              Reserved                                 | 
+|-----+-----------------------------------------------------------------------| 
+| 5   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 6   |                     Byte count of report available                    | 
+|-----+---                        (all pages, n - 7 )                      ---| 
+| 7   |                                                                 (LSB) | 
+|=====+=======================================================================| 
+| 8   |                                                                       | 
+|- - -+---                     Element status page(s)                      ---| 
+| n   |                                                                       | 
++=============================================================================+</pre>
+
+The first element address reported field indicates the element address of the element with the smallest element address found to meet the CDB request. <p>The number of elements available field indicates the number of elements meeting the request in the command descriptor block. The status for these elements is returned if sufficient allocation length was specified. <p>The byte count of report available field indicates the number of bytes of element status page data available for all elements meeting the request in the command descriptor block. This value shall not be adjusted to match the allocation length available. <p><blockquote><b>NOTE 202</b> - The READ ELEMENT STATUS command can be issued with an allocation length of eight bytes in order to determine the allocation length required to transfer all the element status data specified by the command. </blockquote><p><a href="WW747.gif" target="figures">Figure 28</a> provides an illustration of the element status data structure. <p><a name=fig28><a href="WW747.gif" target="figures"><img src="WWR16.gif"><br>
+Figure 28 - Illustration of element status data structure</a><p><a name=17.2.5.2><h4>17.2.5.2 Element status page</h4><p>The element status page is defined in <a href="WW748.htm" target="figures">table 335</a>. Each element status page includes an eight-byte header followed by one or more element descriptor blocks. The header includes the element type code, the length of each descriptor block and the number of bytes of element descriptor information that follow the header for this element type. <p><a name=tab335><h4>Table 335 - Element status page</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Element type code                           | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | PVolTag| AVolTag|                      Reserved                       | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                    Element descriptor length                    ---| 
+| 3   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                              Reserved                                 | 
+|-----+-----------------------------------------------------------------------| 
+| 5   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 6   |                Byte count of descriptor data available                | 
+|-----+---                      (this page, n - 7)                         ---| 
+| 7   |                                                                 (LSB) | 
+|=====+=======================================================================| 
+| 8   |                                                                       | 
+|- - -+---                     Element descriptor(s)                       ---| 
+| n   |                                                                       | 
++=============================================================================+</pre>
+
+The element type code field indicates the element type reported by this page. <p>A primary volume tag (PVolTag) bit of one indicates that the primary volume tag information field is present in each of the following element descriptor blocks. A value of zero indicates that these bytes are omitted from the element descriptors that follow. <p>An alternate volume tag (AVolTag) bit of one indicates that the alternate volume tag information field is present in each of the following element descriptor blocks. A value of zero indicates that these bytes are omitted from the element descriptors that follow. <p>The element descriptor length field indicates the number of bytes in each element descriptor. <p>The byte count of descriptor data available field indicates the number of bytes of element descriptor data available for elements of this element type meeting the request in the CDB. This value shall not be adjusted to match the allocation length available. <p>Each element descriptor includes the element address and status flags; it may also contain sense code information as well as other information depending on the element type (see <a href="WW738.htm">17.2.5.3</a> through 17.2.5.6). <p><a name=17.2.5.3><h4>17.2.5.3 Medium transport element descriptor</h4><p>Table 336 defines the medium transport element descriptor. <p><a name=tab336><h4>Table 336 - Medium transport element descriptor</h4><pre>
++======-========-========-========-========-========-========-========-========+ 
+|   Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte  |        |        |        |        |        |        |        |        | 
+|======+=======================================================================| 
+|  0   | (MSB)                                                                 | 
+|------+---                      Element address                            ---| 
+|  1   |                                                                 (LSB) | 
+|------+-----------------------------------------------------------------------| 
+|  2   |            Reserved                        | Except |Reserved|  Full  | 
+|------+-----------------------------------------------------------------------| 
+|  3   |                            Reserved                                   | 
+|------+-----------------------------------------------------------------------| 
+|  4   |                      Additional sense code                            | 
+|------+-----------------------------------------------------------------------| 
+|  5   |                  Additional sense code qualifier                      | 
+|------+-----------------------------------------------------------------------| 
+|  6   |                                                                       | 
+|- - --+---                         Reserved                                ---| 
+|  8   |                                                                       | 
+|------+-----------------------------------------------------------------------| 
+|  9   | SValid | Invert |                      Reserved                       | 
+|------+-----------------------------------------------------------------------| 
+| 10   | (MSB)                                                                 | 
+|------+---                Source storage element address                   ---| 
+| 11   |                                                                (LSB)  | 
+|------+-----------------------------------------------------------------------| 
+| 12   |                                                                       | 
+|- - --+---                Primary volume tag information                   ---| 
+| 47   |                   (Field omitted if PVolTag = 0)                      | 
+|------+-----------------------------------------------------------------------| 
+| 48   |                                                                       | 
+|- - --+---               Alternate volume tag information                  ---| 
+| 83   |                   (Field omitted if AVolTag = 0)                      | 
+|------+-----------------------------------------------------------------------| 
+| 84   |                                                                       | 
+|- - --+---                          Reserved                               ---| 
+| 87   |    (Field moved up if volume tag information field(s) are omitted.)   | 
+|------+-----------------------------------------------------------------------| 
+| 88   |                                                                       | 
+|- - --+---                        Vendor-specific                          ---| 
+| z-1  |    (Field moved up if volume tag information field(s) are omitted.)   | 
++==============================================================================+</pre>
+
+The element address field gives the address of the medium changer element whose status is reported by this element descriptor block. <p>An exception (Except) bit of one indicates the element is in an abnormal state. An exception bit of zero indicates the element is in a normal state. If this bit is one, information on the abnormal state may be available in the additional sense code and additional sense code qualifier bytes. <p>A full bit value of one indicates that the element contains a unit of media. A value of zero indicates that the element does not contain a unit of media. <p>The additional sense code field may provide specific information on an abnormal element state. The values in this field are as defined for the additional sense code of the REQUEST SENSE data (see <a href="WW377.htm">8.2.14.3</a>). <p>The additional sense code qualifier field may provide more detailed information on an abnormal element state. The values in this field are as defined for the additional sense code qualifier of the REQUEST SENSE data (see <a href="WW377.htm">8.2.14.4</a>). <p>A source valid (SValid) bit value of one indicates that the source storage element address field and the invert bit information are valid. A value of zero indicates that the values in these fields are not valid. <p>An invert bit value of one indicates that the unit of media now in this element was inverted by MOVE MEDIUM or EXCHANGE MEDIUM operations since it was last in the source storage element. A value of zero indicates that no inversion occurred during the operation. <p>The source storage element address field provides the address of the last storage element this unit of media was moved. This field is valid only if the SValid bit is one. <p>The primary and alternate volume tag information fields provide for identifying the unit of media residing in this element (see <a href="WW738.htm">17.1.5</a>.). Either or both of these fields may be omitted for all the element descriptor blocks that comprise an element status page as indicated by the PVolTag and AVolTag bits in the element status page header. <p><a name=17.2.5.4><h4>17.2.5.4 Storage element descriptor</h4><p>Table 337 defines the storage element descriptor. <p><a name=tab337><h4>Table 337 - Storage element descriptor</h4><pre>
++======-========-========-========-========-========-========-========-========+ 
+|   Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+| Byte |        |        |        |        |        |        |        |        | 
+|======+=======================================================================| 
+|  0   | (MSB)                                                                 | 
+|------+---                      Element address                            ---| 
+|  1   |                                                                 (LSB) | 
+|------+-----------------------------------------------------------------------| 
+|  2   |            Reserved               | Access | Except |Reserved|  Full  | 
+|------+-----------------------------------------------------------------------| 
+|  3   |                            Reserved                                   | 
+|------+-----------------------------------------------------------------------| 
+|  4   |                       Additional sense code                           | 
+|------+-----------------------------------------------------------------------| 
+|  5   |                   Additional sense code qualifier                     | 
+|------+-----------------------------------------------------------------------| 
+|  6   |                                                                       | 
+|- - --+---                         Reserved                                ---| 
+|  8   |                                                                       | 
+|------+-----------------------------------------------------------------------| 
+|  9   | SValid | Invert |                      Reserved                       | 
+|------+-----------------------------------------------------------------------| 
+| 10   | (MSB)                                                                 | 
+|------+---                    Source element address                       ---| 
+| 11   |                                                                (LSB)  | 
+|------+-----------------------------------------------------------------------| 
+| 12   |                                                                       | 
+|- - --+---                 Primary volume tag information                  ---| 
+| 47   |                    (Field omitted if PVolTag = 0)                     | 
+|------+-----------------------------------------------------------------------| 
+| 48   |                                                                       | 
+|- - --+---                Alternate volume tag information                 ---| 
+| 83   |                    (Field omitted if PVolTag = 0)                     | 
+|------+-----------------------------------------------------------------------| 
+| 84   |                                                                       | 
+|- - --+---                         Reserved                                ---| 
+| 87   |    (Field moved up if volume tag information field(s) are omitted.)   | 
+|------+-----------------------------------------------------------------------| 
+| 88   |                                                                       | 
+|- - --+---                      Vendor unique                              ---| 
+| z-1  |    (Field moved up if volume tag information field(s) are omitted.)   | 
++==============================================================================+</pre>
+
+An access bit value of one indicates that access to the element by a medium transport element is allowed. An access bit of zero indicates that access to the element by the medium transport element is denied. <p>The source storage element address field provides the address of the last storage element this unit of media was moved from. This element address value may or may not be the same as this element. This field is valid only if the SValid bit is one. <p>For fields not defined in this subclause, see <a href="WW738.htm">17.2.5.3</a>. <p><a name=17.2.5.5><h4>17.2.5.5 Import export element descriptor</h4><p>Table 338 defines the import export element descriptor. <p><a name=tab338><h4>Table 338 - Import export element descriptor</h4><pre>
++======-========-========-========-========-========-========-========-========+ 
+|   Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte  |        |        |        |        |        |        |        |        | 
+|======+=======================================================================| 
+|  0   | (MSB)                                                                 | 
+|------+---                        Element address                          ---| 
+|  1   |                                                                 (LSB) | 
+|------+-----------------------------------------------------------------------| 
+|  2   |     Reserved    | InEnab | ExEnab | Access | Except | ImpExp |  Full  | 
+|------+-----------------------------------------------------------------------| 
+|  3   |                             Reserved                                  | 
+|------+-----------------------------------------------------------------------| 
+|  4   |                        Additional sense code                          | 
+|------+-----------------------------------------------------------------------| 
+|  5   |                    Additional sense code qualifier                    | 
+|------+-----------------------------------------------------------------------| 
+|  6   |                                                                       | 
+|------+---                          Reserved                               ---| 
+|  8   |                                                                       | 
+|------+-----------------------------------------------------------------------| 
+|  9   | SValid | Invert |                      Reserved                       | 
+|------+-----------------------------------------------------------------------| 
+| 10   | (MSB)                                                                 | 
+|------+---                  Source storage element address                 ---| 
+| 11   |                                                                (LSB)  | 
+|------+-----------------------------------------------------------------------| 
+| 12   |                                                                       | 
+|- - --+---                  Primary volume tag information                 ---| 
+| 47   |                     (Field omitted if PVolTag = 0)                    | 
+|------+-----------------------------------------------------------------------| 
+| 48   |                                                                       | 
+|- - --+---                 Alternate volume tag information                ---| 
+| 83   |                     (Field omitted if PVolTag = 0)                    | 
+|------+-----------------------------------------------------------------------| 
+| 84   |                                                                       | 
+|- - --+---                          Reserved                               ---| 
+| 87   |    (Field moved up if volume tag information field(s) are omitted.)   | 
+|------+-----------------------------------------------------------------------| 
+| 88   |                                                                       | 
+|- - --+---                         Vendor unique                           ---| 
+| z-1  |    (Field moved up if volume tag information field(s) are omitted.)   | 
++==============================================================================+</pre>
+
+An import enable (InEnab) bit of one indicates that the import export element supports movement of media into the scope of the medium changer device. An InEnab bit of zero indicates that this element does not support import actions. <p>An export enable (ExEnab) bit of one indicates that the import export element supports movement of media out of the scope of the medium changer device. An ExEnab bit of zero indicates that this element does not support export actions. <p>An access bit of one indicates that access to the import export element by a medium transport element is allowed. An access bit of zero indicates access to the import export element by medium transport elements is denied. <p><blockquote><b>NOTE 203</b> An example of when access would be denied is when the operator has exclusive access to the import export element. </blockquote><p>An import export (ImpExp) bit of one indicates the unit of media in the import export element was placed there by an operator. An ImpExp bit of zero indicates the unit of media in the import export element was placed there by the medium transport element. <p>For fields not defined in this clause, see <a href="WW738.htm">17.2.5.3</a>. <p><a name=17.2.5.6><h4>17.2.5.6 Data transfer element descriptor</h4><p>Table 339 defines the data transfer element descriptor. <p><a name=tab339><h4>Table 339 - Data transfer element descriptor</h4><pre>
++======-========-========-========-========-========-========-========-========+ 
+|   Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte  |        |        |        |        |        |        |        |        | 
+|======+=======================================================================| 
+|  0   | (MSB)                                                                 | 
+|------+---                      Element address                            ---| 
+|  1   |                                                                 (LSB) | 
+|------+-----------------------------------------------------------------------| 
+|  2   |            Reserved               | Access | Except |Reserved|  Full  | 
+|------+-----------------------------------------------------------------------| 
+|  3   |                            Reserved                                   | 
+|------+-----------------------------------------------------------------------| 
+|  4   |                       Additional sense code                           | 
+|------+-----------------------------------------------------------------------| 
+|  5   |                   Additional sense code qualifier                     | 
+|------+-----------------------------------------------------------------------| 
+|  6   |Not bus|Reserved|ID valid|LU valid|Reserved|    Logical unit number    | 
+|------+-----------------------------------------------------------------------| 
+|  7   |                         SCSI bus address                              | 
+|------+-----------------------------------------------------------------------| 
+|  8   |                             Reserved                                  | 
+|------+-----------------------------------------------------------------------| 
+|  9   | SValid | Invert |                      Reserved                       | 
+|------+-----------------------------------------------------------------------| 
+| 10   | (MSB)                                                                 | 
+|------+---              Source storage element address                     ---| 
+| 11   |                                                                (LSB)  | 
+|------+-----------------------------------------------------------------------| 
+| 12   |                                                                       | 
+|- - --+---                 Primary volume tag information                  ---| 
+| 47   |                    (Field omitted if PVolTag = 0)                     | 
+|------+-----------------------------------------------------------------------| 
+| 48   |                                                                       | 
+|- - --+---                Alternate volume tag information                 ---| 
+| 83   |                    (Field omitted if PVolTag = 0)                     | 
+|------+-----------------------------------------------------------------------| 
+| 84   |                                                                       | 
+|- - --+---                         Reserved                                ---| 
+| 87   |    (Field moved up if volume tag information field(s) are omitted.)   | 
+|------+-----------------------------------------------------------------------| 
+| 88   |                                                                       | 
+|- - --+---                        Vendor unique                            ---| 
+| z-1  |    (Field moved up if volume tag information field(s) are omitted.)   | 
++==============================================================================+</pre>
+
+An access bit value of one indicates access to the data transfer element by the medium transport element is allowed. A value of zero indicates access to the data transfer element by a medium transport element is denied. <p><blockquote><b>NOTE 204</b> Access to the data transfer element by medium transport elements might be denied if a data transfer operation was under way. Note that a one value in this bit may not be sufficient to ensure a successful operation. This bit can only reflect the best information available to the medium changer device, which may not accurately reflect the state of the primary (data transfer) device. </blockquote><p>A not this bus (not bus) bit value of one indicates that the SCSI bus address and logical unit number values are not valid for the SCSI bus used to select the medium changer device. A not bus bit value of zero indicates that the SCSI address and logical unit values, if valid, are on the same bus as the medium changer device. <p>An ID Valid bit value of one indicates that the SCSI bus address field contains valid information. An LU Valid bit value of one indicates that the logical unit number field contains valid information. <p>The SCSI bus address field, if valid, provides the SCSI address (binary representation) of the primary device served by the medium changer at this element address. <p>The logical unit number field, if valid, provides the logical unit number within the SCSI bus device of the primary device served by the medium changer at this element address. <p>For fields not defined in this clause, see <a href="WW738.htm">17.2.5.3</a>. <a name=17.2.6><h3>17.2.6 REQUEST VOLUME ELEMENT ADDRESS command</h3>
+The REQUEST VOLUME ELEMENT ADDRESS command (see <a href="WW749.htm" target="figures">table 340</a>) is used to transfer the results of a SEND VOLUME TAG command. Multiple REQUEST VOLUME ELEMENT ADDRESS commands may be used to recover the results of a single SEND VOLUME TAG command with the translate option. <p><a name=tab340><h4>Table 340 - REQUEST VOLUME ELEMENT ADDRESS command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (B5h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      | VolTag |        Element type code          | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                        Element address                          ---| 
+| 3   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 4   | (MSB)                                                                 | 
+|-----+---                        Number of elements                       ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 7   | (MSB)                                                                 | 
+|-----+---                                                                 ---| 
+| 8   |                           Allocation length                           | 
+|-----+---                                                                 ---| 
+| 9   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+|10   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+|11   |                           Control                                     | 
++=============================================================================+</pre>
+
+For each SEND VOLUME TAG command, the target shall be able to report multiple elements that match a volume tag template in element address order. Once information for a given element address has been reported, only higher element addresses will be reported by subsequent REQUEST VOLUME ELEMENT ADDRESS commands. <p><blockquote><b>NOTE 205</b> In order to ensure the successful completion of a SEND VOLUME TAG, REQUEST VOLUME ELEMENT ADDRESS sequence in a multi-initiator environment, it may be necessary to reserve the medium changer device. To do this, issue a unit RESERVE command prior to the SEND VOLUME TAG command and delay issuing the RELEASE until after the last REQUEST VOLUME ELEMENT ADDRESS. </blockquote><p>A volume tag (VolTag) bit of one indicates that the target shall report volume tag information. A value of zero indicates that volume tag information shall not be reported. This is provided for compatibility with the READ ELEMENT STATUS command. <p>The element type code field specifies the particular element type(s) selected for reporting by this command. A value of zero specifies that status for all element types shall be reported. The codes for this field are defined in <a href="WW738.htm">17.2.5</a>. This acts as a qualification of the element(s) determined by SEND VOLUME TAG to match the template specified. <p>The element address field gives a medium changer element address whose interpretation depends on the send action code received with the last SEND VOLUME TAG command. This code is echoed in the volume element address return format transferred by this command. When the last send action code was a translate, (code values 0h .. 7h), the element address field gives the minimum element address to be reported by this command. When the send action code is other than translate, (i.e. assert, replace, and undefined, code values 8h .. Dh), the element address field gives the particular element whose volume tag information was modified. <p>The number of elements specifies the maximum number of elements and volume tags to be reported by the target for this command. The value specified by this field is not the range of element addresses to be considered for reporting but rather the number of elements to report of those that match the last send volume tag translate template. If the allocation length is not sufficient to transfer all the element descriptors, the target shall transfer all those descriptors that can be completely transferred and this shall not be considered an error. <p>The data returned by this command consists of a header as defined by <a href="WW750.htm" target="figures">table 341</a>, plus one or more element type specific pages in the same format as defined by the READ ELEMENT STATUS command. <p><a name=tab341><h4>Table 341 - Volume element address header format</h4><pre>
++======-========-========-========-========-========-========-========-========+ 
+|   Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte  |        |        |        |        |        |        |        |        | 
+|======+=======================================================================| 
+| 0    | (MSB)                                                                 | 
+|------+---                  First element address reported                 ---| 
+| 1    |                                                                 (LSB) | 
+|------+-----------------------------------------------------------------------| 
+| 2    | (MSB)                                                                 | 
+|------+---                    Number of elements reported                  ---| 
+| 3    |                                                                 (LSB) | 
+|------+-----------------------------------------------------------------------| 
+| 4    |          Reserved        |              Send action code              | 
+|------+-----------------------------------------------------------------------| 
+| 5    | (MSB)                                                                 | 
+|------+---                                                                 ---| 
+| 6    |                     Byte count of report available                    | 
+|------+---                        (all pages, x - 7 )                      ---| 
+| 7    |                                                                 (LSB) | 
+|======+=======================================================================| 
+|8 to  |                                                                       | 
+|  - --+---                     Element status page(s)                      ---| 
+| x    |                                                                       | 
++==============================================================================+</pre>
+
+The send action code field gives the function performed by the last SEND VOLUME TAG command as defined in <a href="WW738.htm">17.2.9</a>. This command reports the results of this send action code operation. <p>For fields not defined in this subclause, see <a href="WW738.htm">17.2.5.1</a>. <a name=17.2.7><h3>17.2.7 RELEASE command</h3>
+The RELEASE command (see <a href="WW751.htm" target="figures">table 342</a>) is used to release previously reserved units, or, if the element release option is implemented, previously reserved elements within units. It is not an error for an initiator to attempt to release a reservation that is not currently active. In this case, the target shall return GOOD status without altering any other reservation. <p><a name=tab342><h4>Table 342 - RELEASE command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (17h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      | 3rdPty | Third party device ID    | Element| 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Reservation identification                  | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Control                                     | 
++=============================================================================+</pre><a name=17.2.7.1><h4>17.2.7.1 Logical unit release</h4><p>If the element bit is zero, this command shall cause the target to terminate all non-third party unit and element reservations that are active from the initiator to the specified logical unit. <p><a name=17.2.7.2><h4>17.2.7.2 Element release (optional)</h4><p>If the element bit is one and the element release option is not implemented, the RELEASE command shall be terminated with CHECK CONDITION status and the sense key shall be set to ILLEGAL REQUEST. This option shall be implemented if the element reservation option (see <a href="WW738.htm">17.2.8.1</a>) is implemented. <p>If the element bit is one and the element release option is implemented, this command shall cause any reservation from the requesting initiator with a matching reservation identification to be terminated. Other reservations from the requesting initiator shall remain in effect. <p><a name=17.2.7.3><h4>17.2.7.3 Third party release</h4><p>The third-party release option of the RELEASE command allows an initiator to release a unit or elements within a unit that were previously reserved using third-party reservation (see <a href="WW738.htm">17.2.8.3</a>). Third-party release shall be implemented if third-party reserve is implemented. <p>If the third-party (3rdPty) bit is zero, the third-party release option is not requested. If the 3rdPty bit is one and the target implements the third-party release option, the target shall release the specified unit or elements, but only if the reservation was made using the third- party reservation option by the initiator that is requesting the release for the same SCSI device as specified in the third-party device ID field. <p>If the 3rdPty bit is one and the target does not implement the third- party release option, the target shall terminate the command with CHECK CONDITION status and the sense key shall be set to ILLEGAL REQUEST. <a name=17.2.8><h3>17.2.8 RESERVE command</h3>
+The RESERVE command (see <a href="WW752.htm" target="figures">table 343</a>) is used to reserve units or, if the element reservation option is implemented, elements within units for the use of the initiator. The third-party reservation allows units or elements to be reserved for another specified SCSI device. The RESERVE and RELEASE commands provide the basic mechanism for contention resolution in multiple-initiator systems. <p><a name=tab343><h4>Table 343 - RESERVE command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (16h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      | 3rdPty | Third party device ID    | Element| 
+|-----+-----------------------------------------------------------------------| 
+| 2   |                           Reservation identification                  | 
+|-----+-----------------------------------------------------------------------| 
+| 3   | (MSB)                                                                 | 
+|-----+---                        Element list length                      ---| 
+| 4   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |                           Control                                     | 
++=============================================================================+</pre><a name=17.2.8.1><h4>17.2.8.1 Logical unit reservation</h4><p>If the element bit is zero, this command shall request that the entire unit be reserved for the exclusive use of the initiator until the reservation is superseded by another valid RESERVE command from the initiator that made the reservation or until released by a RELEASE command from the same initiator that made the reservation, by a BUS DEVICE RESET message from any initiator, by a hard RESET condition, or by a power off/on cycle. A unit reservation shall not be granted if the unit or any element is reserved by another initiator. It shall be permissible for an initiator to reserve a unit that is currently reserved by that initiator. If the element bit is zero, the reservation identification and the element list length shall be ignored. <p>If the unit, or any element within the unit, is reserved for another initiator, the target shall respond by returning RESERVATION CONFLICT status. <p>If, after honouring the reservation, any other initiator attempts to perform any command on the reserved unit other than an INQUIRY, REQUEST SENSE, ALLOW MEDIUM REMOVAL, RESERVE, or a RELEASE command, the command shall be rejected with RESERVATION CONFLICT status. <p><a name=17.2.8.2><h4>17.2.8.2 Element reservation (optional)</h4><p>The reservation identification provides a means for an initiator to identify each element reservation. This allows an initiator in a multiple-tasking environment, to have multiple reservations outstanding. The reservation identification is used in the RELEASE command to specify which reservation is to be released. It is also used in superseding RESERVE commands to specify which reservation is to be superseded. <p>If the element reservation option is implemented, the element release option (see <a href="WW738.htm">17.2.7.2</a>) shall also be implemented. These options permit multiple elements within the unit to be reserved, each with a separate reservation identification. <p>If the element bit is one, and the element reservation option is implemented, the target shall process the reservation request as follows: <ul><li>a) The element list shall be checked for valid element addresses. If any element address is invalid for this unit, the command shall be terminated with CHECK CONDITION status and the sense key shall be set to ILLEGAL REQUEST. The element list shall be checked for invalid element overlaps with other element descriptors in the element list and if invalid overlaps are found, the command shall be terminated with CHECK CONDITION status and the sense key shall be set to ILLEGAL REQUEST. <li>b) If the requested reservation does not conflict with any active or previously requested reservation, the elements specified shall be reserved until superseded by another valid RESERVE command from the initiator that made the reservation, or until released by a RELEASE command from the same initiator, by a BUS DEVICE RESET message from any initiator, or by a hard RESET condition. If either of the last two conditions occur, the next command from each initiator shall be terminated with CHECK CONDITION status and the sense key shall be set to UNIT ATTENTION. <li>c) If the reservation request conflicts with a reservation already active the target shall return RESERVATION CONFLICT status. </ul><p>If the element bit is one, and the element reservation option is not implemented, the RESERVE command shall be terminated with CHECK CONDITION status. The sense key shall be set to ILLEGAL REQUEST. <p>The size of the element list shall be defined by the element list length parameter. The element list shall consist of zero or more descriptors as shown in <a href="WW753.htm" target="figures">table 344</a>. Each element list descriptor defines a series of elements beginning at the specified element address for the specified number of elements. If the number of elements is zero, the element list shall begin at the specified element address and continue through the last element address on the unit. <p><a name=tab344><h4>Table 344 - Data format of element list descriptors</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                                                                       | 
+|- - -+---                         Reserved                                ---| 
+| 1   |                                                                       | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                        Number of elements                       ---| 
+| 3   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 4   | (MSB)                                                                 | 
+|-----+---                        Element address                          ---| 
+| 5   |                                                                 (LSB) | 
++=============================================================================+</pre>
+
+If an initiator issues a command to an element that has been reserved by a different initiator, the command shall not be performed and the command shall be terminated with a RESERVATION CONFLICT status. If a reservation conflict precludes any part of the command, none of the command shall be performed. <p><a name=17.2.8.3><h4>17.2.8.3 Third party reservation</h4><p>The third-party reservation option of the RESERVE command allows an initiator to reserve a unit or elements within a unit for another SCSI device. <p>If the third-party (3rdPty) bit is zero, the third-party reservation option is not requested. If the 3rdPty bit is one and the third-party reservation option is implemented, the RESERVE command shall reserve the specified unit or elements for the SCSI device specified in the third-party device ID field. The target shall preserve the reservation until it is superseded by another valid RESERVE command from the initiator that made the reservation or until it is released by the same initiator, by a BUS DEVICE RESET message from any initiator, or a hard RESET condition. The target shall ignore any attempt to release the reservation made by any other initiator. <p>If the 3rdPty bit is one and the third-party reservation option is not implemented, the target shall reject the RESERVE command with CHECK CONDITION status and the sense key shall be set to ILLEGAL REQUEST. <p><a name=17.2.8.4><h4>17.2.8.4 Superseding reservations</h4><p>An initiator that holds a current reservation may modify that reservation by issuing another RESERVE command to the same unit and, if the element bit is one, using the same reservation identification. The superseding RESERVE command shall release the previous reservation in place when the new reservation request is granted. The current reservation shall not be modified if the new reservation request cannot be granted. If the superseding reservation cannot be granted because of conflicts with a previous active reservation (other than the reservation being superseded), the target shall return RESERVATION CONFLICT status. <p><blockquote><b>NOTE 206</b> Superseding reservations are principally intended to allow the SCSI device ID to be changed on a reservation using the third-party reservation option. </blockquote><a name=17.2.9><h3>17.2.9 SEND VOLUME TAG command</h3>
+The SEND VOLUME TAG command (see <a href="WW754.htm" target="figures">table 345</a>) transfers a volume tag template to be searched for or new volume tag information for one or more media changer elements. The function of the command is conveyed by the send action code field. The REQUEST VOLUME ELEMENT ADDRESS command is used to transfer the results of a translate search operation. <p><a name=tab345><h4>Table 345 - SEND VOLUME TAG command</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                           Operation code (B6h)                        | 
+|-----+-----------------------------------------------------------------------| 
+| 1   | Logical unit number      |Reserved|        Element type code          | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                        Element address                          ---| 
+| 3   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 5   |          Reserved        |              Send action code              | 
+|-----+-----------------------------------------------------------------------| 
+| 6   |                                                                       | 
+|-----+---                        Reserved                                 ---| 
+| 7   |                                                                       | 
+|-----+-----------------------------------------------------------------------| 
+| 8   | (MSB)                                                                 | 
+|-----+---                     Parameter list length                       ---| 
+| 9   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+|10   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+|11   |                           Control                                     | 
++=============================================================================+</pre>
+
+The element type code field specifies an element type specification as defined in <a href="WW738.htm">17.2.5</a>. If the send action code indicates a translate operation, this field indicates the element types to be searched. If this is a zero, all element types are candidates for a translate operation. If the send action code does not indicate a translate, this field shall be treated as reserved. <p>The send action code field gives the function to be performed by this command as listed in <a href="WW755.htm" target="figures">table 346</a>. <p><a name=tab346><h4>Table 346 - Send volume tag action codes</h4><pre>
++=============-===============================================================+ 
+|    Code     |  Description                                                  | 
+|-------------+---------------------------------------------------------------| 
+|      0h     |  Translate - search all defined volume tags                   | 
+|      1h     |  Translate - search only primary volume tags                  | 
+|      2h     |  Translate - search only alternate volume tags                | 
+|      3h     |  Reserved                                                     | 
+|      4h     |  Translate - search all defined tags - ignore sequence numbers| 
+|      5h     |  Translate - search primary tags - ignore sequence numbers    | 
+|      6h     |  Translate - search alternate tags - ignore sequence numbers  | 
+|      7h     |  Reserved                                                     | 
+|      8h     |  Assert - as the primary volume tag - if tag now undefined    | 
+|      9h     |  Assert - as the alternate volume tag - if tag now undefined  | 
+|      Ah     |  Replace - the primary volume tag - current tag ignored       | 
+|      Bh     |  Replace - the alternate volume tag - current tag ignored     | 
+|      Ch     |  Undefined - the primary volume tag - current tag ignored     | 
+|      Dh     |  Undefined - the alternate volume tag - current tag ignored   | 
+|   Eh - 1Bh  |  Reserved                                                     | 
+|  1Ch - 1Fh  |  Vendor-specific                                              | 
++=============================================================================+</pre>
+
+Translate operations request that the target search the volume tag information available to it for elements whose volume tag information matches the template given by the command parameters. The resulting information is reported via the REQUEST VOLUME ELEMENT ADDRESS command. <p>Assert operations define volume tag information for a single element. A CHECK CONDITION with ILLEGAL REQUEST is reported if the subject element already has defined volume tag information; in this case, the original volume tag information shall remain unaltered. <p>Replace operations define volume tag information for a single element. Any previously defined volume tag information is overwritten. <p>Undefined operations cause previously defined volume tag information for the specified element to be cleared. It shall not be considered an error to undefined volume tag information that was not previously defined. <p>A medium changer device that implements volume tag information may choose to not implement the facilities that modify the volume tag information. With such an implementation a request for the assert, replace or undefined functions would cause the SEND VOLUME TAG command to be terminated with CHECK CONDITION and a sense key of ILLEGAL REQUEST. <p>The element address field gives a medium changer element address whose interpretation depends on the send action code received with this command. When the send action code is a translate, (code values 0h .. 7h), the element address field gives the starting element to be examined for satisfaction of the search criteria. When the send action code is other than translate, (i.e. assert, replace, and undefined, code values 8h .. Dh), the element address field gives the particular element whose volume tag information is to be modified. <p>The volume tag information used for translate, assert and replace functions is defined in <a href="WW756.htm" target="figures">table 347</a>. No parameters are necessary for undefined operations. <p><a name=tab347><h4>Table 347 - Send volume tag parameters format</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+=======================================================================| 
+| 0   |                                                                       | 
+|- - -+---               Volume identification template field              ---| 
+| 31  |                                                                       | 
+|-----+-----------------------------------------------------------------------| 
+| 32  |                                                                       | 
+|-----+---                            Reserved                             ---| 
+| 33  |                                                                       | 
+|-----+-----------------------------------------------------------------------| 
+| 34  | (MSB)                                                                 | 
+|- - -+---                  Minimum volume sequence number                 ---| 
+| 35  |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 36  |                                                                       | 
+|-----+---                            Reserved                             ---| 
+| 37  |                                                                       | 
+|-----+-----------------------------------------------------------------------| 
+| 38  | (MSB)                                                                 | 
+|- - -+---                  Maximum volume sequence number                 ---| 
+| 39  |                                                                 (LSB) | 
++=============================================================================+</pre>
+
+The volume identification template field specifies a search template for translate functions and the exact value of the new volume identification information for other SEND VOLUME TAG command functions. <p>As a search template, this field may contain the wildcard characters '*' and '?' (2Ah and 3Fh). '*' will match any string of characters, when it appears in a template the remainder of the template is not used. '?' will match any single character. <p>For a function other than translate, this field may not contain the '*' or '?' wildcard characters. <p>The minimum volume sequence number field specifies the new sequence number for the assert and replace functions. For a translate, this specifies the least value that will meet the search specification. <p>The maximum volume sequence number field specifies the greatest value that will meet the search specification. This field is ignored on functions other than translate. <a name=17.3><h2>17.3 Parameters for medium changer devices</h2><a name=17.3.1><h3>17.3.1 Diagnostic parameters</h3>
+This subclause defines the descriptors and pages for diagnostic parameters used with medium changer devices. <p>The diagnostic page codes for medium changer devices are defined in <a href="WW757.htm" target="figures">table 348</a>. <p><a name=tab348><h4>Table 348 - Diagnostic page codes</h4><pre>
++=============-==================================================-============+ 
+|  Page code  |  Description                                     | Subclause  | 
+|-------------+--------------------------------------------------+------------| 
+|     00h     |  Supported diagnostic pages                      |  <a href="WW377.htm">8.3.1.1</a>   | 
+|  01h - 3Fh  |  Reserved (for all device type pages)            |            | 
+|  40h - 7Fh  |  Reserved                                        |            | 
+|  80h - FFh  |  Vendor-specific pages                           |            | 
++=============================================================================+</pre><a name=17.3.2><h3>17.3.2 Log parameters</h3>
+This subclause defines the descriptors and pages for log parameters used with medium changer devices. <p>The log page codes for medium changer devices are defined in <a href="WW758.htm" target="figures">table 349</a>. <p><a name=tab349><h4>Table 349 - Log page codes</h4><pre>
++=============-==================================================-============+ 
+|  Page code  |  Description                                     | Subclause  | 
+|-------------+--------------------------------------------------+------------| 
+|     00h     |  Supported log pages                             |  <a href="WW377.htm">8.3.2.5</a>   | 
+|     06h     |  Non-medium error page                           |  <a href="WW377.htm">8.3.2.4</a>   | 
+|     07h     |  Last n error events page                        |  <a href="WW377.htm">8.3.2.3</a>   | 
+|  01h - 05h  |  Reserved                                        |            | 
+|  08h - 2Fh  |  Reserved                                        |            | 
+|     3Fh     |  Reserved                                        |            | 
+|  30h - 3Eh  |  Vendor-specific pages                           |            | 
++=============================================================================+</pre><a name=17.3.3><h3>17.3.3 Mode parameters</h3>
+This subclause defines the descriptors and pages for mode parameters used with medium changer devices. <p>The mode parameter list, including the mode parameter header and mode block descriptor, are defined in <a href="WW377.htm">8.3.3</a>. <p>The medium-type code field is contained in the mode parameter header (see <a href="WW377.htm">8.3.3</a>). This field is reserved for medium changer devices. <p>The device specific parameter field is contained in the mode parameter header (see <a href="WW377.htm">8.3.3</a>). This field is reserved for medium changer devices. <p>The density code field is contained in the mode parameter block descriptor (see <a href="WW377.htm">8.3.3</a>). This field is reserved for medium changer devices. <p>The mode page codes for medium changer devices are shown in <a href="WW759.htm" target="figures">table 350</a>. <p><a name=tab350><h4>Table 350 - Mode page codes</h4><pre>
++=============-==================================================-============+ 
+|  Page code  |  Description                                     | Subclause  | 
+|-------------+--------------------------------------------------+------------| 
+|     1Fh     |  Device capabilities                             | <a href="WW738.htm">17.3.3.1</a>   | 
+|     1Dh     |  Element address assignment                      | <a href="WW738.htm">17.3.3.2</a>   | 
+|     1Eh     |  Transport geometry parameters                   | <a href="WW738.htm">17.3.3.3</a>   | 
+|  01h - 1Ch  |  Reserved                                        |            | 
+|     00h     |  Vendor-specific (does not require page format)  |            | 
+|  20h - 3Eh  |  Vendor-specific (page format required)          |            | 
+|     3Fh     |  Return all pages                                |            | 
+|             |     (valid only for the MODE SENSE command)      |            | 
++=============================================================================+</pre><a name=17.3.3.1><h4>17.3.3.1 Device capabilities page</h4><p>The device capabilities page (see <a href="WW760.htm" target="figures">table 351</a>) defines characteristics of the element types on this medium changer implementation. This information may be employed by the initiator to determine functions permitted by the MOVE MEDIUM and EXCHANGE MEDIUM commands. <p><a name=tab351><h4>Table 351 - Device capabilities page</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+========+========+=====================================================| 
+| 0   |   PS   |Reserved|         Page code (1Fh)                             | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                       Parameter length (12h)                          | 
+|-----+-----------------------------------------------------------------------| 
+| 2   |               Reserved            | StorDT | StorI/E| StorST | StorMT | 
+|-----+-----------------------------------------------------------------------| 
+| 3   |                           Reserved                                    | 
+|-----+-----------------------------------------------------------------------| 
+| 4   |               Reserved            | MT-&gt;DT | MT-&gt;I/E| MT-&gt;ST | MT-&gt;MT | 
+|-----+-----------------------------------+--------+--------+--------+--------| 
+| 5   |               Reserved            | ST-&gt;DT | ST-&gt;I/E| ST-&gt;ST | ST-&gt;MT | 
+|-----+-----------------------------------+--------+--------+--------+--------| 
+| 6   |               Reserved            |I/E-&gt;DT |I/E-&gt;I/E|I/E-&gt;ST |I/E-&gt;MT | 
+|-----+-----------------------------------+--------+--------+--------+--------| 
+| 7   |               Reserved            | DT-&gt;DT | DT-&gt;I/E| DT-&gt;ST | DT-&gt;MT | 
+|-----+-----------------------------------------------------------------------| 
+| 8   |                                                                       | 
+|- - -+---                        Reserved                                 ---| 
+| 11  |                                                                       | 
+|-----+-----------------------------------------------------------------------| 
+| 12  |               Reserved            | MT&lt;&gt;DT | MT&lt;&gt;I/E| MT&lt;&gt;ST | MT&lt;&gt;MT | 
+|-----+-----------------------------------+--------+--------+--------+--------| 
+| 13  |               Reserved            | ST&lt;&gt;DT | ST&lt;&gt;I/E| ST&lt;&gt;ST | ST&lt;&gt;MT | 
+|-----+-----------------------------------+--------+--------+--------+--------| 
+| 14  |               Reserved            |I/E&lt;&gt;DT |I/E&lt;&gt;I/E|I/E&lt;&gt;ST |I/E&lt;&gt;MT | 
+|-----+-----------------------------------+--------+--------+--------+--------| 
+| 15  |               Reserved            | DT&lt;&gt;DT | DT&lt;&gt;I/E| DT&lt;&gt;ST | DT&lt;&gt;MT | 
++=============================================================================+</pre>
+
+The parameters savable (PS) bit is only used with the MODE SENSE command. This bit is reserved with the MODE SELECT command. A PS bit of one indicates that the target is capable of saving the page in a non-volatile, vendor-specific location. <p>In the field names on this page, the following element type abbreviations are used: MT a medium transport element, ST a storage element, I/E an import export element, and DT a data transfer element. In the descriptions, XX and YY are any of the element type abbreviations. <p>A StorXX bit value of one indicated that the defined elements of type XX may provide independent storage for a unit of media. A value of zero indicates that elements of type XX provide virtual sources or destinations, that the location of the unit of media is provided by an element of some other type. The value of StorST is one by the definition of that type. See <a href="WW738.htm">17.1.1</a>. <p>An XX-&gt;YY bit value of one indicates that the medium changer device supports all MOVE MEDIUM commands where the source is element type XX, the destination is element type YY and these element addresses are otherwise valid. An XX-&gt;YY bit value of zero indicates that these MOVE MEDIUM commands may or may not be valid depending on the particular elements requested. Those which are not valid will be rejected with ILLEGAL REQUEST. <p>An XX&lt;&gt;YY bit value of one indicates that the medium changer device supports all EXCHANGE MEDIUM commands where the source is element type XX, destination 1 is element type YY, destination 2 is the same type as the source element type and these element addresses are otherwise valid. An XX&lt;&gt;YY bit value of zero indicates that these EXCHANGE MEDIUM commands may or may not be valid depending on the particular elements requested. Those which are not valid will be rejected with ILLEGAL REQUEST. <p><a name=17.3.3.2><h4>17.3.3.2 Element address assignment page</h4><p>The element address assignment page (see <a href="WW761.htm" target="figures">table 352</a>) is used to assign addresses to the elements of the medium changer (MODE SELECT) and to report those assignments (MODE SENSE). This page also defines the number of each type of element present. <p><a name=tab352><h4>Table 352 - Element address assignment page</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+========+========+=====================================================| 
+| 0   |   PS   |Reserved|         Page code (1Dh)                             | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                           Parameter length (12h)                      | 
+|-----+-----------------------------------------------------------------------| 
+| 2   | (MSB)                                                                 | 
+|-----+---                        Medium transport element address         ---| 
+| 3   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 4   | (MSB)                                                                 | 
+|-----+---                        Number of medium transport elements      ---| 
+| 5   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 6   | (MSB)                                                                 | 
+|-----+---                        First storage element address            ---| 
+| 7   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 8   | (MSB)                                                                 | 
+|-----+---                        Number of storage elements               ---| 
+| 9   |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 10  | (MSB)                                                                 | 
+|-----+---                        First import export element address      ---| 
+| 11  |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 12  | (MSB)                                                                 | 
+|-----+---                        Number of import export elements         ---| 
+| 13  |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 14  | (MSB)                                                                 | 
+|-----+---                        First data transfer element address      ---| 
+| 15  |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 16  | (MSB)                                                                 | 
+|-----+---                        Number of data transfer elements         ---| 
+| 17  |                                                                 (LSB) | 
+|-----+-----------------------------------------------------------------------| 
+| 18  |                                                                       | 
+|-----+---                        Reserved                                 ---| 
+| 19  |                                                                       | 
++=============================================================================+</pre>
+
+The parameters savable (PS) bit is only used with the MODE SENSE command. This bit is reserved with the MODE SELECT command. A PS bit of one indicates that the target is capable of saving the page in a non-volatile vendor-specific location. <p>The first medium transport element address field identifies the first medium transport element contained in the medium changer (other than the default medium transport address of zero). The number of medium transport elements field defines the total number of medium transport elements contained in the medium changer. If the number of medium transport elements field in a MODE SELECT command is greater than the default value returned in the MODE SENSE parameter data, the target shall return CHECK CONDITION status and set the sense key to ILLEGAL REQUEST. <p>The first storage element address field identifies the first medium storage element contained in the medium changer. The number of storage elements field defines the total number of medium storage elements contained in the medium changer. If the number of medium storage elements field in a MODE SELECT command is greater than the default value returned in the MODE SENSE parameter data, the target shall return CHECK CONDITION status and set the sense key to ILLEGAL REQUEST. <p>The first import export element address field identifies the first medium portal that is accessible both by the medium transport devices and also by an operator from outside the medium changer. The number of import export elements field defines the total number of import export elements contained in the medium changer and accessible to the medium transport elements. If the number of import export elements field in a MODE SELECT command is greater than the default value returned in the MODE SENSE parameter data, the target shall return CHECK CONDITION status and set the sense key to ILLEGAL REQUEST . <p><blockquote><b>NOTE 207</b> The number of import export elements may be zero. </blockquote><p>The first data transfer element address field identifies the first data transfer element contained in the medium changer. The data transfer elements may be either read/write or read-only devices. The number of data transfer field defines the total number of data transfer elements contained within the medium changer and accessible to the medium transport elements. If the number of data transfer elements field in a MODE SELECT command is greater than the default value returned in the MODE SENSE parameter data, the target shall return CHECK CONDITION status and set the sense key to ILLEGAL REQUEST . <p>Each element in the medium changer must have a unique address. If the address ranges defined for any of the element types overlap, the target shall return CHECK CONDITION status and set the sense key to ILLEGAL REQUEST. <p><a name=17.3.3.3><h4>17.3.3.3 Transport geometry parameters page</h4><p>The transport geometry parameters page (see <a href="WW762.htm" target="figures">table 353</a>) defines whether each medium transport element is a member of a set of elements that share a common robotics subsystem and whether the element is capable of media rotation. One transport geometry descriptor is transferred for each medium transport element, beginning with the first medium transport element. (Other than the default transport element address of zero.) <p><a name=tab353><h4>Table 353 - Transport geometry parameters page</h4><pre>
++=====-========-========-========-========-========-========-========-========+ 
+|  Bit|   7    |   6    |   5    |   4    |   3    |   2    |   1    |   0    | 
+|Byte |        |        |        |        |        |        |        |        | 
+|=====+========+========+=====================================================| 
+| 0   |   PS   |Reserved|         Page code (1Eh)                             | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                           Parameter length                            | 
+|=====+=======================================================================| 
+|     |                        Transport geometry descriptor(s)               | 
+|=====+==============================================================-========| 
+| 0   |                           Reserved                           | Rotate | 
+|-----+-----------------------------------------------------------------------| 
+| 1   |                Member number in transport element set                 | 
++=============================================================================+</pre>
+
+The parameters savable (PS) bit is only used with the MODE SENSE command. This bit is reserved with the MODE SELECT command. A PS bit of one indicates that the target is capable of saving the page in a non-volatile vendor-specific location. <p>The parameter length specifies the number of bytes of transport geometry descriptors that follow. The geometry of each medium transport element is defined using a two-byte field as defined below. <p>A rotate bit of one indicates that the medium transport element supports media rotation for handling double-sided media. A rotate bit of zero indicates that the medium transport element does not support media rotation. <p>The member number in set indicates the position of this element in a set of medium transport elements that share a common robotics subsystem. The first element in a set has a member number of zero. <p><blockquote><b>NOTE 208</b> This page reports information about the way transport elements are physically clustered in a system. The model for this is a medium changer device with more than one independent robotics subsystem, where each of these supports multiple transport elements. The elements that are supported by a particular robotics subsystem form a set. This sort of information is helpful for optimization and error recovery in such a large system. (Recall that in the model for this device type, see <a href="WW738.htm">17.1</a>, the individual transport element is addressed not the robotics subsystem. An element is defined to be a place where a unit of media may be at any point in time.) </blockquote><a name=17.4><h2>17.4 Definitions specific to medium changer devices</h2><a name=17.4.1><h3>17.4.1 data transfer element:</h3>
+A component of a medium changer used to access the data stored on a unit of media. The address in medium changer element space of a primary device. <a name=17.4.2><h3>17.4.2 element:</h3>
+An addressable physical component of a medium changer device that can serve as the location of a unit of media. <a name=17.4.3><h3>17.4.3 import export element:</h3>
+A location within a medium changer device that can be accessed by both the medium transport elements and by the operator. <a name=17.4.4><h3>17.4.4 medium transport element:</h3>
+A component of a medium changer device that is used to move units of media. <a name=17.4.5><h3>17.4.5 media rotation:</h3>
+The process of changing the orientation of a unit of media. In particular this refers to inverting a two sided media cartridge so that a data transport element that can access only side at a time can access data on the other side. <a name=17.4.6><h3>17.4.6 primary device:</h3>
+A device for reading or writing data on medium. These devices would typically implement the direct access, sequential access, optical memory device or CD-ROM command sets in this International Standard. Examples are magnetic disk drives, cartridge tape drives, optical disk drives and CD-ROM drives. Use in a medium changer environment implies that the device supports removable media. <a name=17.4.7><h3>17.4.7 storage element:</h3>
+A component of a medium changer device used for inactive storage of a unit of media. </body></html>
